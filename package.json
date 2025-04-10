@@ -26,6 +26,7 @@
 	"scripts": {
 		"build": "tsup",
 		"check": "biome check --error-on-warnings",
+		"check:ci": "biome ci --error-on-warnings",
 		"prepare": "husky",
 		"test": "vitest --passWithNoTests",
 		"tsc": "tsc",
