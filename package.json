@@ -25,31 +25,27 @@
 	],
 	"scripts": {
 		"build": "tsup",
-		"format": "prettier .",
-		"lint": "eslint . --max-warnings 0",
+		"check": "biome check --error-on-warnings",
+		"check:ci": "biome ci --error-on-warnings",
 		"prepare": "husky",
 		"test": "vitest --passWithNoTests",
 		"tsc": "tsc",
 		"dry:run": "pnpm build && node dist/cli.js"
 	},
 	"lint-staged": {
-		"*": "prettier --ignore-unknown --write"
+		"*": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
 	},
 	"devDependencies": {
-		"@eslint/js": "9.22.0",
+		"@biomejs/biome": "^2.0.0-beta.1",
 		"@release-it/conventional-changelog": "10.0.0",
 		"@types/node": "22.13.10",
 		"@vitest/coverage-v8": "3.0.9",
-		"@vitest/eslint-plugin": "1.1.38",
 		"console-fail-test": "0.5.0",
-		"eslint": "9.22.0",
 		"husky": "9.1.7",
 		"lint-staged": "15.5.0",
-		"prettier": "3.5.3",
 		"release-it": "18.1.2",
 		"tsup": "8.4.0",
 		"typescript": "5.8.2",
-		"typescript-eslint": "8.26.1",
 		"vitest": "3.0.9"
 	},
 	"packageManager": "pnpm@10.4.0",

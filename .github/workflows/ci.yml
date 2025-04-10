@@ -12,14 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-      - run: pnpm lint
-  prettier:
-    name: Prettier
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare
-      - run: pnpm format --list-different
+      - run: pnpm check:ci
   test:
     name: Test
     runs-on: ubuntu-latest
