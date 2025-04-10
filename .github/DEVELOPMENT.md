@@ -22,33 +22,17 @@ Add `--watch` to run the builder in a watch mode that continuously cleans and re
 pnpm build --watch
 ```
 
-## Formatting
+## Linting & Formatting
 
-[Prettier](https://prettier.io) is used to format code.
+[Biome](https://biomejs.dev) is used to lint & format code.
 It should be applied automatically when you save files in VS Code or make a Git commit.
 
-To manually reformat all files, you can run:
+To manually format all files and apply any safe auto-fixes, you can run:
 
 ```shell
-pnpm format --write
+pnpm check --write
 ```
 
-## Linting
-
-This package includes several forms of linting to enforce consistent code quality and styling.
-Each should be shown in VS Code, and can be run manually on the command-line:
-
-- `pnpm lint` ([ESLint](https://eslint.org) with [typescript-eslint](https://typescript-eslint.io)): Lints JavaScript and TypeScript source files
-
-Read the individual documentation for each linter to understand how it can be configured and used best.
-
-For example, ESLint can be run with `--fix` to auto-fix some lint rule complaints:
-
-```shell
-pnpm run lint --fix
-```
-
-Note that you'll need to run `pnpm build` before `pnpm lint` so that lint rules which check the file system can pick up on any built files.
 
 ## Testing
 
