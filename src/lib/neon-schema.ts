@@ -1,6 +1,3 @@
-import { select } from "@clack/prompts";
-import { NeonColumnTypes } from "./types.js";
-
 // Define the array of string literals first
 const neonColumnTypeStrings = [
 	"numeric",

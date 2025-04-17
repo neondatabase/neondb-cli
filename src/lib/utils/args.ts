@@ -1,5 +1,5 @@
 import { parseArgs } from "node:util";
-import { type Defaults } from "./types.js";
+import { type Defaults } from "../types.js";
 
 export const DEFAULTS: Defaults = {
 	dotEnvPath: "./.env",

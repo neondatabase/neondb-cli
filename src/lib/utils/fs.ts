@@ -1,9 +1,10 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { outro } from "@clack/prompts";
 import { log } from "@clack/prompts";
 import { parse } from "dotenv";
-import { messages } from "./texts.js";
+import { messages } from "~/texts.js";
 
 export function readOrCreate(path: string): string {
 	try {
@@ -55,4 +56,24 @@ export function prepEnv(dotEnvFile: string, dotEnvKey: string) {
 			process.exit(1);
 		}
 	}
+}
+
+export async function writeToEnv(
+	dotEnvFile: string,
+	dotEnvKey: string,
+	claimExpiresAt: Date,
+	claimUrl: URL,
+	connString: string,
+	poolerString: string,
+) {
+	await appendFile(
+		dotEnvFile,
+		`
+
+# Claimable DB expires at: ${claimExpiresAt.toUTCString()}
+# Claim it now to your account: ${claimUrl.href}
+${dotEnvKey}=${connString}
+${dotEnvKey}_POOLER=${poolerString}
+`,
+	);
 }
