@@ -1,4 +1,3 @@
-// Define the array of string literals first
 const neonColumnTypeStrings = [
 	"numeric",
 	"decimal",
@@ -35,10 +34,10 @@ const neonColumnTypeStrings = [
 	"uuid",
 	"money",
 	"xml",
-] as const; // Use 'as const' for literal types
+] as const;
 
 export const neonColumnTypeOptions = neonColumnTypeStrings.map((type) => ({
-	value: type, // TypeScript should now infer the literal union type here
+	value: type,
 	label: type,
 }));
 
