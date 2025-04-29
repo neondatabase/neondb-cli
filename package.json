@@ -57,6 +57,10 @@
 	},
 	"dependencies": {
 		"@clack/prompts": "0.10.1",
-		"gradient-string": "^3.0.0"
+		"dotenv": "^16.5.0",
+		"gradient-string": "^3.0.0",
+		"open": "^10.1.0",
+		"p-wait-for": "^5.0.2",
+		"zod": "^3.24.3"
 	}
 }
