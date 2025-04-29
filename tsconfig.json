@@ -9,11 +9,7 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"strict": true,
-		"target": "ES2022",
-		"baseUrl": ".",
-		"paths": {
-			"~/*": ["src/lib/*"]
-		}
+		"target": "ES2022"
 	},
 	"include": ["src"]
 }

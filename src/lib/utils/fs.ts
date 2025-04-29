@@ -4,7 +4,7 @@ import { dirname } from "node:path";
 import { outro } from "@clack/prompts";
 import { log } from "@clack/prompts";
 import { parse } from "dotenv";
-import { messages } from "~/texts.js";
+import { messages } from "../texts.js";
 
 export function readOrCreate(path: string): string {
 	try {
