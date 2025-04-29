@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { intro, outro, select, spinner, text } from "@clack/prompts";
+import { intro, log, outro, select, spinner, text } from "@clack/prompts";
 import { cristal } from "gradient-string";
 import { instantNeon } from "./lib/instant-neon.js";
 import { NeonProvider, NeonRegion, neonRegions } from "./lib/neon-schema.js";
@@ -44,41 +44,68 @@ async function main() {
 		};
 
 		if (!dotEnvFilePath) {
-			userInput.dotEnvPath = ((await text({
+			userInput.dotEnvPath = (await text({
 				message: messages.questions.dotEnvFilePath,
-			})) || DEFAULTS.dotEnvPath) as Defaults["dotEnvPath"];
+			})) as Defaults["dotEnvPath"];
+
+			if (!userInput.dotEnvPath) {
+				userInput.dotEnvPath = DEFAULTS.dotEnvPath;
+				log.step(`using ${userInput.dotEnvPath} as the .env file`);
+			}
 		}
 
 		if (!dotEnvKey) {
-			userInput.dotEnvKey = ((await text({
+			userInput.dotEnvKey = (await text({
 				message: messages.questions.dotEnvKey,
-			})) || DEFAULTS.dotEnvKey) as Defaults["dotEnvKey"];
+			})) as Defaults["dotEnvKey"];
+
+			if (!userInput.dotEnvKey) {
+				userInput.dotEnvKey = DEFAULTS.dotEnvKey;
+				log.step(`using ${userInput.dotEnvKey} as the .env key`);
+			}
 		}
 
 		if (!referrer) {
-			userInput.referrer = ((await text({
+			userInput.referrer = (await text({
 				message: messages.questions.referrer,
-			})) || DEFAULTS.referrer) as Defaults["referrer"];
+			})) as Defaults["referrer"];
+
+			if (!userInput.referrer) {
+				userInput.referrer = DEFAULTS.referrer;
+				log.step(`using ${userInput.referrer} as the referrer`);
+			}
 		}
 
-		if (!provider) {
-			userInput.provider = ((await select({
-				message: messages.questions.provider,
-				options: Object.keys(neonRegions).map((provider) => ({
-					value: provider as NeonProvider,
-					label: provider,
-				})),
-			})) || DEFAULTS.provider) as Defaults["provider"];
-		}
+		if (process.env.NODE_ENV === "production") {
+			if (!provider) {
+				userInput.provider = (await select({
+					message: messages.questions.provider,
+					options: Object.keys(neonRegions).map((provider) => ({
+						value: provider as NeonProvider,
+						label: provider,
+					})),
+				})) as Defaults["provider"];
 
-		if (!region) {
-			userInput.region = ((await select({
-				message: messages.questions.region,
-				options: neonRegions[userInput.provider].map((region) => ({
-					value: region as NeonRegion,
-					label: region,
-				})),
-			})) || DEFAULTS.region) as Defaults["region"];
+				if (!userInput.provider) {
+					userInput.provider = DEFAULTS.provider;
+					log.step(`using ${userInput.provider} as the provider`);
+				}
+			}
+
+			if (!region) {
+				userInput.region = (await select({
+					message: messages.questions.region,
+					options: neonRegions[userInput.provider].map((region) => ({
+						value: region as NeonRegion,
+						label: region,
+					})),
+				})) as Defaults["region"];
+
+				if (!userInput.region) {
+					userInput.region = DEFAULTS.region;
+					log.step(`using ${userInput.region} as the region`);
+				}
+			}
 		}
 
 		prepEnv(userInput.dotEnvPath, userInput.dotEnvKey);

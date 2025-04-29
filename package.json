@@ -1,6 +1,6 @@
 {
 	"name": "neondb",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"description": "create a claimable Neon database in seconds!",
 	"repository": {
 		"type": "git",

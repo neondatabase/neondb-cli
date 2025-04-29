@@ -1,10 +1,7 @@
 import { z } from "zod";
 
 export const INSTANT_NEON_URLS = {
-	API: (dbId: string) => {
-		const safeUUID = z.string().uuid().parse(dbId);
-		return `https://neon.new/api/v1/databases/${safeUUID}`;
-	},
+	API: (dbId: string) => `https://instagres.com/api/v1/databases/${dbId}`,
 	CLAIM_URL: (dbId: string, referrer?: string) =>
 		`https://neon.new/claim/${dbId}${referrer ? `?ref=${referrer}` : ""}`,
 };
