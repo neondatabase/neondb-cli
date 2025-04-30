@@ -18,5 +18,8 @@
 		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
