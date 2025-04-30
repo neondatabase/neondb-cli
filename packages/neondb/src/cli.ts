@@ -6,8 +6,7 @@ import { instantNeon } from "./lib/instant-neon.js";
 import { NeonProvider, NeonRegion, neonRegions } from "./lib/neon-schema.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
 import { type Defaults } from "./lib/types.js";
-import { getArgs } from "./lib/utils/args.js";
-import { DEFAULTS } from "./lib/utils/args.js";
+import { DEFAULTS, getArgs } from "./lib/utils/args.js";
 import { prepEnv } from "./lib/utils/fs.js";
 
 async function main() {

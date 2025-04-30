@@ -1,8 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { appendFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import { outro } from "@clack/prompts";
-import { log } from "@clack/prompts";
+import { log, outro } from "@clack/prompts";
 import { parse } from "dotenv";
 import { messages } from "../texts.js";
 
