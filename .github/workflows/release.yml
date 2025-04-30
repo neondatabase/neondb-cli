@@ -18,11 +18,11 @@ jobs:
             - uses: ./.github/actions/prepare
             - run: pnpm build
             - name: Create and publish versions
-              uses: changesets/action@bd5d1d2a62e4b24b413ec54e34c667c025a53d10 # v1.0.0
+              uses: changesets/action@v1
               with:
                   commit: "chore: update versions"
                   title: "chore: update versions"
-                  publish: pnpm ci:publish
+                  publish: pnpm publish --recursive
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
