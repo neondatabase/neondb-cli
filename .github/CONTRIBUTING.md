@@ -39,10 +39,14 @@ Please don't post comments asking for permission or stating you will work on an 
 Once you've identified an open issue accepting PRs that doesn't yet have a PR sent, you're free to send a pull request.
 Be sure to fill out the pull request template's requested information -- otherwise your PR will likely be closed.
 
-PRs are also expected to have a title that adheres to [conventional commits](https://www.conventionalcommits.org/en/v1.0.0).
-Only PR titles need to be in that format, not individual commits.
-Don't worry if you get this wrong: you can always change the PR title after sending it.
-Check [previously merged PRs](https://github.com/neondatabase/neondb-cli/pulls?q=is%3Apr+is%3Amerged+-label%3Adependencies+) for reference.
+We use [changesets](https://github.com/changesets/changesets/tree/main).
+Once you're done, describe the changes you made in a \*short and clear\*\* paragraph.
+
+| Change Type | Release Type |
+| ----------- | ------------ |
+| bugfix      | patch        |
+| feature     | minor        |
+| API change  | major        |
 
 #### Draft PRs
 

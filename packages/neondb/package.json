@@ -17,11 +17,9 @@
 		"neondb": "dist/cli.js"
 	},
 	"files": [
-		"LICENSE.md",
 		"README.md",
 		"dist/",
-		"package.json",
-		"CHANGELOG.md"
+		"package.json"
 	],
 	"scripts": {
 		"build": "tsup",
