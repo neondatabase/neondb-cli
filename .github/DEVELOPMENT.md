@@ -3,8 +3,8 @@
 After [forking the repo from GitHub](https://help.github.com/articles/fork-a-repo) and [installing pnpm](https://pnpm.io/installation):
 
 ```shell
-git clone https://github.com/(your-name-here)/neondb-2
-cd neondb-2
+git clone https://github.com/(your-name-here)/neondb-cli
+cd neondb-cli
 pnpm install
 ```
 
@@ -32,7 +32,6 @@ To manually format all files and apply any safe auto-fixes, you can run:
 ```shell
 pnpm check --write
 ```
-
 
 ## Testing
 

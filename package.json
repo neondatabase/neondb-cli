@@ -4,7 +4,7 @@
 	"description": "create a claimable Neon database in seconds!",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/neondatabase/neondb.git"
+		"url": "git+https://github.com/neondatabase/neondb-cli.git"
 	},
 	"license": "MIT",
 	"author": {
