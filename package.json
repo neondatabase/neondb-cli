@@ -1,66 +1,35 @@
 {
-	"name": "neondb",
-	"version": "0.2.0",
-	"description": "create a claimable Neon database in seconds!",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/neondatabase/neondb-cli.git"
-	},
-	"license": "MIT",
-	"author": {
-		"name": "Neon",
-		"url": "https://neon.tech"
-	},
-	"type": "module",
-	"main": "dist/index.js",
-	"bin": {
-		"neondb": "dist/cli.js"
-	},
-	"files": [
-		"LICENSE.md",
-		"README.md",
-		"dist/",
-		"package.json",
-		"CHANGELOG.md"
-	],
+	"name": "neondb-cli",
+	"private": true,
 	"scripts": {
-		"build": "tsup",
-		"check": "biome check --error-on-warnings",
-		"check:ci": "biome ci --error-on-warnings",
-		"prepare": "husky",
-		"test": "vitest --passWithNoTests",
-		"tsc": "tsc",
-		"dry:run": "pnpm build && node dist/cli.js"
+		"bump": "changeset",
+		"build:cli": "pnpm --filter neondb build",
+		"build:plugin": "pnpm --filter vite-plugin-postgres build",
+		"build": "pnpm --recursive build",
+		"format": "biome check --error-on-warnings --fix",
+		"lint:ci": "biome ci --error-on-warnings",
+		"types:ci": "pnpm --recursive tsc --noEmit",
+		"test:ci": "pnpm --recursive vitest --passWithNoTests",
+		"prepare": "husky"
 	},
 	"lint-staged": {
 		"*": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.0.0-beta.1",
-		"@release-it/conventional-changelog": "10.0.0",
-		"@types/node": "22.13.10",
-		"@vitest/coverage-v8": "3.0.9",
+		"@changesets/cli": "^2.29.2",
 		"console-fail-test": "0.5.0",
 		"husky": "9.1.7",
 		"lint-staged": "15.5.0",
-		"release-it": "18.1.2",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
-		"vitest": "3.0.9"
+		"typescript": "catalog:"
 	},
 	"packageManager": "pnpm@10.4.0",
 	"engines": {
 		"node": ">=18.3.0"
 	},
-	"publishConfig": {
-		"provenance": false
-	},
-	"dependencies": {
-		"@clack/prompts": "0.10.1",
-		"dotenv": "^16.5.0",
-		"gradient-string": "^3.0.0",
-		"open": "^10.1.0",
-		"p-wait-for": "^5.0.2",
-		"zod": "^3.24.3"
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"esbuild"
+		]
 	}
 }

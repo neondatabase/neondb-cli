@@ -1,12 +1,18 @@
-<h1 align="center">Neondb</h1>
+<h1 align="center">Neondb-CLI</h1>
 
-<p align="center">we are getting started!</p>
+This is the monorepo for the **Instant Postgres** packages.
 
-## Usage
+## NEONDB
+
+CLI to help you hit the ground running without any sign-up. Instantiate a database with a single-command.
 
 ```shell
 npx neondb
 ```
+
+## `@neondatabase/vite-plugin-postgres`
+
+> TBA
 
 ---
 

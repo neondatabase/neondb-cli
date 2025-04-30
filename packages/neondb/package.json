@@ -1,0 +1,57 @@
+{
+	"name": "neondb",
+	"version": "0.2.0",
+	"description": "create a claimable Neon database in seconds!",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/neondatabase/neondb-cli.git"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Neon",
+		"url": "https://neon.tech"
+	},
+	"type": "module",
+	"main": "dist/index.js",
+	"bin": {
+		"neondb": "dist/cli.js"
+	},
+	"files": [
+		"README.md",
+		"dist/",
+		"package.json"
+	],
+	"scripts": {
+		"build": "tsup",
+		"test": "vitest --passWithNoTests",
+		"tsc": "tsc",
+		"dry:run": "pnpm build && node dist/cli.js"
+	},
+	"devDependencies": {
+		"@release-it/conventional-changelog": "10.0.0",
+		"@types/node": "22.13.10",
+		"@vitest/coverage-v8": "3.0.9",
+		"console-fail-test": "0.5.0",
+		"husky": "9.1.7",
+		"lint-staged": "15.5.0",
+		"release-it": "18.1.2",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	},
+	"packageManager": "pnpm@10.4.0",
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"publishConfig": {
+		"provenance": false
+	},
+	"dependencies": {
+		"@clack/prompts": "0.10.1",
+		"dotenv": "^16.5.0",
+		"gradient-string": "^3.0.0",
+		"open": "^10.1.0",
+		"p-wait-for": "^5.0.2",
+		"zod": "^3.24.3"
+	}
+}
