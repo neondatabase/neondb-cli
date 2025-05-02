@@ -1,10 +1,12 @@
 {
 	"name": "@neondatabase/vite-plugin-postgres",
 	"version": "0.0.1",
+	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"files": [
-		"dist"
+		"dist/",
+		"package.json"
 	],
 	"scripts": {
 		"build": "tsup",
@@ -15,9 +17,14 @@
 	"devDependencies": {
 		"@types/node": "22.13.10",
 		"@vitest/coverage-v8": "3.0.9",
+		"neondb": "workspace:*",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
+		"vite": "^6.0.0",
 		"vitest": "catalog:"
+	},
+	"peerDependencies": {
+		"vite": "^6.0.0"
 	},
 	"publishConfig": {
 		"access": "public"
