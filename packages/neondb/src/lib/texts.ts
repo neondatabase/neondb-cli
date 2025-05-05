@@ -50,6 +50,10 @@ ${url}
 		region: `Select the region for the database (default: ${DEFAULTS.region})`,
 	},
 
+	info: {
+		dotEnvFileNotFound: "No .env file found, creating one.",
+	},
+
 	errors: {
 		invalidEnvFile: "Invalid .env file format \n",
 		envKeyExists: (dotEnvKey: string, dotEnvFile: string) =>

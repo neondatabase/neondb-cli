@@ -1,36 +1,28 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+	closeSync,
+	existsSync,
+	mkdirSync,
+	openSync,
+	readFileSync,
+	writeFileSync,
+	writeSync,
+} from "node:fs";
 import { appendFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { log, outro } from "@clack/prompts";
 import { parse } from "dotenv";
 import { messages } from "../texts.js";
 
-export function readOrCreate(path: string): string {
-	try {
-		return readFileSync(path, "utf8");
-	} catch {
-		mkdirSync(dirname(path), { recursive: true });
-		writeFileSync(path, "");
-		return "";
-	}
-}
-
 export function getDotEnvContent(dotEnvFile: string): Record<string, string> {
-	const content = readOrCreate(dotEnvFile);
+	if (!existsSync(dotEnvFile)) {
+		log.info(messages.info.dotEnvFileNotFound);
+	}
 
 	try {
+		const content = readFileSync(dotEnvFile);
 		return parse(content);
 	} catch {
 		throw new Error(messages.errors.failedToParseEnvFile);
-	}
-}
-
-export function writeFile(path: string, content: string): void {
-	try {
-		void writeFileSync(path, content);
-	} catch {
-		mkdirSync(dirname(path), { recursive: true });
-		void writeFileSync(path, "");
 	}
 }
 
@@ -65,14 +57,30 @@ export async function writeToEnv(
 	connString: string,
 	poolerString: string,
 ) {
-	await appendFile(
-		dotEnvFile,
+	if (!existsSync(dirname(dotEnvFile))) {
+		mkdirSync(dirname(dotEnvFile), { recursive: true });
+	}
+
+	const openedFile = openSync(dotEnvFile, "a");
+	writeSync(
+		openedFile,
 		`
 
-# Claimable DB expires at: ${claimExpiresAt.toUTCString()}
-# Claim it now to your account: ${claimUrl.href}
-${dotEnvKey}=${connString}
-${dotEnvKey}_POOLER=${poolerString}
-`,
+		# Claimable DB expires at: ${claimExpiresAt.toUTCString()}
+		# Claim it now to your account: ${claimUrl.href}
+		${dotEnvKey}=${connString}
+		${dotEnvKey}_POOLER=${poolerString}
+		`,
 	);
+	closeSync(openedFile);
+	// 	await appendFile(
+	// 		openedFile,
+	// 		`
+
+	// # Claimable DB expires at: ${claimExpiresAt.toUTCString()}
+	// # Claim it now to your account: ${claimUrl.href}
+	// ${dotEnvKey}=${connString}
+	// ${dotEnvKey}_POOLER=${poolerString}
+	// `
+	// 	);
 }

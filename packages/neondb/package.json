@@ -16,13 +16,19 @@
 	"bin": {
 		"neondb": "dist/cli.js"
 	},
+	"exports": {
+		"./sdk": {
+			"import": "./dist/lib/instant-neon.js",
+			"types": "./dist/lib/instant-neon.d.ts"
+		}
+	},
 	"files": [
 		"README.md",
 		"dist/",
 		"package.json"
 	],
 	"scripts": {
-		"build": "tsup",
+		"build": "tsc --noEmit && tsup",
 		"test": "vitest --passWithNoTests",
 		"tsc": "tsc",
 		"dry:run": "pnpm build && node dist/cli.js"
