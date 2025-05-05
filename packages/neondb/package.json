@@ -28,7 +28,7 @@
 		"package.json"
 	],
 	"scripts": {
-		"build": "tsup",
+		"build": "tsc --noEmit && tsup",
 		"test": "vitest --passWithNoTests",
 		"tsc": "tsc",
 		"dry:run": "pnpm build && node dist/cli.js"

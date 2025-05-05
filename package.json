@@ -5,14 +5,13 @@
 		"bump": "changeset",
 		"build:cli": "pnpm --filter neondb build",
 		"build:plugin": "pnpm --filter vite-plugin-postgres build",
-		"build": "pnpm --recursive build",
+		"build": "pnpm --filter neondb build && pnpm --filter vite-plugin-postgres build",
 		"format": "biome check --error-on-warnings --fix",
 		"lint:ci": "biome ci --error-on-warnings",
-		"types:ci": "pnpm --recursive tsc --noEmit",
 		"test:ci": "pnpm --recursive vitest --passWithNoTests",
 		"prepare": "husky"
 	},
-	"lint-staged": {
+"lint-staged": {
 		"*": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
 	},
 	"devDependencies": {
