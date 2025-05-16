@@ -1,5 +1,5 @@
 import { intro, note, outro } from "@clack/prompts";
-import { instantNeon } from "neondb/sdk";
+import { instantNeon } from "neondb/launchpad";
 import { resolve } from "path";
 import { loadEnv, type Plugin as VitePlugin } from "vite";
 
