@@ -4,7 +4,6 @@ import {
 	mkdirSync,
 	openSync,
 	readFileSync,
-	writeFileSync,
 	writeSync,
 } from "node:fs";
 import { appendFile } from "node:fs/promises";
