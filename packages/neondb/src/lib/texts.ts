@@ -39,9 +39,8 @@ ${url}
 `,
 	envSuccess: (dotEnvFile: string, dotEnvKey: string) =>
 		`Saved it to ${dotEnvFile} as ${dotEnvKey} \n\n\n`,
-	databaseGenerated: "Database generated! \n",
 	happyCoding: "Happy coding! 🚀",
-
+	databaseGenerated: (url: string) => `Claim your Database at: ${url}`,
 	questions: {
 		dotEnvFilePath: `Enter the path to your .env file (default: ${DEFAULTS.dotEnvPath})`,
 		dotEnvKey: `Enter the key for the database connection string (default: ${DEFAULTS.dotEnvKey})`,

@@ -6,7 +6,6 @@ import {
 	readFileSync,
 	writeSync,
 } from "node:fs";
-import { appendFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { log, outro } from "@clack/prompts";
 import { parse } from "dotenv";
@@ -68,21 +67,11 @@ export async function writeToEnv(
 		openedFile,
 		`
 
-		# Claimable DB expires at: ${claimExpiresAt.toUTCString()}
-		# Claim it now to your account: ${claimUrl.href}
-		${dotEnvKey}=${connString}
-		${dotEnvKey}_POOLER=${poolerString}
+# Claimable DB expires at: ${claimExpiresAt.toUTCString()}
+# Claim it now to your account: ${claimUrl.href}
+${dotEnvKey}=${connString}
+${dotEnvKey}_POOLER=${poolerString}
 		`,
 	);
 	closeSync(openedFile);
-	// 	await appendFile(
-	// 		openedFile,
-	// 		`
-
-	// # Claimable DB expires at: ${claimExpiresAt.toUTCString()}
-	// # Claim it now to your account: ${claimUrl.href}
-	// ${dotEnvKey}=${connString}
-	// ${dotEnvKey}_POOLER=${poolerString}
-	// `
-	// 	);
 }
