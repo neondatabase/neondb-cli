@@ -19,11 +19,12 @@ export const instantNeon = async ({
 }: InstantNeonParams) => {
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-	const claimUrl = new URL(
+	const createDbUrl = new URL(
 		LAUNCHPAD_URLS.CREATE_CLAIMABLE_DATABASE(dbId, referrer),
 	);
-	log.step(messages.botCheck(claimUrl.href));
-	const connString = await createClaimableDatabase(dbId, claimUrl);
+	const claimUrl = new URL(LAUNCHPAD_URLS.CLAIM_DATABASE(dbId));
+	log.step(messages.botCheck(createDbUrl.href));
+	const connString = await createClaimableDatabase(dbId, createDbUrl);
 	const poolerString = getPoolerString(connString);
 
 	log.step(messages.connectionString(connString));
@@ -39,6 +40,7 @@ export const instantNeon = async ({
 	);
 
 	log.success(messages.envSuccess(dotEnvFile, dotEnvKey));
+	log.info(messages.databaseGenerated(claimUrl.href));
 
 	return {
 		databaseUrl: connString,

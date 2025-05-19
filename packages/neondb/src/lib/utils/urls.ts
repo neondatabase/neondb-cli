@@ -3,4 +3,5 @@ export const LAUNCHPAD_URLS = {
 		`https://neon.new/api/v1/database/${dbId}`,
 	CREATE_CLAIMABLE_DATABASE: (dbId: string, referrer?: string) =>
 		`https://neon.new/db?uuid=${dbId}${referrer ? `&ref=${referrer}` : ""}`,
+	CLAIM_DATABASE: (dbId: string) => `https://neon.new/database/${dbId}`,
 };

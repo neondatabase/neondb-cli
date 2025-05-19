@@ -117,7 +117,7 @@ async function main() {
 		});
 	}
 
-	s.stop(messages.databaseGenerated);
+	s.stop();
 	outro(messages.happyCoding);
 }
 
