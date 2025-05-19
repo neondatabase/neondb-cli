@@ -1,5 +1,11 @@
 # neondb
 
+## 0.3.1
+
+### Patch Changes
+
+- 11e28a5: Update endpoints
+
 ## 0.3.0
 
 ### Minor Changes
