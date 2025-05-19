@@ -1,5 +1,15 @@
 # neondb
 
+## 0.4.0
+
+### Minor Changes
+
+- e09a8c8: Improve logs
+
+  - Generate better logs for the CLI.
+  - Add proper Claim URL to the `.env`.
+  - Remove excess tabs from the `.env` output.
+
 ## 0.3.1
 
 ### Patch Changes
