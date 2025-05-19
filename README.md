@@ -1,6 +1,6 @@
-<h1 align="center">Neondb-CLI</h1>
+<h1 align="center">Neon Launchpad</h1>
 
-This is the monorepo for the **Instant Postgres** packages.
+This is the monorepo for the [Neon Launchpad](https://neon.new) packages.
 
 ## NEONDB
 

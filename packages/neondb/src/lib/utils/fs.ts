@@ -4,7 +4,6 @@ import {
 	mkdirSync,
 	openSync,
 	readFileSync,
-	writeFileSync,
 	writeSync,
 } from "node:fs";
 import { appendFile } from "node:fs/promises";
@@ -16,6 +15,7 @@ import { messages } from "../texts.js";
 export function getDotEnvContent(dotEnvFile: string): Record<string, string> {
 	if (!existsSync(dotEnvFile)) {
 		log.info(messages.info.dotEnvFileNotFound);
+		return {};
 	}
 
 	try {
@@ -35,6 +35,7 @@ export function prepEnv(dotEnvFile: string, dotEnvKey: string) {
 			outro(messages.envKeyExistsExit);
 			process.exit(0);
 		}
+		return;
 	} catch (error) {
 		// getDotEnvContent will create empty file if it doesn't exist
 		// or throw if parsing fails
@@ -42,6 +43,7 @@ export function prepEnv(dotEnvFile: string, dotEnvKey: string) {
 			error instanceof Error &&
 			error.message === messages.errors.failedToParseEnvFile
 		) {
+			console.error(error);
 			log.error(messages.errors.invalidEnvFile);
 
 			process.exit(1);

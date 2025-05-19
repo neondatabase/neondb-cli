@@ -20,6 +20,10 @@
 		"./sdk": {
 			"import": "./dist/lib/instant-neon.js",
 			"types": "./dist/lib/instant-neon.d.ts"
+		},
+		"./launchpad": {
+			"import": "./dist/lib/instant-neon.js",
+			"types": "./dist/lib/instant-neon.d.ts"
 		}
 	},
 	"files": [
@@ -31,7 +35,8 @@
 		"build": "tsc --noEmit && tsup",
 		"test": "vitest --passWithNoTests",
 		"tsc": "tsc",
-		"dry:run": "pnpm build && node dist/cli.js"
+		"dry:run:prompt": "pnpm build && node dist/cli.js",
+		"dry:run": "pnpm build && node dist/cli.js --yes"
 	},
 	"devDependencies": {
 		"@release-it/conventional-changelog": "10.0.0",
