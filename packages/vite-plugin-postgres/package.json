@@ -2,6 +2,7 @@
 	"name": "@neondatabase/vite-plugin-postgres",
 	"version": "0.1.1",
 	"type": "module",
+	"license": "Apache-2.0",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"files": [
