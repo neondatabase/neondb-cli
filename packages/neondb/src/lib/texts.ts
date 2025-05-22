@@ -47,6 +47,7 @@ ${url}
 		referrer: `Enter the referrer for the database (default: ${DEFAULTS.referrer})`,
 		provider: `Select the provider for the database (default: ${DEFAULTS.provider})`,
 		region: `Select the region for the database (default: ${DEFAULTS.region})`,
+		schema: `Enter the path to your schema JSON file (default: ${DEFAULTS.schema})`,
 	},
 
 	info: {
