@@ -53,7 +53,6 @@ jobs:
                         CHANGELOG_PATH="$PKG_DIR/CHANGELOG.md"
                         if [ -f "$CHANGELOG_PATH" ]; then
                           # Extract the latest changelog entry (between the latest version header and the next header)
-                          # Extract the latest changelog entry (between the latest version header and the next header)
                           # Use awk to extract lines starting from "## $VERSION" until the next version header (## [0-9])
                           # Then, use sed to remove the first and last lines (headers) to isolate the changelog content
                           CHANGELOG_ENTRY=$(awk "/## $VERSION/,/## [0-9]/" "$CHANGELOG_PATH" | sed '1d;$d')
