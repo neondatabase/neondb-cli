@@ -1,11 +1,14 @@
 import { randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import { log } from "@clack/prompts";
+import { pushTableSchema } from "./schema-push.js";
 import { messages } from "./texts.js";
 import { InstantNeonParams } from "./types.js";
 import { createClaimableDatabase } from "./utils/create-db.js";
 import { getPoolerString } from "./utils/format.js";
 import { writeToEnv } from "./utils/fs.js";
 import { LAUNCHPAD_URLS } from "./utils/urls.js";
+
 /**
  * Creates an instant Postgres connection string from Instagres by Neon
  * if not already set in the specified .env file.
@@ -16,6 +19,7 @@ export const instantNeon = async ({
 	dotEnvFile = ".env",
 	dotEnvKey = "DATABASE_URL",
 	referrer = "unknown",
+	schemaPath = undefined,
 }: InstantNeonParams) => {
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
@@ -27,6 +31,7 @@ export const instantNeon = async ({
 	);
 	const claimUrl = new URL(LAUNCHPAD_URLS.CLAIM_DATABASE(dbId));
 	log.step(messages.botCheck(createDbUrl.href));
+
 	const connString = await createClaimableDatabase(dbId, createDbUrl);
 	const poolerString = getPoolerString(connString);
 
@@ -44,6 +49,13 @@ export const instantNeon = async ({
 
 	log.success(messages.envSuccess(dotEnvFile, dotEnvKey));
 	log.info(messages.databaseGenerated(claimUrl.href));
+
+	if (schemaPath) {
+		const schema = JSON.parse(await readFile(schemaPath, "utf8"));
+		log.step("Pushing schema to database");
+		await pushTableSchema(schema, connString);
+		log.success("Schema pushed to database");
+	}
 
 	return {
 		databaseUrl: connString,
