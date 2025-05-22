@@ -20,6 +20,7 @@ jobs:
             - run: pnpm build
 
             - name: Create and publish versions
+              id: changesets
               uses: changesets/action@v1
               with:
                   commit: "chore: update versions"
@@ -29,6 +30,43 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+            - name: Create GitHub Release Tags
+              if: steps.changesets.outputs.published == 'true'
+              run: |
+                  git config --global user.name 'github-actions'
+                  git config --global user.email 'github-actions@github.com'
+
+                  # Get all packages that were published
+                  PUBLISHED_PACKAGES=$(cat $HOME/.changesets/published-packages.json | jq -r '.[]')
+
+                      for pkg in $PUBLISHED_PACKAGES; do
+                        # Extract name and version from package.json
+                        PKG_PATH=$(find . -path "*/package.json" | xargs grep -l "\"name\": \"$pkg\"" | head -n 1)
+                        PKG_DIR=$(dirname $PKG_PATH)
+                        VERSION=$(jq -r '.version' $PKG_PATH)
+                        
+                        # Create a tag with package name and version
+                        TAG="$pkg@$VERSION"
+                        echo "Creating tag: $TAG"
+                        
+                        # Get the changelog entry
+                        CHANGELOG_PATH="$PKG_DIR/CHANGELOG.md"
+                        if [ -f "$CHANGELOG_PATH" ]; then
+                          # Extract the latest changelog entry (between the latest version header and the next header)
+                          CHANGELOG_ENTRY=$(awk "/## $VERSION/,/## [0-9]/" $CHANGELOG_PATH | sed '1!G;h;$!d' | sed '1!G;h;$!d' | sed '$d' | sed '1!G;h;$!d')
+                          
+                          # Create tag and release with changelog
+                          git tag -a "$TAG" -m "Release $pkg@$VERSION"
+                          gh release create "$TAG" --notes "$CHANGELOG_ENTRY" --title "$pkg@$VERSION"
+                        else
+                          # Create a simple tag if no changelog exists
+                          git tag "$TAG"
+                          gh release create "$TAG" --notes "Release $pkg@$VERSION" --title "$pkg@$VERSION"
+                        fi
+                      done
+                    env:
+                      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 name: Release
 
 on:
