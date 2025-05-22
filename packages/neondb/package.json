@@ -23,6 +23,9 @@
 		"neondb": "dist/cli.js"
 	},
 	"exports": {
+		"./json-schema": {
+			"import": "./dist/schema.json"
+		},
 		"./sdk": {
 			"import": "./dist/lib/instant-neon.js",
 			"types": "./dist/lib/instant-neon.d.ts"
@@ -38,7 +41,7 @@
 		"package.json"
 	],
 	"scripts": {
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc --noEmit && tsup && node postbuild.js",
 		"test": "vitest --passWithNoTests",
 		"tsc": "tsc",
 		"dry:run:prompt": "pnpm build && node dist/cli.js",
@@ -54,7 +57,8 @@
 		"release-it": "18.1.2",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"zod": "^3.25.0"
 	},
 	"packageManager": "pnpm@10.4.0",
 	"engines": {
@@ -65,10 +69,10 @@
 	},
 	"dependencies": {
 		"@clack/prompts": "0.10.1",
+		"@neondatabase/serverless": "^1.0.0",
 		"dotenv": "^16.5.0",
 		"gradient-string": "^3.0.0",
 		"open": "^10.1.0",
-		"p-wait-for": "^5.0.2",
-		"zod": "^3.24.3"
+		"p-wait-for": "^5.0.2"
 	}
 }

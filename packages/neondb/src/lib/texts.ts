@@ -42,6 +42,7 @@ ${url}
 	questions: {
 		dotEnvFilePath: `Enter the path to your environment file (default: ${DEFAULTS.dotEnvPath})`,
 		dotEnvKey: `Enter the key for the database connection string (default: ${DEFAULTS.dotEnvKey})`,
+		schema: `Enter the path to your schema JSON file (default: ${DEFAULTS.schema})`,
 	},
 
 	info: {
