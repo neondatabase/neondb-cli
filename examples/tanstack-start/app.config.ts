@@ -4,7 +4,9 @@ import tsConfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
 	vite: {
 		plugins: [
-			postgresPlugin(),
+			postgresPlugin({
+				schemaPath: "./schema.json",
+			}),
 			tsConfigPaths({
 				projects: ["./tsconfig.json"],
 			}),
