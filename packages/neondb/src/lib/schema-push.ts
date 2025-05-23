@@ -1,7 +1,7 @@
-import { log } from "@clack/prompts";
 import { neon } from "@neondatabase/serverless";
 import { z } from "zod/v4";
-import { schemaSchema, tableSchema } from "./utils/table-schema.js";
+import { reportZodIssues } from "./utils/format.js";
+import { SchemaType, schemaSchema, tableSchema } from "./utils/table-schema.js";
 
 const getTablesFromSchema = (
 	schema: z.infer<typeof schemaSchema>["schema"],
@@ -15,24 +15,27 @@ const convertTableSchemaToSql = (schema: z.infer<typeof tableSchema>) => {
 			(column) =>
 				`${column.name} ${column.type}${
 					column.nonNullable ? " NOT NULL" : ""
-				}`,
+				}${column.primary ? " PRIMARY KEY" : ""}`,
 		)
 		.join(", ");
 };
 
-export async function pushTableSchema(
-	schema: z.infer<typeof schemaSchema>["schema"],
-	connectionString: string,
-) {
-	const { success, data } = schemaSchema.safeParse(schema);
+export const validateSchema = (schema: SchemaType) => {
+	const { success, data, error } = schemaSchema.safeParse(schema);
+
 	if (!success) {
-		log.error("Invalid table schema");
-		return;
+		reportZodIssues(error);
+		process.exit(1);
 	}
 
-	const tables = getTablesFromSchema(
-		data?.schema as z.infer<typeof schemaSchema>["schema"],
-	);
+	return data;
+};
+
+export async function pushTableSchema(
+	schema: SchemaType,
+	connectionString: string,
+) {
+	const tables = getTablesFromSchema(schema.schema);
 
 	const sql = neon(connectionString);
 

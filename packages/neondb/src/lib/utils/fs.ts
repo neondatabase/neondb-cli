@@ -11,6 +11,14 @@ import { log, outro } from "@clack/prompts";
 import { parse } from "dotenv";
 import { messages } from "../texts.js";
 
+export function readJsonFile(path: string) {
+	try {
+		return JSON.parse(readFileSync(path, "utf8"));
+	} catch {
+		throw new Error(messages.errors.failedToParseJsonFile(path));
+	}
+}
+
 export function getDotEnvContent(dotEnvFile: string): Record<string, string> {
 	if (!existsSync(dotEnvFile)) {
 		log.info(messages.info.dotEnvFileNotFound);
