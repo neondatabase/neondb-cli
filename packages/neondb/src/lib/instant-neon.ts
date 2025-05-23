@@ -1,12 +1,11 @@
 import { randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
 import { log } from "@clack/prompts";
-import { pushTableSchema } from "./schema-push.js";
+import { pushTableSchema, validateSchema } from "./schema-push.js";
 import { messages } from "./texts.js";
 import { InstantNeonParams } from "./types.js";
 import { createClaimableDatabase } from "./utils/create-db.js";
 import { getPoolerString } from "./utils/format.js";
-import { writeToEnv } from "./utils/fs.js";
+import { readJsonFile, writeToEnv } from "./utils/fs.js";
 import { LAUNCHPAD_URLS } from "./utils/urls.js";
 
 /**
@@ -32,6 +31,10 @@ export const instantNeon = async ({
 	const claimUrl = new URL(LAUNCHPAD_URLS.CLAIM_DATABASE(dbId));
 	log.step(messages.botCheck(createDbUrl.href));
 
+	const schemaFile = schemaPath
+		? validateSchema(readJsonFile(schemaPath))
+		: null;
+
 	const connString = await createClaimableDatabase(dbId, createDbUrl);
 	const poolerString = getPoolerString(connString);
 
@@ -50,10 +53,9 @@ export const instantNeon = async ({
 	log.success(messages.envSuccess(dotEnvFile, dotEnvKey));
 	log.info(messages.databaseGenerated(claimUrl.href));
 
-	if (schemaPath) {
-		const schema = JSON.parse(await readFile(schemaPath, "utf8"));
+	if (schemaFile) {
 		log.step("Pushing schema to database");
-		await pushTableSchema(schema, connString);
+		await pushTableSchema(schemaFile, connString);
 		log.success("Schema pushed to database");
 	}
 

@@ -4,7 +4,8 @@ import { neonColumnTypeStrings } from "../neon-schema.js";
 const columnSchema = z.object({
 	name: z.string(),
 	type: neonColumnTypeStrings,
-	nonNullable: z.boolean().default(false),
+	nonNullable: z.boolean().optional().catch(false),
+	primary: z.boolean().optional().catch(false),
 });
 
 export const tableSchema = z.object({
@@ -17,3 +18,5 @@ export const schemaSchema = z.object({
 		tables: z.array(tableSchema),
 	}),
 });
+
+export type SchemaType = z.infer<typeof schemaSchema>;
