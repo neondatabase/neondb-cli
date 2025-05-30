@@ -1,5 +1,11 @@
 # neondb
 
+## 0.5.0
+
+### Minor Changes
+
+- e3482a6: Fixed new lines being added in the .env file
+
 ## 0.4.1
 
 ### Patch Changes
