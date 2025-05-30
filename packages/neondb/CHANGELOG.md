@@ -1,5 +1,11 @@
 # neondb
 
+## 0.4.1
+
+### Patch Changes
+
+- 91c6b5f: Remove trailing whitespace from `.env`
+
 ## 0.4.0
 
 ### Minor Changes
