@@ -71,7 +71,7 @@ export async function writeToEnv(
 # Claim it now to your account: ${claimUrl.href}
 ${dotEnvKey}=${connString}
 ${dotEnvKey}_POOLER=${poolerString}
-		`,
+`,
 	);
 	closeSync(openedFile);
 }
