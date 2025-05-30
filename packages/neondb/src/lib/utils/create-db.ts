@@ -15,7 +15,6 @@ export async function createClaimableDatabase(dbId: string, launchpadUrl: URL) {
 				},
 			});
 			if (!res.ok) return false;
-			console.log(await res.json());
 			return pWaitFor.resolveWith(
 				((await res.json()) as { connection_string: string })
 					.connection_string,
