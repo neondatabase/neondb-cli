@@ -4,6 +4,7 @@ import { type Defaults } from "../types.js";
 export const DEFAULTS: Defaults = {
 	dotEnvPath: "./.env",
 	dotEnvKey: "DATABASE_URL",
+	schema: undefined,
 	referrer: "neondb-cli",
 	provider: "aws",
 	region: "eu-central-1",
@@ -37,6 +38,10 @@ export function getArgs() {
 				type: "string",
 				short: "k",
 			},
+			schema: {
+				type: "string",
+				short: "s",
+			},
 			help: {
 				type: "boolean",
 				short: "h",
@@ -53,6 +58,7 @@ Options:
   -r, --referrer  Referrer for the database (default: "${DEFAULTS.referrer}")
   -e, --env       Path to the .env file (default: "${DEFAULTS.dotEnvPath}") 
   -k, --key       Key for the database connection string (default: "${DEFAULTS.dotEnvKey}")
+  -s, --schema    Path to the schema file (default: "${DEFAULTS.schema}")
   -p, --provider  Provider for the database (default: "${DEFAULTS.provider}")
   -r, --region    Region for the database (default: "${DEFAULTS.region}")
   -h, --help      Show this help message

@@ -47,6 +47,7 @@ ${url}
 		referrer: `Enter the referrer for the database (default: ${DEFAULTS.referrer})`,
 		provider: `Select the provider for the database (default: ${DEFAULTS.provider})`,
 		region: `Select the region for the database (default: ${DEFAULTS.region})`,
+		schema: `Enter the path to your schema JSON file (default: ${DEFAULTS.schema})`,
 	},
 
 	info: {
@@ -66,5 +67,7 @@ ${url}
 		failedToSaveConnectionString: "Failed to save connection string",
 		failedToSavePoolerString: "Failed to save pooler string",
 		failedToSaveEnvFile: "Failed to save .env file",
+		failedToParseJsonFile: (path: string) =>
+			`Failed to read or parse JSON file: ${path}`,
 	},
 } as const;
