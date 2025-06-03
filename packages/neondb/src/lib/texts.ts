@@ -44,9 +44,6 @@ ${url}
 	questions: {
 		dotEnvFilePath: `Enter the path to your .env file (default: ${DEFAULTS.dotEnvPath})`,
 		dotEnvKey: `Enter the key for the database connection string (default: ${DEFAULTS.dotEnvKey})`,
-		referrer: `Enter the referrer for the database (default: ${DEFAULTS.referrer})`,
-		provider: `Select the provider for the database (default: ${DEFAULTS.provider})`,
-		region: `Select the region for the database (default: ${DEFAULTS.region})`,
 	},
 
 	info: {
