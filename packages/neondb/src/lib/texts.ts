@@ -48,6 +48,7 @@ ${url}
 
 	info: {
 		dotEnvFileNotFound: "No .env file found, creating one.",
+		userCancelled: "Prompt cancelled by user.",
 	},
 
 	errors: {

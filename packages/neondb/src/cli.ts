@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { intro, log, outro, select, spinner, text } from "@clack/prompts";
+import { intro, isCancel, log, outro, spinner, text } from "@clack/prompts";
 import { cristal } from "gradient-string";
 import { instantNeon } from "./lib/instant-neon.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
@@ -30,10 +30,7 @@ async function main() {
 			dotEnvKey: DEFAULTS.dotEnvKey,
 		});
 	} else {
-		const userInput: Defaults = {
-			dotEnvPath: DEFAULTS.dotEnvPath,
-			dotEnvKey: DEFAULTS.dotEnvKey,
-		};
+		const userInput: Partial<Defaults> = {};
 
 		if (flagEnvPath) {
 			log.step(`using ${flagEnvPath} as the .env file`);
@@ -43,6 +40,11 @@ async function main() {
 				message: messages.questions.dotEnvFilePath,
 				validate: validateEnvPath,
 			})) as Defaults["dotEnvPath"];
+
+			if (isCancel(userInput.dotEnvPath)) {
+				outro(messages.info.userCancelled);
+				process.exit(0);
+			}
 
 			if (!userInput.dotEnvPath) {
 				userInput.dotEnvPath = DEFAULTS.dotEnvPath;
@@ -66,15 +68,20 @@ async function main() {
 				validate: validateEnvKey,
 			})) as Defaults["dotEnvKey"];
 
-			if (!userInput.dotEnvKey) {
-				userInput.dotEnvKey = DEFAULTS.dotEnvKey;
-				log.step(`using ${userInput.dotEnvKey} as the .env key`);
+			if (isCancel(userInput.dotEnvKey)) {
+				outro(messages.info.userCancelled);
+				process.exit(0);
 			}
 		} else {
 			const isEnvKeyInvalid = validateEnvKey(dotEnvKey);
 			if (isEnvKeyInvalid) {
 				log.error(isEnvKeyInvalid.message);
 				process.exit(1);
+			}
+
+			if (!userInput.dotEnvKey) {
+				userInput.dotEnvKey = DEFAULTS.dotEnvKey;
+				log.step(`using ${userInput.dotEnvKey} as the .env key`);
 			}
 		}
 
