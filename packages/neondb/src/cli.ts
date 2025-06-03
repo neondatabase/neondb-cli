@@ -3,7 +3,6 @@
 import { intro, log, outro, select, spinner, text } from "@clack/prompts";
 import { cristal } from "gradient-string";
 import { instantNeon } from "./lib/instant-neon.js";
-import { NeonProvider, NeonRegion, neonRegions } from "./lib/neon-schema.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
 import { type Defaults } from "./lib/types.js";
 import { DEFAULTS, getArgs } from "./lib/utils/args.js";
@@ -28,15 +27,11 @@ async function main() {
 		await instantNeon({
 			dotEnvFile: DEFAULTS.dotEnvPath,
 			dotEnvKey: DEFAULTS.dotEnvKey,
-			referrer: DEFAULTS.referrer,
 		});
 	} else {
 		const userInput: Defaults = {
 			dotEnvPath: DEFAULTS.dotEnvPath,
 			dotEnvKey: DEFAULTS.dotEnvKey,
-			referrer: DEFAULTS.referrer,
-			provider: DEFAULTS.provider,
-			region: DEFAULTS.region,
 		};
 
 		if (!dotEnvFilePath) {

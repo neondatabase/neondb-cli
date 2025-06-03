@@ -21,7 +21,6 @@ Options:
 -   `-y, --yes` Use defaults, skip prompts
 -   `-e, --env` Path to .env file (default: ./.env)
 -   `-k, --key` Env key for connection string (default: DATABASE_URL)
--   `-r, --referrer` Referrer for tracking (default: neondb-cli)
 -   `-h, --help` Show help
 
 ---
@@ -38,9 +37,9 @@ Create a claimable Neon Postgres database and save credentials to your .env:
 
 ```ts
 await instantNeon({
-	dotEnvFile: ".env",  '.env'
+	dotEnvFile: ".env",
 	dotEnvKey: "DATABASE_URL",
-	referrer: "my-app",  'unknown'
+	referrer: "my-scaffolder-cli",
 });
 ```
 
