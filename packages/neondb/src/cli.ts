@@ -7,6 +7,7 @@ import { INTRO_ART, messages } from "./lib/texts.js";
 import { type Defaults } from "./lib/types.js";
 import { DEFAULTS, getArgs } from "./lib/utils/args.js";
 import { prepEnv } from "./lib/utils/fs.js";
+import { validateEnvKey, validateEnvPath } from "./lib/utils/validate.js";
 
 async function main() {
 	const {
@@ -40,12 +41,20 @@ async function main() {
 		} else {
 			userInput.dotEnvPath = (await text({
 				message: messages.questions.dotEnvFilePath,
+				validate: validateEnvPath,
 			})) as Defaults["dotEnvPath"];
 
 			if (!userInput.dotEnvPath) {
 				userInput.dotEnvPath = DEFAULTS.dotEnvPath;
 				log.step(`using ${userInput.dotEnvPath} as the .env file`);
 			}
+		} else {
+			const isEnvPathInvalid = validateEnvPath(dotEnvFilePath);
+			if (isEnvPathInvalid) {
+				log.error(isEnvPathInvalid.message);
+				process.exit(1);
+			}
+			userInput.dotEnvPath = dotEnvFilePath;
 		}
 
 		if (flagEnvKey) {
@@ -54,11 +63,18 @@ async function main() {
 		} else {
 			userInput.dotEnvKey = (await text({
 				message: messages.questions.dotEnvKey,
+				validate: validateEnvKey,
 			})) as Defaults["dotEnvKey"];
 
 			if (!userInput.dotEnvKey) {
 				userInput.dotEnvKey = DEFAULTS.dotEnvKey;
 				log.step(`using ${userInput.dotEnvKey} as the .env key`);
+			}
+		} else {
+			const isEnvKeyInvalid = validateEnvKey(dotEnvKey);
+			if (isEnvKeyInvalid) {
+				log.error(isEnvKeyInvalid.message);
+				process.exit(1);
 			}
 		}
 
