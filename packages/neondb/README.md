@@ -10,4 +10,70 @@ npx neondb
 
 ---
 
-> This package was templated with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) using the [Bingo engine](https://create.bingo).
+## CLI Usage
+
+```sh
+npx neondb [options]
+```
+
+Options:
+
+-   `-y, --yes` Use defaults, skip prompts
+-   `-e, --env` Path to .env file (default: ./.env)
+-   `-k, --key` Env key for connection string (default: DATABASE_URL)
+-   `-r, --referrer` Referrer for tracking (default: neondb-cli)
+-   `-h, --help` Show help
+
+---
+
+## SDK/API Usage
+
+Import the SDK:
+
+```ts
+import { instantNeon } from "neondb/sdk";
+```
+
+Create a claimable Neon Postgres database and save credentials to your .env:
+
+```ts
+await instantNeon({
+	dotEnvFile: ".env",  '.env'
+	dotEnvKey: "DATABASE_URL",
+	referrer: "my-app",  'unknown'
+});
+```
+
+| Option     | Default        | Description               |
+| ---------- | -------------- | ------------------------- |
+| dotEnvFile | ".env"         | Path to env file          |
+| dotEnvKey  | "DATABASE_URL" | Environment variable name |
+| referrer   | "unknown"      | Referrer identifier       |
+
+Returns:
+
+| Property         | Description              |
+| ---------------- | ------------------------ |
+| `databaseUrl`    | connection string        |
+| `poolerUrl`      | pooled connection string |
+| `claimUrl`       | claim link               |
+| `claimExpiresAt` | expiration date          |
+
+---
+
+## Types
+
+```ts
+// Params for instantNeon
+interface InstantNeonParams {
+	dotEnvFile?: string;
+	dotEnvKey?: string;
+	referrer?: string;
+}
+```
+
+> See [documentation on Neon](https://neon.com/docs/reference/neon-launchpad) for more.
+
+---
+
+This package was templated with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) using the [Bingo engine](https://create.bingo).
