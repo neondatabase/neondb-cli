@@ -21,7 +21,7 @@ jobs:
 
             - name: Create and publish versions
               id: changesets
-              uses: changesets/action@v1
+              uses: changesets/action@8eb63fb4cfc7f9643537c7d39d0b68c835012a19 # v1.5.3
               with:
                   commit: "chore: update versions"
                   title: "chore: update versions"
