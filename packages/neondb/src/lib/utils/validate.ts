@@ -23,7 +23,7 @@ function validateEnvPath(value: string) {
 function validateEnvKey(value: string) {
 	if (!value) return undefined;
 
-	if (!/^[A-Z_]+$/.test(value)) {
+	if (!/^[A-Z][A-Z0-9_]*$/.test(value)) {
 		return new Error(
 			"Please enter a valid environment variable key (e.g.: DATABASE_URL)",
 		);
