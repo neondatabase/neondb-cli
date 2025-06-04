@@ -1,5 +1,11 @@
 # neondb
 
+## 0.6.1
+
+### Patch Changes
+
+- 995ad06: Fix Neon domain and add keywords to `package.json`
+
 ## 0.6.0
 
 ### Minor Changes
