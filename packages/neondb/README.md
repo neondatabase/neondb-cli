@@ -43,11 +43,11 @@ await instantNeon({
 });
 ```
 
-| Option     | Default        | Description               |
-| ---------- | -------------- | ------------------------- |
-| dotEnvFile | ".env"         | Path to env file          |
-| dotEnvKey  | "DATABASE_URL" | Environment variable name |
-| referrer   | "unknown"      | Referrer identifier       |
+| Option     | Default        | Description               | Validation            |
+| ---------- | -------------- | ------------------------- | --------------------- |
+| dotEnvFile | ".env"         | Path to env file          | letters and `.`       |
+| dotEnvKey  | "DATABASE_URL" | Environment variable name | `SCREAMING_SNAKE_CASE |
+| referrer   | "unknown"      | Referrer identifier       | -                     |
 
 Returns:
 

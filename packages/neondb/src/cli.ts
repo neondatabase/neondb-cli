@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
-import { intro, log, outro, select, spinner, text } from "@clack/prompts";
+import { intro, isCancel, log, outro, spinner, text } from "@clack/prompts";
 import { cristal } from "gradient-string";
 import { instantNeon } from "./lib/instant-neon.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
 import { type Defaults } from "./lib/types.js";
 import { DEFAULTS, getArgs } from "./lib/utils/args.js";
 import { prepEnv } from "./lib/utils/fs.js";
+import { validateEnvKey, validateEnvPath } from "./lib/utils/validate.js";
 
 async function main() {
 	const {
@@ -19,6 +20,7 @@ async function main() {
 	const s = spinner();
 
 	intro(messages.welcome);
+	const userInput: Partial<Defaults> = {};
 
 	if (shouldUseDefaults) {
 		prepEnv(DEFAULTS.dotEnvPath, DEFAULTS.dotEnvKey);
@@ -29,36 +31,68 @@ async function main() {
 			dotEnvKey: DEFAULTS.dotEnvKey,
 		});
 	} else {
-		const userInput: Defaults = {
-			dotEnvPath: DEFAULTS.dotEnvPath,
-			dotEnvKey: DEFAULTS.dotEnvKey,
-		};
-
+		/**
+		 * Get Env file path (e.g.: .env)
+		 */
 		if (flagEnvPath) {
-			log.step(`using ${flagEnvPath} as the .env file`);
+			const isEnvPathInvalid = validateEnvPath(flagEnvPath);
+
+			if (isEnvPathInvalid) {
+				log.error(isEnvPathInvalid.message);
+				process.exit(1);
+			}
+
+			log.step(messages.info.defaultEnvFilePath(flagEnvPath));
 			userInput.dotEnvPath = flagEnvPath;
 		} else {
 			userInput.dotEnvPath = (await text({
 				message: messages.questions.dotEnvFilePath,
+				validate: validateEnvPath,
 			})) as Defaults["dotEnvPath"];
 
+			// user cancelled with CTRL+C
+			if (isCancel(userInput.dotEnvPath)) {
+				outro(messages.info.userCancelled);
+				process.exit(1);
+			}
+
+			// user entered an empty string -- opted for default value.
 			if (!userInput.dotEnvPath) {
 				userInput.dotEnvPath = DEFAULTS.dotEnvPath;
-				log.step(`using ${userInput.dotEnvPath} as the .env file`);
+				log.step(
+					messages.info.defaultEnvFilePath(userInput.dotEnvPath),
+				);
 			}
 		}
 
+		// Always set dotEnvKey from flag if present
 		if (flagEnvKey) {
-			log.step(`using ${flagEnvKey} as the .env key`);
+			const isEnvKeyInvalid = validateEnvKey(flagEnvKey);
+			if (isEnvKeyInvalid) {
+				log.error(isEnvKeyInvalid.message);
+				process.exit(1);
+			}
+			log.step(messages.info.defaultEnvKey(flagEnvKey));
 			userInput.dotEnvKey = flagEnvKey;
-		} else {
+		}
+
+		// Prompt for dotEnvKey if not set by flag
+		if (!userInput.dotEnvKey) {
 			userInput.dotEnvKey = (await text({
 				message: messages.questions.dotEnvKey,
+				validate: validateEnvKey,
 			})) as Defaults["dotEnvKey"];
 
+			// user cancelled with CTRL+C
+			if (isCancel(userInput.dotEnvKey)) {
+				outro(messages.info.userCancelled);
+				process.exit(1);
+			}
+
+			// User accepted default value.
 			if (!userInput.dotEnvKey) {
 				userInput.dotEnvKey = DEFAULTS.dotEnvKey;
-				log.step(`using ${userInput.dotEnvKey} as the .env key`);
+				log.step(messages.info.defaultEnvKey(userInput.dotEnvKey));
 			}
 		}
 
@@ -71,8 +105,8 @@ async function main() {
 			referrer: "neondb-cli",
 		});
 	}
+	s.stop("Database generated!");
 
-	s.stop();
 	outro(messages.happyCoding);
 }
 

@@ -42,12 +42,17 @@ ${url}
 	happyCoding: "Happy coding! 🚀",
 	databaseGenerated: (url: string) => `Claim your Database at: ${url}`,
 	questions: {
-		dotEnvFilePath: `Enter the path to your .env file (default: ${DEFAULTS.dotEnvPath})`,
+		dotEnvFilePath: `Enter the path to your environment file (default: ${DEFAULTS.dotEnvPath})`,
 		dotEnvKey: `Enter the key for the database connection string (default: ${DEFAULTS.dotEnvKey})`,
 	},
 
 	info: {
 		dotEnvFileNotFound: "No .env file found, creating one.",
+		userCancelled: "Prompt cancelled by user.",
+		defaultEnvKey: (dotEnvKey: string) =>
+			`using ${dotEnvKey} as the environment variable key`,
+		defaultEnvFilePath: (dotEnvPath: string) =>
+			`using ${dotEnvPath} as the .env file`,
 	},
 
 	errors: {
