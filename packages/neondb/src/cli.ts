@@ -20,6 +20,7 @@ async function main() {
 	const s = spinner();
 
 	intro(messages.welcome);
+	const userInput: Partial<Defaults> = {};
 
 	if (shouldUseDefaults) {
 		prepEnv(DEFAULTS.dotEnvPath, DEFAULTS.dotEnvKey);
@@ -30,8 +31,6 @@ async function main() {
 			dotEnvKey: DEFAULTS.dotEnvKey,
 		});
 	} else {
-		const userInput: Partial<Defaults> = {};
-
 		/**
 		 * Get Env file path (e.g.: .env)
 		 */
@@ -66,54 +65,51 @@ async function main() {
 					messages.info.defaultEnvFilePath(userInput.dotEnvPath),
 				);
 			}
-
-			/**
-			 * Get Env key variable name (e.g.: DATABASE_URL)
-			 */
-			if (flagEnvKey) {
-				const isEnvKeyInvalid = validateEnvKey(flagEnvKey);
-
-				// prevents stack trace from being printed
-				// exit execution with code 0
-				if (isEnvKeyInvalid) {
-					log.error(isEnvKeyInvalid.message);
-					process.exit(0);
-				}
-
-				log.step(messages.info.defaultEnvKey(flagEnvKey));
-				userInput.dotEnvKey = flagEnvKey;
-			} else {
-				userInput.dotEnvKey = (await text({
-					message: messages.questions.dotEnvKey,
-					validate: validateEnvKey,
-				})) as Defaults["dotEnvKey"];
-
-				// user cancelled with CTRL+C
-				if (isCancel(userInput.dotEnvKey)) {
-					outro(messages.info.userCancelled);
-					process.exit(0);
-				}
-
-				// User accepted default value.
-				if (!userInput.dotEnvKey) {
-					userInput.dotEnvKey = DEFAULTS.dotEnvKey;
-					log.step(messages.info.defaultEnvKey(userInput.dotEnvKey));
-				}
-			}
-
-			prepEnv(userInput.dotEnvPath, userInput.dotEnvKey);
-
-			s.start(messages.generating);
-			await instantNeon({
-				dotEnvFile: userInput.dotEnvPath,
-				dotEnvKey: userInput.dotEnvKey,
-				referrer: "neondb-cli",
-			});
 		}
 
-		s.stop();
-		outro(messages.happyCoding);
+		// Always set dotEnvKey from flag if present
+		if (flagEnvKey) {
+			const isEnvKeyInvalid = validateEnvKey(flagEnvKey);
+			if (isEnvKeyInvalid) {
+				log.error(isEnvKeyInvalid.message);
+				process.exit(0);
+			}
+			log.step(messages.info.defaultEnvKey(flagEnvKey));
+			userInput.dotEnvKey = flagEnvKey;
+		}
+
+		// Prompt for dotEnvKey if not set by flag
+		if (!userInput.dotEnvKey) {
+			userInput.dotEnvKey = (await text({
+				message: messages.questions.dotEnvKey,
+				validate: validateEnvKey,
+			})) as Defaults["dotEnvKey"];
+
+			// user cancelled with CTRL+C
+			if (isCancel(userInput.dotEnvKey)) {
+				outro(messages.info.userCancelled);
+				process.exit(0);
+			}
+
+			// User accepted default value.
+			if (!userInput.dotEnvKey) {
+				userInput.dotEnvKey = DEFAULTS.dotEnvKey;
+				log.step(messages.info.defaultEnvKey(userInput.dotEnvKey));
+			}
+		}
+
+		prepEnv(userInput.dotEnvPath, userInput.dotEnvKey);
+
+		s.start(messages.generating);
+		await instantNeon({
+			dotEnvFile: userInput.dotEnvPath,
+			dotEnvKey: userInput.dotEnvKey,
+			referrer: "neondb-cli",
+		});
 	}
+	s.stop("Database generated!");
+
+	outro(messages.happyCoding);
 }
 
 await main();
