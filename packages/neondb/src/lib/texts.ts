@@ -49,6 +49,10 @@ ${url}
 	info: {
 		dotEnvFileNotFound: "No .env file found, creating one.",
 		userCancelled: "Prompt cancelled by user.",
+		defaultEnvKey: (dotEnvKey: string) =>
+			`using ${dotEnvKey} as the environment variable key`,
+		defaultEnvFilePath: (dotEnvPath: string) =>
+			`using ${dotEnvPath} as the .env file`,
 	},
 
 	errors: {
