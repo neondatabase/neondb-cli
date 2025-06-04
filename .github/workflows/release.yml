@@ -33,6 +33,7 @@ jobs:
             - name: Create GitHub Release Tags
               if: steps.changesets.outputs.published == 'true'
               run: |
+                  echo "Published: ${{ steps.changesets.outputs.published }}"
                   git config --global user.name 'github-actions'
                   git config --global user.email 'github-actions@github.com'
 
