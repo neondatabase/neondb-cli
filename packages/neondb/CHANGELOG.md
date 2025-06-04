@@ -1,5 +1,27 @@
 # neondb
 
+## 0.6.0
+
+### Minor Changes
+
+- b807e80: Adds validation to user input on file name and environment variable key.
+
+  | Option     | Default        | Description               | Validation            |
+  | ---------- | -------------- | ------------------------- | --------------------- |
+  | dotEnvFile | ".env"         | Path to env file          | letters and `.`       |
+  | dotEnvKey  | "DATABASE_URL" | Environment variable name | `SCREAMING_SNAKE_CASE |
+
+- b807e80: Prevents creating a DB if flow is cancelled
+
+  if the user aborts (CTRL+C), the CLI will not use the defaults and the process will be interrupted immediately.
+
+### Patch Changes
+
+- 31cb6f4: Remove `refferer`, `provider`, and `region` from possible CLI arguments
+- adbfcc9: Fix: prevent flags from being ignored
+
+  This release fixes a regression where `--env` and `--key` flags were being ignored and defaults would be used regardless.
+
 ## 0.5.0
 
 ### Minor Changes
