@@ -4,16 +4,14 @@
  * @returns An error if the path is invalid, otherwise undefined
  */
 function validateEnvPath(value: string) {
+	if (!value) return undefined;
+
 	if (!/^\.?[\w-]+(?:\.[\w-]+)*$/.test(value)) {
 		return new Error(
 			"Please enter a valid file name (e.g.: .env or .env.local)",
 		);
 	}
-	if (!value) {
-		return new Error(
-			"Please enter a valid .env file path (e.g.: .env or .env.local)",
-		);
-	}
+
 	return undefined;
 }
 
@@ -23,6 +21,8 @@ function validateEnvPath(value: string) {
  * @returns An error if the key is invalid, otherwise undefined
  */
 function validateEnvKey(value: string) {
+	if (!value) return undefined;
+
 	if (!/^[A-Z_]+$/.test(value)) {
 		return new Error(
 			"Please enter a valid environment variable key (e.g.: DATABASE_URL)",
