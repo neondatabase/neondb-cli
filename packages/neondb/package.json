@@ -2,6 +2,12 @@
 	"name": "neondb",
 	"version": "0.6.0",
 	"description": "create a claimable Neon database in seconds!",
+	"keywords": [
+		"neon",
+		"database",
+		"postgres",
+		"cli"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/neondatabase/neondb-cli.git"

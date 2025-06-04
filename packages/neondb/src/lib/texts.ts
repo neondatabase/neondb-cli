@@ -6,7 +6,7 @@ export const INTRO_ART = `
     ~P&@@@@@@@@@@@@@@&P~
     &@#!!!!!!!!!!!!!!#@&
     @@G              G@@
-    @@G      .5BB?.  G@@        neon.tech
+    @@G      .5BB?.  G@@        neon.com
     @@G      ~@@@@#! G@@        ├── /docs
     @@G      ~@@YJ@@G#@@        └── /discord
     @@G      ~@@J :P@@@@

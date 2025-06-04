@@ -1,6 +1,6 @@
 <h1 align="center">Neondb</h1>
 
-<p align="center">we are getting started!</p>
+<p align="center">CLI to help you hit the ground running without any sign-up. Instantiate a database with a single-command!</p>
 
 ## Usage
 
