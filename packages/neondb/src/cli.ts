@@ -10,8 +10,8 @@ import { prepEnv } from "./lib/utils/fs.js";
 
 async function main() {
 	const {
-		env: dotEnvFilePath,
-		key: dotEnvKey,
+		env: flagEnvPath,
+		key: flagEnvKey,
 		yes: shouldUseDefaults,
 	} = getArgs();
 
@@ -34,7 +34,10 @@ async function main() {
 			dotEnvKey: DEFAULTS.dotEnvKey,
 		};
 
-		if (!dotEnvFilePath) {
+		if (flagEnvPath) {
+			log.step(`using ${flagEnvPath} as the .env file`);
+			userInput.dotEnvPath = flagEnvPath;
+		} else {
 			userInput.dotEnvPath = (await text({
 				message: messages.questions.dotEnvFilePath,
 			})) as Defaults["dotEnvPath"];
@@ -45,7 +48,10 @@ async function main() {
 			}
 		}
 
-		if (!dotEnvKey) {
+		if (flagEnvKey) {
+			log.step(`using ${flagEnvKey} as the .env key`);
+			userInput.dotEnvKey = flagEnvKey;
+		} else {
 			userInput.dotEnvKey = (await text({
 				message: messages.questions.dotEnvKey,
 			})) as Defaults["dotEnvKey"];
