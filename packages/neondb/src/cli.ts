@@ -37,11 +37,9 @@ async function main() {
 		if (flagEnvPath) {
 			const isEnvPathInvalid = validateEnvPath(flagEnvPath);
 
-			// prevents stack trace from being printed
-			// exit execution with code 0
 			if (isEnvPathInvalid) {
 				log.error(isEnvPathInvalid.message);
-				process.exit(0);
+				process.exit(1);
 			}
 
 			log.step(messages.info.defaultEnvFilePath(flagEnvPath));
@@ -55,7 +53,7 @@ async function main() {
 			// user cancelled with CTRL+C
 			if (isCancel(userInput.dotEnvPath)) {
 				outro(messages.info.userCancelled);
-				process.exit(0);
+				process.exit(1);
 			}
 
 			// user entered an empty string -- opted for default value.
@@ -72,7 +70,7 @@ async function main() {
 			const isEnvKeyInvalid = validateEnvKey(flagEnvKey);
 			if (isEnvKeyInvalid) {
 				log.error(isEnvKeyInvalid.message);
-				process.exit(0);
+				process.exit(1);
 			}
 			log.step(messages.info.defaultEnvKey(flagEnvKey));
 			userInput.dotEnvKey = flagEnvKey;
@@ -88,7 +86,7 @@ async function main() {
 			// user cancelled with CTRL+C
 			if (isCancel(userInput.dotEnvKey)) {
 				outro(messages.info.userCancelled);
-				process.exit(0);
+				process.exit(1);
 			}
 
 			// User accepted default value.

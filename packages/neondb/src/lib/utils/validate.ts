@@ -16,7 +16,7 @@ function validateEnvPath(value: string) {
 }
 
 /**
- * Validates the key for the .env file - it can only be uppercase letters and underscores (SCREAMING_SNAKE_CASE).
+ * Validates the key for the .env file - it can only be uppercase letters or digits and underscores (SCREAMING_SNAKE_CASE).
  * @param value - The key for the .env file
  * @returns An error if the key is invalid, otherwise undefined
  */
