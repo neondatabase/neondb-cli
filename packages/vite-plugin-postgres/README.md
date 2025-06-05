@@ -63,18 +63,14 @@ interface PostgresPluginOptions {
 ## FAQ
 
 <details>
-<summary>
-
-What if I already have a `DATABASE_URL`?
-
-</summary>
+<summary>What if I already have a <code>DATABASE_URL</code> env var?</summary>
  
 The plugin will not overwrite it. Remove the variable if you want to generate a new Neon database.
 
 </details>
 
 <details>
-<summary>Is this safe for CI/production?</summary>
+<summary>Is this safe to run on CI when building for production?</summary>
 
 The plugin is a noop in production mode (`vite build`), so it won't create databases or modify your `.env` in CI.
 
