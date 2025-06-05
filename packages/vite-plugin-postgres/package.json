@@ -25,7 +25,6 @@
 	"devDependencies": {
 		"@types/node": "22.13.10",
 		"@vitest/coverage-v8": "3.0.9",
-		"neondb": "workspace:*",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vite": "^6.0.0",
@@ -38,6 +37,7 @@
 		"access": "public"
 	},
 	"dependencies": {
-		"@clack/prompts": "0.10.1"
+		"@clack/prompts": "0.10.1",
+		"neondb": "workspace:*"
 	}
 }

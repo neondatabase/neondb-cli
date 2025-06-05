@@ -167,6 +167,9 @@ importers:
       '@clack/prompts':
         specifier: 0.10.1
         version: 0.10.1
+      neondb:
+        specifier: workspace:*
+        version: link:../neondb
     devDependencies:
       '@types/node':
         specifier: 22.13.10
@@ -174,9 +177,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 3.0.9
         version: 3.0.9(vitest@3.0.9(@types/node@22.13.10)(jiti@2.4.2)(terser@5.39.0)(tsx@4.19.4)(yaml@2.7.1))
-      neondb:
-        specifier: workspace:*
-        version: link:../neondb
       tsup:
         specifier: 'catalog:'
         version: 8.4.0(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.4)(typescript@5.8.2)(yaml@2.7.1)
