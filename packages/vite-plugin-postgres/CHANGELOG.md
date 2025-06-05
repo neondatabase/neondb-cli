@@ -1,5 +1,11 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.1.3
+
+### Patch Changes
+
+- 941e67a: Add `neondb` as a dependency
+
 ## 0.1.2
 
 ### Patch Changes
