@@ -18,7 +18,7 @@ export const instantNeon = async ({
 	referrer = "unknown",
 }: InstantNeonParams) => {
 	const dbId = randomUUID();
-	const claimExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 	const createDbUrl = new URL(
 		LAUNCHPAD_URLS.CREATE_CLAIMABLE_DATABASE(dbId, referrer),
 	);
