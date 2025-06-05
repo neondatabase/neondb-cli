@@ -1,4 +1,4 @@
-# `@NeonDatabaseVite-Plugin-Postgres`
+# Vite-Plugin-Postgres by Neon
 
 This Vite plugin instantly provisions a Postgres instance (via Neon) and injects the connection string into your `.env` file, so you can start developing immediately.
 
