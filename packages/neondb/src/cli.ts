@@ -102,7 +102,7 @@ async function main() {
 		await instantNeon({
 			dotEnvFile: userInput.dotEnvPath,
 			dotEnvKey: userInput.dotEnvKey,
-			referrer: "neondb-cli",
+			referrer: "npm:neondb/cli",
 		});
 	}
 	s.stop("Database generated!");
