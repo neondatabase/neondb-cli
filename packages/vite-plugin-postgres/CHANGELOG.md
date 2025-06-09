@@ -1,5 +1,16 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.1.4
+
+### Patch Changes
+
+- 9e8a5a4: Fix Unclaimed project Time-to-Live (TTL)
+
+  The actual TTL of an unclaimed branch is 72 hours
+
+- Updated dependencies [9e8a5a4]
+  - neondb@0.6.2
+
 ## 0.1.3
 
 ### Patch Changes
