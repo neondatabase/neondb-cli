@@ -39,7 +39,11 @@ Create a claimable Neon Postgres database and save credentials to your .env:
 await instantNeon({
 	dotEnvFile: ".env",
 	dotEnvKey: "DATABASE_URL",
-	referrer: "my-scaffolder-cli",
+	// This below is to help us understand where usage comes from.
+	// If you're publishing a library, we'd love that you re-expose a
+	// referrer parameter in your lib and set this to `npm:your-lib-package-name|${referrer}`
+	// So we can understand the chain better and give you all the credit you deserve!
+	referrer: "npm:your-cli-package-name",
 });
 ```
 
