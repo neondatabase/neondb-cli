@@ -1,5 +1,13 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.1.5
+
+### Patch Changes
+
+- ce1c182: Add better referer values for each package
+- Updated dependencies [ce1c182]
+  - neondb@0.6.3
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # neondb
 
+## 0.6.3
+
+### Patch Changes
+
+- ce1c182: Add better referer values for each package
+
 ## 0.6.2
 
 ### Patch Changes

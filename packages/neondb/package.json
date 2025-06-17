@@ -1,6 +1,6 @@
 {
 	"name": "neondb",
-	"version": "0.6.2",
+	"version": "0.6.3",
 	"description": "create a claimable Neon database in seconds!",
 	"keywords": [
 		"neon",
