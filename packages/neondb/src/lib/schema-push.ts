@@ -3,14 +3,15 @@ import { z } from "zod/v4";
 import { reportZodIssues } from "./utils/format.js";
 import { SchemaType, schemaSchema, tableSchema } from "./utils/table-schema.js";
 
-const getTablesFromSchema = (
-	schema: z.infer<typeof schemaSchema>["schema"],
-) => {
+type TableSchema = z.infer<typeof tableSchema>;
+type SchemaSchema = z.infer<typeof schemaSchema>;
+
+const getTablesFromSchema = (schema: SchemaSchema["schema"]) => {
 	return schema.tables.map((table) => table);
 };
 
-const convertTableSchemaToSql = (schema: z.infer<typeof tableSchema>) => {
-	return schema.columns
+const convertTableSchemaToSql = ({ columns }: TableSchema) => {
+	return columns
 		.map(
 			(column) =>
 				`${column.name} ${column.type}${
@@ -39,7 +40,7 @@ export async function pushTableSchema(
 
 	const sql = neon(connectionString);
 
-	tables.forEach(async (table) => {
+	tables.forEach(async (table: z.infer<typeof tableSchema>) => {
 		const createQuery = `CREATE TABLE IF NOT EXISTS ${table.name}(
             ${convertTableSchemaToSql(table)}
 );`;
