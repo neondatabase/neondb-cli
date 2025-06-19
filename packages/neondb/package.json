@@ -57,8 +57,7 @@
 		"release-it": "18.1.2",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:",
-		"zod": "^3.25.0"
+		"vitest": "catalog:"
 	},
 	"packageManager": "pnpm@10.4.0",
 	"engines": {
@@ -73,6 +72,7 @@
 		"dotenv": "^16.5.0",
 		"gradient-string": "^3.0.0",
 		"open": "^10.1.0",
-		"p-wait-for": "^5.0.2"
+		"p-wait-for": "^5.0.2",
+		"zod": "^3.25.0"
 	}
 }
