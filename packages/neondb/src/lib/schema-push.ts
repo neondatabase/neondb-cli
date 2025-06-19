@@ -40,11 +40,8 @@ export async function pushTableSchema(
 
 	const sql = neon(connectionString);
 
-	tables.forEach(async (table: z.infer<typeof tableSchema>) => {
-		const createQuery = `CREATE TABLE IF NOT EXISTS ${table.name}(
-            ${convertTableSchemaToSql(table)}
-);`;
-
+	for (const table of tables) {
+		const createQuery = `CREATE TABLE IF NOT EXISTS ${table.name}(${convertTableSchemaToSql(table)});`;
 		await sql.query(createQuery);
-	});
+	}
 }
