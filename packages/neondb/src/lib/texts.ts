@@ -5,7 +5,7 @@ export const INTRO_ART = `
 
     ▟████████████▙
     ██          ██
-    ██    ▗▅▖   ██       neon.com
+    ██    ▗▅▖   ██       https://neon.com
     ██    ████▙ ██       ├── /docs
     ██    ██ ▜████       └── /discord
     ██    ██   ▜█▛
