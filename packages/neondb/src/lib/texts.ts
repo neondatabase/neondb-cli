@@ -42,6 +42,7 @@ ${url}
 	questions: {
 		dotEnvFilePath: `Enter the path to your environment file (default: ${DEFAULTS.dotEnvPath})`,
 		dotEnvKey: `Enter the key for the database connection string (default: ${DEFAULTS.dotEnvKey})`,
+		schema: `Enter the path to your schema JSON file (default: ${DEFAULTS.schema})`,
 	},
 
 	info: {
@@ -66,5 +67,7 @@ ${url}
 		failedToSaveConnectionString: "Failed to save connection string",
 		failedToSavePoolerString: "Failed to save pooler string",
 		failedToSaveEnvFile: "Failed to save .env file",
+		failedToParseJsonFile: (path: string) =>
+			`Failed to read or parse JSON file: ${path}`,
 	},
 } as const;

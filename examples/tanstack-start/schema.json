@@ -1,0 +1,22 @@
+{
+	"$schema": "node_modules/neondb/dist/schema.json",
+	"schema": {
+		"tables": [
+		{
+			"name": "users",
+			"columns": [
+				{
+                    "name": "id",
+                    "type": "text",
+					"nonNullable": true
+                },
+				{
+                    "name": "name",
+                    "type": "text",
+					"nonNullable": false
+                }
+			]
+		}
+		]
+	}
+}

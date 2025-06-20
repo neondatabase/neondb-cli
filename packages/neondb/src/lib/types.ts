@@ -1,4 +1,3 @@
-import { neonColumnTypeOptions } from "./neon-schema.js";
 /**
  * Parameters for configuring Instagres database connection
  * @param {string} dotEnvFile - Path to the .env file where the connection string will be saved
@@ -10,11 +9,11 @@ export interface InstantNeonParams {
 	dotEnvFile?: string;
 	dotEnvKey?: string;
 	referrer?: string;
+	schemaPath?: string | undefined;
 }
 
 export interface Defaults {
 	dotEnvPath: string;
 	dotEnvKey: string;
+	schema?: string | undefined;
 }
-
-export type NeonColumnTypes = (typeof neonColumnTypeOptions)[number]["value"];

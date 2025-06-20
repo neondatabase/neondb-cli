@@ -13,6 +13,7 @@ async function main() {
 	const {
 		env: flagEnvPath,
 		key: flagEnvKey,
+		schema,
 		yes: shouldUseDefaults,
 	} = getArgs();
 
@@ -93,6 +94,17 @@ async function main() {
 			if (!userInput.dotEnvKey) {
 				userInput.dotEnvKey = DEFAULTS.dotEnvKey;
 				log.step(messages.info.defaultEnvKey(userInput.dotEnvKey));
+				log.step(`using ${userInput.dotEnvKey} as the .env key`);
+			}
+		}
+
+		if (!schema) {
+			userInput.schema = (await text({
+				message: messages.questions.schema,
+			})) as Defaults["schema"];
+
+			if (!userInput.schema) {
+				userInput.schema = DEFAULTS.schema;
 			}
 		}
 
@@ -103,6 +115,7 @@ async function main() {
 			dotEnvFile: userInput.dotEnvPath,
 			dotEnvKey: userInput.dotEnvKey,
 			referrer: "npm:neondb/cli",
+			schemaPath: userInput.schema,
 		});
 	}
 	s.stop("Database generated!");
