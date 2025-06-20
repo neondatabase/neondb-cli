@@ -3,15 +3,13 @@ import { DEFAULTS } from "./utils/args.js";
 export const INTRO_ART = `
 
 
-    ~P&@@@@@@@@@@@@@@&P~
-    &@#!!!!!!!!!!!!!!#@&
-    @@G              G@@
-    @@G      .5BB?.  G@@        neon.com
-    @@G      ~@@@@#! G@@        ├── /docs
-    @@G      ~@@YJ@@G#@@        └── /discord
-    @@G      ~@@J :P@@@@
-    &@#!!!!!~J@@J   ~??^
-    ~G&@@@@@@@&5:   
+    ▟████████████▙
+    ██          ██
+    ██    ▗▅▖   ██       https://neon.com
+    ██    ████▙ ██       ├── /docs
+    ██    ██ ▜████       └── /discord
+    ██    ██   ▜█▛
+    ▜██████▛
 
 
 `;
