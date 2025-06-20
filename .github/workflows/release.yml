@@ -30,6 +30,14 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Install GitHub CLI
+              if: steps.changesets.outputs.published == 'true'
+              run: |
+                  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+                  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+                  sudo apt update && sudo apt install gh -y
+
             - name: Create GitHub Release Tags
               if: steps.changesets.outputs.published == 'true'
               run: |
@@ -37,34 +45,57 @@ jobs:
                   git config --global user.name 'github-actions'
                   git config --global user.email 'github-actions@github.com'
 
+                  # Check if published-packages.json exists
+                  if [ ! -f "$HOME/.changesets/published-packages.json" ]; then
+                    echo "No published packages found"
+                    exit 0
+                  fi
+
                   # Get all packages that were published
                   PUBLISHED_PACKAGES=$(cat $HOME/.changesets/published-packages.json | jq -r '.[]')
 
-                      for pkg in $PUBLISHED_PACKAGES; do
-                        # Extract name and version from package.json
-                        PKG_PATH=$(find . -path "*/package.json" | xargs grep -l "\"name\": \"$pkg\"" | head -n 1)
-                        PKG_DIR=$(dirname $PKG_PATH)
-                        VERSION=$(jq -r '.version' $PKG_PATH)
-                        
-                        # Find the commit where this version was bumped
-                        COMMIT=$(git log --pretty=format:"%H" -n 1 -- "$PKG_PATH")
-                        # Create a tag with package name and version at the correct commit
-                        TAG="$pkg@$VERSION"
-                        echo "Creating tag: $TAG at commit $COMMIT"
-                        
-                        # Get the changelog entry
-                        CHANGELOG_PATH="$PKG_DIR/CHANGELOG.md"
-                        if [ -f "$CHANGELOG_PATH" ]; then
-                          CHANGELOG_ENTRY=$(awk "/## $VERSION/,/## [0-9]/" "$CHANGELOG_PATH" | sed '1d;$d')
-                          git tag -a "$TAG" "$COMMIT" -m "Release $pkg@$VERSION"
-                          gh release create "$TAG" --notes "$CHANGELOG_ENTRY" --title "$pkg@$VERSION"
-                        else
-                          git tag "$TAG" "$COMMIT"
-                          gh release create "$TAG" --notes "Release $pkg@$VERSION" --title "$pkg@$VERSION"
-                        fi
-                      done
-                    env:
-                      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  for pkg in $PUBLISHED_PACKAGES; do
+                    # Extract name and version from package.json
+                    PKG_PATH=$(find . -path "*/package.json" | xargs grep -l "\"name\": \"$pkg\"" | head -n 1)
+                    if [ -z "$PKG_PATH" ]; then
+                      echo "Package $pkg not found in package.json files"
+                      continue
+                    fi
+                    
+                    PKG_DIR=$(dirname $PKG_PATH)
+                    VERSION=$(jq -r '.version' $PKG_PATH)
+                    
+                    # Find the commit where this version was bumped
+                    COMMIT=$(git log --pretty=format:"%H" -n 1 -- "$PKG_PATH")
+                    # Create a tag with package name and version at the correct commit
+                    TAG="$pkg@$VERSION"
+                    echo "Creating tag: $TAG at commit $COMMIT"
+                    
+                    # Get the changelog entry
+                    CHANGELOG_PATH="$PKG_DIR/CHANGELOG.md"
+                    if [ -f "$CHANGELOG_PATH" ]; then
+                      CHANGELOG_ENTRY=$(awk "/## $VERSION/,/## [0-9]/" "$CHANGELOG_PATH" | sed '1d;$d')
+                      git tag -a "$TAG" "$COMMIT" -m "Release $pkg@$VERSION"
+                      
+                      # Add schema.json as asset for neondb package
+                      if [ "$pkg" = "neondb" ] && [ -f "$PKG_DIR/dist/schema.json" ]; then
+                        gh release create "$TAG" --notes "$CHANGELOG_ENTRY" --title "$pkg@$VERSION" "$PKG_DIR/dist/schema.json"
+                      else
+                        gh release create "$TAG" --notes "$CHANGELOG_ENTRY" --title "$pkg@$VERSION"
+                      fi
+                    else
+                      git tag "$TAG" "$COMMIT"
+                      
+                      # Add schema.json as asset for neondb package
+                      if [ "$pkg" = "neondb" ] && [ -f "$PKG_DIR/dist/schema.json" ]; then
+                        gh release create "$TAG" --notes "Release $pkg@$VERSION" --title "$pkg@$VERSION" "$PKG_DIR/dist/schema.json"
+                      else
+                        gh release create "$TAG" --notes "Release $pkg@$VERSION" --title "$pkg@$VERSION"
+                      fi
+                    fi
+                  done
+              env:
+                  GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
 
 name: Release
 
