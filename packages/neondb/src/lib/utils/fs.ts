@@ -11,6 +11,13 @@ import { log, outro } from "@clack/prompts";
 import { parse } from "dotenv";
 import { messages } from "../texts.js";
 
+function splitCommands(schema: string) {
+	return schema
+		.split(";")
+		.map((cmd) => cmd.trim())
+		.filter(Boolean);
+}
+
 function validateSql(sql: string) {
 	const openParens = (sql.match(/\(/g) || []).length;
 	const closeParens = (sql.match(/\)/g) || []).length;
@@ -18,12 +25,13 @@ function validateSql(sql: string) {
 		throw new Error("SQL has unbalanced parentheses");
 	}
 
-	return true;
+	return sql;
 }
 
-export function readSql(path: string) {
+export function getSqlCommands(path: string) {
 	try {
-		return validateSql(readFileSync(path, "utf8"));
+		const sql = validateSql(readFileSync(path, "utf8"));
+		return splitCommands(sql);
 	} catch (error) {
 		log.error(
 			error instanceof Error ? error.message : "Failed to read SQL file.",

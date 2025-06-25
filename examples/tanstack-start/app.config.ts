@@ -5,7 +5,10 @@ export default defineConfig({
 	vite: {
 		plugins: [
 			postgresPlugin({
-				seedPath: "./schema.sql",
+				onCreate: {
+					type: "sql-script",
+					path: "./schema.sql",
+				},
 			}),
 			tsConfigPaths({
 				projects: ["./tsconfig.json"],
