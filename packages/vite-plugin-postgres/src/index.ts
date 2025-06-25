@@ -6,13 +6,13 @@ import { loadEnv, type Plugin as VitePlugin } from "vite";
 interface PostgresPluginOptions {
 	env: string;
 	envKey: string;
-	schemaPath?: string;
+	seedPath?: string;
 }
 
 const DEFAULTS: PostgresPluginOptions = {
 	env: ".env",
 	envKey: "DATABASE_URL",
-	schemaPath: undefined,
+	seedPath: undefined,
 };
 
 let claimProcessStarted = false;
@@ -55,7 +55,7 @@ export default function postgresPlugin(
 				dotEnvFile: envPath,
 				dotEnvKey: envKey,
 				referrer: `npm:@neondatabase/vite-plugin-postgres`,
-				schemaPath: options?.schemaPath,
+				seedPath: options?.seedPath,
 			});
 			outro("Neon database created successfully.");
 		},

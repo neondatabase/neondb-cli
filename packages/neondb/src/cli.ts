@@ -13,7 +13,7 @@ async function main() {
 	const {
 		env: flagEnvPath,
 		key: flagEnvKey,
-		schema,
+		sql: flagSeedPath,
 		yes: shouldUseDefaults,
 	} = getArgs();
 
@@ -98,13 +98,13 @@ async function main() {
 			}
 		}
 
-		if (!schema) {
-			userInput.schema = (await text({
-				message: messages.questions.schema,
-			})) as Defaults["schema"];
+		if (!flagSeedPath) {
+			userInput.seedPath = (await text({
+				message: messages.questions.seedPath,
+			})) as Defaults["seedPath"];
 
-			if (!userInput.schema) {
-				userInput.schema = DEFAULTS.schema;
+			if (!userInput.seedPath) {
+				userInput.seedPath = DEFAULTS.seedPath;
 			}
 		}
 
@@ -115,7 +115,7 @@ async function main() {
 			dotEnvFile: userInput.dotEnvPath,
 			dotEnvKey: userInput.dotEnvKey,
 			referrer: "npm:neondb/cli",
-			schemaPath: userInput.schema,
+			seedPath: userInput.seedPath,
 		});
 	}
 	s.stop("Database generated!");

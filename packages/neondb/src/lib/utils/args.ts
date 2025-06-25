@@ -4,7 +4,7 @@ import { type Defaults } from "../types.js";
 export const DEFAULTS: Defaults = {
 	dotEnvPath: "./.env",
 	dotEnvKey: "DATABASE_URL",
-	schema: undefined,
+	seedPath: undefined,
 };
 
 export function getArgs() {
@@ -23,7 +23,7 @@ export function getArgs() {
 				type: "string",
 				short: "k",
 			},
-			schema: {
+			sql: {
 				type: "string",
 				short: "s",
 			},
@@ -41,8 +41,12 @@ Usage: neondb [options]
 Options:
   -y, --yes       Skip all prompts and use defaults
   -e, --env       Path to the .env file (default: "${DEFAULTS.dotEnvPath}") 
-  -k, --key       Key for the database connection string (default: "${DEFAULTS.dotEnvKey}")
-  -s, --schema    Path to the schema file (default: "${DEFAULTS.schema || "none"}")
+  -k, --key       Key for the database connection string (default: "${
+		DEFAULTS.dotEnvKey
+  }")
+  -s, --sql      Path to the seed (.sql) file (default: "${
+		DEFAULTS.seedPath || "none"
+  }")
   -h, --help      Show this help message
 `);
 		process.exit(0);

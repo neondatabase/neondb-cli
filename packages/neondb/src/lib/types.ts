@@ -4,16 +4,17 @@
  * @param {string} dotEnvKey - Environment variable name to store the connection string
  * @param {boolean} withPooler - Whether to use connection pooling
  * @param {string} referer - referrer name for tracking
+ * @param {string} seedPath - Path to the `.sql` file to be pushed to the database
  */
 export interface InstantNeonParams {
 	dotEnvFile?: string;
 	dotEnvKey?: string;
 	referrer?: string;
-	schemaPath?: string | undefined;
+	seedPath?: string | undefined;
 }
 
 export interface Defaults {
 	dotEnvPath: string;
 	dotEnvKey: string;
-	schema?: string | undefined;
+	seedPath?: string | undefined;
 }

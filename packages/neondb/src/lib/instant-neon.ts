@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import { log } from "@clack/prompts";
-import { pushTableSchema, validateSchema } from "./schema-push.js";
+import { seedDatabase } from "./seed-database.js";
 import { messages } from "./texts.js";
 import { InstantNeonParams } from "./types.js";
 import { createClaimableDatabase } from "./utils/create-db.js";
 import { getPoolerString } from "./utils/format.js";
-import { readJsonFile, writeToEnv } from "./utils/fs.js";
+import { writeToEnv } from "./utils/fs.js";
 import { LAUNCHPAD_URLS } from "./utils/urls.js";
 
 /**
@@ -18,7 +19,7 @@ export const instantNeon = async ({
 	dotEnvFile = ".env",
 	dotEnvKey = "DATABASE_URL",
 	referrer = "unknown",
-	schemaPath = undefined,
+	seedPath = undefined,
 }: InstantNeonParams) => {
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
@@ -30,10 +31,6 @@ export const instantNeon = async ({
 	);
 	const claimUrl = new URL(LAUNCHPAD_URLS.CLAIM_DATABASE(dbId));
 	log.step(messages.botCheck(createDbUrl.href));
-
-	const schemaFile = schemaPath
-		? validateSchema(readJsonFile(schemaPath))
-		: null;
 
 	const connString = await createClaimableDatabase(dbId, createDbUrl);
 	const poolerString = getPoolerString(connString);
@@ -53,9 +50,9 @@ export const instantNeon = async ({
 	log.success(messages.envSuccess(dotEnvFile, dotEnvKey));
 	log.info(messages.databaseGenerated(claimUrl.href));
 
-	if (schemaFile) {
+	if (seedPath) {
 		log.step("Pushing schema to database");
-		await pushTableSchema(schemaFile, connString);
+		await seedDatabase(seedPath, connString);
 		log.success("Schema pushed to database");
 	}
 

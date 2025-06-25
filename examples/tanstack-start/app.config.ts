@@ -5,7 +5,7 @@ export default defineConfig({
 	vite: {
 		plugins: [
 			postgresPlugin({
-				schemaPath: "./schema.json",
+				seedPath: "./schema.sql",
 			}),
 			tsConfigPaths({
 				projects: ["./tsconfig.json"],
