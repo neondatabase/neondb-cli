@@ -1,6 +1,5 @@
 ---
 "@neondatabase/vite-plugin-postgres": minor
-"neondb": minor
 ---
 
-Add JSON-based schema support
+Add `onCreate` option to seed database with SQL script on initialization. This option accepts a path to a SQL file that will be executed after the database is created.
