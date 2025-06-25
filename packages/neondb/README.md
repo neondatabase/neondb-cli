@@ -21,6 +21,7 @@ Options:
 -   `-y, --yes` Use defaults, skip prompts
 -   `-e, --env` Path to .env file (default: ./.env)
 -   `-k, --key` Env key for connection string (default: DATABASE_URL)
+-   `-s, --seed` Path to SQL file to execute after database creation
 -   `-h, --help` Show help
 
 ---
