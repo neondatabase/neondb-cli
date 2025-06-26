@@ -1,5 +1,13 @@
 # neondb
 
+## 0.7.1
+
+### Patch Changes
+
+- 6b382d1: Fix `--seed` CLI flag
+
+  A bug was causing the `-s` flag to be ignored and the `--seed` to throw an exception (because the CLI expected `--sql` instead).
+
 ## 0.7.0
 
 ### Minor Changes
