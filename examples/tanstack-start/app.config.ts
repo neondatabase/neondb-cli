@@ -9,6 +9,16 @@ export default defineConfig({
 					type: "sql-script",
 					path: "./schema.sql",
 				},
+				/**
+				 * @todo
+				 * [IMPORTANT] This helps us understand where DB creations on Neon come from.
+				 * Please change this as soon as you can, to add your project name:
+				 *
+				 * @example
+				 * ""github:org/your-repo"
+				 * "npm:your-package"
+				 */
+				referrer: "github:neondatabase/neondb/tanstack-start",
 			}),
 			tsConfigPaths({
 				projects: ["./tsconfig.json"],
