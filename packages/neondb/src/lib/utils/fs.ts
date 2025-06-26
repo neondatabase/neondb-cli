@@ -11,6 +11,35 @@ import { log, outro } from "@clack/prompts";
 import { parse } from "dotenv";
 import { messages } from "../texts.js";
 
+function splitCommands(schema: string) {
+	return schema
+		.split(";")
+		.map((cmd) => cmd.trim())
+		.filter(Boolean);
+}
+
+function validateSql(sql: string) {
+	const openParens = (sql.match(/\(/g) || []).length;
+	const closeParens = (sql.match(/\)/g) || []).length;
+	if (openParens !== closeParens) {
+		throw new Error("SQL has unbalanced parentheses");
+	}
+
+	return sql;
+}
+
+export function getSqlCommands(path: string) {
+	try {
+		const sql = validateSql(readFileSync(path, "utf8"));
+		return splitCommands(sql);
+	} catch (error) {
+		log.error(
+			error instanceof Error ? error.message : "Failed to read SQL file.",
+		);
+		process.exit(1);
+	}
+}
+
 export function getDotEnvContent(dotEnvFile: string): Record<string, string> {
 	if (!existsSync(dotEnvFile)) {
 		log.info(messages.info.dotEnvFileNotFound);

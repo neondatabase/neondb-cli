@@ -42,6 +42,9 @@ ${url}
 	questions: {
 		dotEnvFilePath: `Enter the path to your environment file (default: ${DEFAULTS.dotEnvPath})`,
 		dotEnvKey: `Enter the key for the database connection string (default: ${DEFAULTS.dotEnvKey})`,
+		seedPath: `Enter the path to your seed (.sql) file (default: ${
+			DEFAULTS.seed?.path || "none"
+		})`,
 	},
 
 	info: {

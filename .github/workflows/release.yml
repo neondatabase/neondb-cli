@@ -77,21 +77,10 @@ jobs:
                       CHANGELOG_ENTRY=$(awk "/## $VERSION/,/## [0-9]/" "$CHANGELOG_PATH" | sed '1d;$d')
                       git tag -a "$TAG" "$COMMIT" -m "Release $pkg@$VERSION"
                       
-                      # Add schema.json as asset for neondb package
-                      if [ "$pkg" = "neondb" ] && [ -f "$PKG_DIR/dist/schema.json" ]; then
-                        gh release create "$TAG" --notes "$CHANGELOG_ENTRY" --title "$pkg@$VERSION" "$PKG_DIR/dist/schema.json"
-                      else
-                        gh release create "$TAG" --notes "$CHANGELOG_ENTRY" --title "$pkg@$VERSION"
-                      fi
+                      gh release create "$TAG" --notes "$CHANGELOG_ENTRY" --title "$pkg@$VERSION"
                     else
                       git tag "$TAG" "$COMMIT"
-                      
-                      # Add schema.json as asset for neondb package
-                      if [ "$pkg" = "neondb" ] && [ -f "$PKG_DIR/dist/schema.json" ]; then
-                        gh release create "$TAG" --notes "Release $pkg@$VERSION" --title "$pkg@$VERSION" "$PKG_DIR/dist/schema.json"
-                      else
-                        gh release create "$TAG" --notes "Release $pkg@$VERSION" --title "$pkg@$VERSION"
-                      fi
+                      gh release create "$TAG" --notes "Release $pkg@$VERSION" --title "$pkg@$VERSION"
                     fi
                   done
               env:

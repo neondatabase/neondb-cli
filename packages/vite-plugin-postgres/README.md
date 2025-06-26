@@ -30,24 +30,37 @@ export default defineConfig({
 
 ## Configuration
 
-You can pass an options object to customize the `.env` file path and the environment variable name:
+You can pass an options object to customize the `.env` file path, the environment variable name, and database seeding:
 
 ```ts
 postgresPlugin({
 	env: ".env.local", // Path to your .env file (default: ".env")
 	envKey: "DATABASE_URL", // Name of the env variable (default: "DATABASE_URL")
+	seed: {
+		type: "sql-script",
+		path: "./schema.sql", // Path to SQL file to execute after database creation
+	},
 });
 ```
 
-| Option   | Type   | Description                      | Default        |
-| -------- | ------ | -------------------------------- | -------------- |
-| `env`    | string | Path to the `.env` file          | `.env`         |
-| `envKey` | string | Name of the environment variable | `DATABASE_URL` |
+| Option   | Type   | Description                            | Default        |
+| -------- | ------ | -------------------------------------- | -------------- |
+| `env`    | string | Path to the `.env` file                | `.env`         |
+| `envKey` | string | Name of the environment variable       | `DATABASE_URL` |
+| `seed`   | object | Configuration for seeding the database | -              |
+
+### seed Options
+
+| Property | Type   | Description                                     | Default |
+| -------- | ------ | ----------------------------------------------- | ------- |
+| `type`   | string | Type of seeding (currently only `"sql-script"`) | -       |
+| `path`   | string | Path to SQL file to execute after creation      | -       |
 
 ## What gets written
 
 -   The plugin writes both a direct connection string and a pooled connection string to your `.env`.
 -   It also provides a claim URL (valid for 7 days) to take ownership of the database.
+-   If `seed` is configured, the specified SQL script will be executed after database creation.
 
 ## Type Definitions
 
@@ -55,6 +68,10 @@ postgresPlugin({
 interface PostgresPluginOptions {
 	env: string; // Path to the .env file
 	envKey: string; // Name of the environment variable
+	seed?: {
+		type: "sql-script";
+		path: string;
+	};
 }
 ```
 

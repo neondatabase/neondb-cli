@@ -1,26 +1,29 @@
 import { intro, note, outro } from "@clack/prompts";
-import { instantNeon } from "neondb/launchpad";
+import { type InstantNeonParams, instantNeon } from "neondb/launchpad";
 import { resolve } from "path";
 import { loadEnv, type Plugin as VitePlugin } from "vite";
 
-interface PostgresPluginOptions {
-	env: string;
-	envKey: string;
-	referrer: string;
-}
-
-const DEFAULTS: PostgresPluginOptions = {
-	env: ".env",
-	envKey: "DATABASE_URL",
+const DEFAULTS = {
+	dotEnvFile: ".env",
+	dotEnvKey: "DATABASE_URL",
 	referrer: "unknown",
-};
+	seed: undefined,
+} satisfies InstantNeonParams;
 
 let claimProcessStarted = false;
 
 export default function postgresPlugin(
-	options?: Partial<PostgresPluginOptions>,
+	options?: Partial<InstantNeonParams>,
 ): VitePlugin {
-	const { env: envPath, envKey, referrer } = { ...DEFAULTS, ...options };
+	const {
+		dotEnvFile: envPath,
+		dotEnvKey: envKey,
+		referrer,
+		seed,
+	} = {
+		...DEFAULTS,
+		...options,
+	} satisfies InstantNeonParams;
 	return {
 		name: "@neondatabase/vite-plugin-postgres",
 
@@ -30,7 +33,10 @@ export default function postgresPlugin(
 
 			const resolvedRoot = resolve(root ?? process.cwd());
 			envDir = envDir ? resolve(resolvedRoot, envDir) : resolvedRoot;
-			const resolvedEnvPath = resolve(envDir, envPath);
+			const resolvedEnvPath = resolve(
+				envDir,
+				envPath || DEFAULTS.dotEnvFile,
+			);
 
 			const envVars = loadEnv(mode, envDir, envKey);
 
@@ -55,6 +61,7 @@ export default function postgresPlugin(
 				dotEnvFile: envPath,
 				dotEnvKey: envKey,
 				referrer: `npm:@neondatabase/vite-plugin-postgres|${referrer}`,
+				seed,
 			});
 			outro("Neon database created successfully.");
 		},
