@@ -1,5 +1,4 @@
 import { randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
 import { log } from "@clack/prompts";
 import { seedDatabase } from "./seed-database.js";
 import { messages } from "./texts.js";
