@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { log } from "@clack/prompts";
 import { seedDatabase } from "./seed-database.js";
 import { messages } from "./texts.js";
-import { InstantNeonParams } from "./types.js";
+import type { InstantNeonParams } from "./types.js";
 import { createClaimableDatabase } from "./utils/create-db.js";
 import { getPoolerString } from "./utils/format.js";
 import { writeToEnv } from "./utils/fs.js";
