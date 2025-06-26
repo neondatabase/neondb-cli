@@ -99,12 +99,15 @@ async function main() {
 		}
 
 		if (!flagSeedPath) {
-			userInput.seedPath = (await text({
-				message: messages.questions.seedPath,
-			})) as Defaults["seedPath"];
+			userInput.seed = {
+				type: "sql-script",
+				path: await text({
+					message: messages.questions.seedPath,
+				}),
+			} as Defaults["seed"];
 
-			if (!userInput.seedPath) {
-				userInput.seedPath = DEFAULTS.seedPath;
+			if (!userInput.seed?.path) {
+				userInput.seed = DEFAULTS.seed;
 			}
 		}
 
@@ -115,7 +118,7 @@ async function main() {
 			dotEnvFile: userInput.dotEnvPath,
 			dotEnvKey: userInput.dotEnvKey,
 			referrer: "npm:neondb/cli",
-			seedPath: userInput.seedPath,
+			seed: userInput.seed,
 		});
 	}
 	s.stop("Database generated!");

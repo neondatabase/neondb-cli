@@ -5,7 +5,7 @@ export default defineConfig({
 	vite: {
 		plugins: [
 			postgresPlugin({
-				onCreate: {
+				seed: {
 					type: "sql-script",
 					path: "./schema.sql",
 				},

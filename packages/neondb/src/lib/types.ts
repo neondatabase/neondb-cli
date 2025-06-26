@@ -1,3 +1,8 @@
+export type SqlScript = {
+	type: "sql-script";
+	path: string;
+};
+
 /**
  * Parameters for configuring Instagres database connection
  * @param {string} dotEnvFile - Path to the .env file where the connection string will be saved
@@ -10,11 +15,11 @@ export interface InstantNeonParams {
 	dotEnvFile?: string;
 	dotEnvKey?: string;
 	referrer?: string;
-	seedPath?: string | undefined;
+	seed?: SqlScript;
 }
 
 export interface Defaults {
 	dotEnvPath: string;
 	dotEnvKey: string;
-	seedPath?: string | undefined;
+	seed?: SqlScript;
 }

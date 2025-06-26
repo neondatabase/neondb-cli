@@ -4,7 +4,7 @@ import { type Defaults } from "../types.js";
 export const DEFAULTS: Defaults = {
 	dotEnvPath: "./.env",
 	dotEnvKey: "DATABASE_URL",
-	seedPath: undefined,
+	seed: undefined,
 };
 
 export function getArgs() {
@@ -45,7 +45,7 @@ Options:
 		DEFAULTS.dotEnvKey
   }")
   -s, --sql      Path to the seed (.sql) file (default: "${
-		DEFAULTS.seedPath || "none"
+		DEFAULTS.seed?.path || "none"
   }")
   -h, --help      Show this help message
 `);

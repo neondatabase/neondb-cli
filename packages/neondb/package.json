@@ -23,9 +23,6 @@
 		"neondb": "dist/cli.js"
 	},
 	"exports": {
-		"./json-schema": {
-			"import": "./dist/schema.json"
-		},
 		"./sdk": {
 			"import": "./dist/lib/instant-neon.js",
 			"types": "./dist/lib/instant-neon.d.ts"
@@ -70,7 +67,6 @@
 		"dotenv": "^16.5.0",
 		"gradient-string": "^3.0.0",
 		"open": "^10.1.0",
-		"p-wait-for": "^5.0.2",
-		"zod": "^3.25.0"
+		"p-wait-for": "^5.0.2"
 	}
 }

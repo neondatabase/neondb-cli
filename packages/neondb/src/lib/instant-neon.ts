@@ -19,7 +19,7 @@ export const instantNeon = async ({
 	dotEnvFile = ".env",
 	dotEnvKey = "DATABASE_URL",
 	referrer = "unknown",
-	seedPath = undefined,
+	seed = undefined,
 }: InstantNeonParams) => {
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
@@ -50,9 +50,9 @@ export const instantNeon = async ({
 	log.success(messages.envSuccess(dotEnvFile, dotEnvKey));
 	log.info(messages.databaseGenerated(claimUrl.href));
 
-	if (seedPath) {
+	if (seed) {
 		log.step("Pushing schema to database");
-		await seedDatabase(seedPath, connString);
+		await seedDatabase(seed.path, connString);
 		log.success("Schema pushed to database");
 	}
 
@@ -63,3 +63,5 @@ export const instantNeon = async ({
 		claimExpiresAt,
 	} as const;
 };
+
+export { InstantNeonParams };
