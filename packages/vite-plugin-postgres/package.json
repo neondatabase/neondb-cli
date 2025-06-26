@@ -18,6 +18,7 @@
 	"scripts": {
 		"build": "tsc --noEmit && tsup",
 		"test": "vitest --passWithNoTests",
+		"test:ci": "vitest run --passWithNoTests",
 		"tsc": "tsc",
 		"dry:run": "pnpm build && node dist/cli.js --yes",
 		"dry:run:prompt": "pnpm build && node dist/cli.js"

@@ -8,10 +8,10 @@
 		"build": "pnpm --filter neondb build && pnpm --filter vite-plugin-postgres build",
 		"format": "biome check --error-on-warnings --fix",
 		"lint:ci": "biome ci --error-on-warnings",
-		"test:ci": "pnpm --recursive vitest --passWithNoTests",
+		"test:ci": "pnpm --recursive test:ci",
 		"prepare": "husky"
 	},
-"lint-staged": {
+	"lint-staged": {
 		"*": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
 	},
 	"devDependencies": {
