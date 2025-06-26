@@ -36,20 +36,20 @@ You can pass an options object to customize the `.env` file path, the environmen
 postgresPlugin({
 	env: ".env.local", // Path to your .env file (default: ".env")
 	envKey: "DATABASE_URL", // Name of the env variable (default: "DATABASE_URL")
-	onCreate: {
+	seed: {
 		type: "sql-script",
 		path: "./schema.sql", // Path to SQL file to execute after database creation
 	},
 });
 ```
 
-| Option     | Type   | Description                            | Default        |
-| ---------- | ------ | -------------------------------------- | -------------- |
-| `env`      | string | Path to the `.env` file                | `.env`         |
-| `envKey`   | string | Name of the environment variable       | `DATABASE_URL` |
-| `onCreate` | object | Configuration for seeding the database | -              |
+| Option   | Type   | Description                            | Default        |
+| -------- | ------ | -------------------------------------- | -------------- |
+| `env`    | string | Path to the `.env` file                | `.env`         |
+| `envKey` | string | Name of the environment variable       | `DATABASE_URL` |
+| `seed`   | object | Configuration for seeding the database | -              |
 
-### onCreate Options
+### seed Options
 
 | Property | Type   | Description                                     | Default |
 | -------- | ------ | ----------------------------------------------- | ------- |
@@ -60,7 +60,7 @@ postgresPlugin({
 
 -   The plugin writes both a direct connection string and a pooled connection string to your `.env`.
 -   It also provides a claim URL (valid for 7 days) to take ownership of the database.
--   If `onCreate` is configured, the specified SQL script will be executed after database creation.
+-   If `seed` is configured, the specified SQL script will be executed after database creation.
 
 ## Type Definitions
 
@@ -68,7 +68,7 @@ postgresPlugin({
 interface PostgresPluginOptions {
 	env: string; // Path to the .env file
 	envKey: string; // Name of the environment variable
-	onCreate?: {
+	seed?: {
 		type: "sql-script";
 		path: string;
 	};
