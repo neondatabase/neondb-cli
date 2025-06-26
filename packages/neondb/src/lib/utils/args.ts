@@ -23,7 +23,7 @@ export function getArgs() {
 				type: "string",
 				short: "k",
 			},
-			sql: {
+			seed: {
 				type: "string",
 				short: "s",
 			},
@@ -44,7 +44,7 @@ Options:
   -k, --key       Key for the database connection string (default: "${
 		DEFAULTS.dotEnvKey
   }")
-  -s, --sql      Path to the seed (.sql) file (default: "${
+  -s, --seed      Path to the seed (.sql) file (default: "${
 		DEFAULTS.seed?.path || "none"
   }")
   -h, --help      Show this help message

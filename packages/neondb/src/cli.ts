@@ -13,7 +13,7 @@ async function main() {
 	const {
 		env: flagEnvPath,
 		key: flagEnvKey,
-		sql: flagSeedPath,
+		seed: flagSeedPath,
 		yes: shouldUseDefaults,
 	} = getArgs();
 
@@ -109,11 +109,17 @@ async function main() {
 			if (!userInput.seed?.path) {
 				userInput.seed = DEFAULTS.seed;
 			}
+		} else {
+			userInput.seed = {
+				type: "sql-script",
+				path: flagSeedPath,
+			};
 		}
 
 		prepEnv(userInput.dotEnvPath, userInput.dotEnvKey);
 
 		s.start(messages.generating);
+
 		await instantNeon({
 			dotEnvFile: userInput.dotEnvPath,
 			dotEnvKey: userInput.dotEnvKey,
