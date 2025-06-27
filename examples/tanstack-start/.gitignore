@@ -1,28 +1,10 @@
-dist
-.solid
-.output
-.vercel
-.netlify
-.vinxi
-app.config.timestamp_*.js
-
-# Environment
-.env
-.env*.local
-
-# dependencies
-/node_modules
-
-# IDEs and editors
-/.idea
-.project
-.classpath
-*.launch
-.settings/
-
-# Temp
-gitignore
-
-# System Files
+node_modules
 .DS_Store
-Thumbs.db
+dist
+dist-ssr
+*.local
+count.txt
+.env
+.output
+.vinxi
+count.txt

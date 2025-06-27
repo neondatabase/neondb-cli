@@ -26,6 +26,7 @@ export default function postgresPlugin(
 	} satisfies InstantNeonParams;
 	return {
 		name: "@neondatabase/vite-plugin-postgres",
+		enforce: "pre",
 
 		async config({ root, envDir }, { mode }) {
 			// Don't run in production to prevent accidental creation of a Neon database on CI
