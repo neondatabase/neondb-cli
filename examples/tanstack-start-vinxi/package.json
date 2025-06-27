@@ -1,0 +1,33 @@
+{
+	"name": "example-tanstack-start",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "vinxi dev",
+		"build": "vinxi build",
+		"start": "vinxi start"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@neondatabase/serverless": "^0.10.4",
+		"@tanstack/react-router": "^1.112.13",
+		"@tanstack/react-start": "^1.112.13",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"vinxi": "^0.5.3"
+	},
+	"devDependencies": {
+		"@neondatabase/vite-plugin-postgres": "workspace:*",
+		"@types/react": "^19.0.10",
+		"@types/react-dom": "^19.0.4",
+		"@vitejs/plugin-react": "^4.3.4",
+		"neondb": "workspace:*",
+		"typescript": "^5.8.2",
+		"vite-tsconfig-paths": "^5.1.4"
+	}
+}
