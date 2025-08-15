@@ -25,10 +25,5 @@
 	"packageManager": "pnpm@10.4.0",
 	"engines": {
 		"node": ">=18.3.0"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"esbuild"
-		]
 	}
 }

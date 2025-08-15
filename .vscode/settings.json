@@ -6,11 +6,5 @@
 			"source.fixAll.biome": "explicit",
 			"source.organizeImports.biome": "explicit"
 		}
-	},
-	"json.schemas": [
-		{
-			"url": "https://cdn.jsdelivr.net/npm/tsup/schema.json",
-			"fileMatch": ["tsup.config.ts"]
-		}
-	]
+	}
 }

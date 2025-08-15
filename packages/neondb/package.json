@@ -15,7 +15,7 @@
 	"license": "Apache-2.0",
 	"author": {
 		"name": "Neon",
-		"url": "https://neon.tech"
+		"url": "https://neon.com"
 	},
 	"type": "module",
 	"main": "dist/index.js",
@@ -38,7 +38,7 @@
 		"package.json"
 	],
 	"scripts": {
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc --noEmit && tsdown",
 		"test": "vitest --passWithNoTests",
 		"test:ci": "vitest run --passWithNoTests",
 		"tsc": "tsc",
@@ -51,7 +51,7 @@
 		"console-fail-test": "0.5.0",
 		"husky": "9.1.7",
 		"lint-staged": "15.5.0",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
