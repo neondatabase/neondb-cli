@@ -63,4 +63,4 @@ export const instantNeon = async ({
 	} as const;
 };
 
-export { InstantNeonParams };
+export type { InstantNeonParams };
