@@ -1,5 +1,11 @@
 # neondb
 
+## 0.7.2
+
+### Patch Changes
+
+- aa69f87: Fix `--yes` flag suppressing `--seed` flag
+
 ## 0.7.1
 
 ### Patch Changes
