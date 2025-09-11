@@ -27,9 +27,15 @@ async function main() {
 		prepEnv(DEFAULTS.dotEnvPath, DEFAULTS.dotEnvKey);
 		s.start(messages.generating);
 
+		const seedConfig = flagSeedPath
+			? { type: "sql-script" as const, path: flagSeedPath }
+			: DEFAULTS.seed;
+
 		await instantNeon({
 			dotEnvFile: DEFAULTS.dotEnvPath,
 			dotEnvKey: DEFAULTS.dotEnvKey,
+			referrer: "npm:neondb/cli",
+			seed: seedConfig,
 		});
 	} else {
 		/**
