@@ -64,10 +64,10 @@
 	},
 	"dependencies": {
 		"@clack/prompts": "0.10.1",
-		"@neondatabase/serverless": "^1.0.0",
-		"dotenv": "^16.5.0",
+		"@neondatabase/serverless": "^1.0.1",
+		"dotenv": "^16.6.1",
 		"gradient-string": "^3.0.0",
-		"open": "^10.1.0",
+		"open": "^10.2.0",
 		"p-wait-for": "^5.0.2"
 	}
 }
