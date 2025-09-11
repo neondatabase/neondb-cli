@@ -2,4 +2,4 @@
 "neondb": patch
 ---
 
-Fix `--yes` flag supressing `--seed` flag
+Fix `--yes` flag suppressing `--seed` flag
