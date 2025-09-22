@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { intro, note, outro } from "@clack/prompts";
 import { type InstantNeonParams, instantNeon } from "neondb/launchpad";
-import { loadEnv, type Plugin as VitePlugin } from "vite";
+import { loadEnv, type Plugin } from "vite";
 
 const DEFAULTS = {
 	dotEnvFile: ".env",
@@ -10,9 +10,16 @@ const DEFAULTS = {
 	seed: undefined,
 } satisfies InstantNeonParams;
 
+type PostgresPluginOptions = Partial<InstantNeonParams> & {
+	seed?: {
+		type: "sql-script";
+		path: string;
+	};
+};
+
 let claimProcessStarted = false;
 
-function postgresPlugin(options?: Partial<InstantNeonParams>): VitePlugin {
+function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 	const {
 		dotEnvFile: envPath,
 		dotEnvKey: envKey,
@@ -24,7 +31,7 @@ function postgresPlugin(options?: Partial<InstantNeonParams>): VitePlugin {
 	} satisfies InstantNeonParams;
 	return {
 		name: "@neondatabase/vite-plugin-postgres",
-		enforce: "pre",
+		enforce: "pre" as const,
 
 		async config({ root, envDir }, { mode }) {
 			// Don't run in production to prevent accidental creation of a Neon database on CI
