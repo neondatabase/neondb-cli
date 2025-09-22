@@ -23,7 +23,7 @@
     "vite-tsconfig-paths": "^5.1.4"
 },
 "devDependencies": {
-	"@neondatabase/vite-plugin-postgres": "workspace:*",
+    "@neondatabase/vite-plugin-postgres": "workspace:*",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.2.0",
     "@types/node": "catalog:",
@@ -32,7 +32,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "jsdom": "^26.0.0",
     "typescript": "^5.9.2",
-	"vite": "^6.3.6",
+    "vite": "^6.3.6",
     "vitest": "^3.2.4",
     "web-vitals": "^4.2.4"
   },

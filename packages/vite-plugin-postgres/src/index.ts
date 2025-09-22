@@ -31,7 +31,7 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 	} satisfies InstantNeonParams;
 	return {
 		name: "@neondatabase/vite-plugin-postgres",
-		enforce: "pre" as const,
+		enforce: "pre",
 
 		async config({ root, envDir }, { mode }) {
 			// Don't run in production to prevent accidental creation of a Neon database on CI
