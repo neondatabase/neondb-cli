@@ -1,6 +1,6 @@
+import { resolve } from "node:path";
 import { intro, note, outro } from "@clack/prompts";
 import { type InstantNeonParams, instantNeon } from "neondb/launchpad";
-import { resolve } from "path";
 import { loadEnv, type Plugin as VitePlugin } from "vite";
 
 const DEFAULTS = {
