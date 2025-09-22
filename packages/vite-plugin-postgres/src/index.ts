@@ -77,7 +77,7 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 export { postgresPlugin as postgres };
 
 /**
- * @deprecated the default export is deprecated, use the named export instead `postgres` instead.
+ * @deprecated the default export is deprecated, use the named export `postgres` instead.
  * @todo remove before v1.0.0
  */
 export default postgresPlugin;
