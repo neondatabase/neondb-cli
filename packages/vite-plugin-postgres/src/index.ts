@@ -12,9 +12,7 @@ const DEFAULTS = {
 
 let claimProcessStarted = false;
 
-export default function postgresPlugin(
-	options?: Partial<InstantNeonParams>,
-): VitePlugin {
+function postgresPlugin(options?: Partial<InstantNeonParams>): VitePlugin {
 	const {
 		dotEnvFile: envPath,
 		dotEnvKey: envKey,
@@ -68,3 +66,11 @@ export default function postgresPlugin(
 		},
 	};
 }
+
+export { postgresPlugin as postgres };
+
+/**
+ * @deprecated the default export is deprecated, use the named export instead `postgres` instead.
+ * @todo remove before v1.0.0
+ */
+export default postgresPlugin;
