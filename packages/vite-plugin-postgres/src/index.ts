@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { intro, note, outro } from "@clack/prompts";
 import { type InstantNeonParams, instantNeon } from "neondb/launchpad";
-import { loadEnv, type Plugin as VitePlugin } from "vite";
+import { loadEnv, type Plugin } from "vite";
 
 const DEFAULTS = {
 	dotEnvFile: ".env",
@@ -10,11 +10,16 @@ const DEFAULTS = {
 	seed: undefined,
 } satisfies InstantNeonParams;
 
+type PostgresPluginOptions = Partial<InstantNeonParams> & {
+	seed?: {
+		type: "sql-script";
+		path: string;
+	};
+};
+
 let claimProcessStarted = false;
 
-export default function postgresPlugin(
-	options?: Partial<InstantNeonParams>,
-): VitePlugin {
+function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 	const {
 		dotEnvFile: envPath,
 		dotEnvKey: envKey,
@@ -68,3 +73,11 @@ export default function postgresPlugin(
 		},
 	};
 }
+
+export { postgresPlugin as postgres };
+
+/**
+ * @deprecated the default export is deprecated, use the named export `postgres` instead.
+ * @todo remove before v1.0.0
+ */
+export default postgresPlugin;
