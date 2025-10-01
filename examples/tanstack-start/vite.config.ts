@@ -6,7 +6,11 @@ import viteTsConfigPaths from "vite-tsconfig-paths";
 
 const config = defineConfig({
   plugins: [
+<<<<<<< HEAD
     postgres({
+=======
+    postgresPlugin({
+>>>>>>> 7ca1031 (feat: add Claim URL as env var and claim command)
       seed: {
         type: "sql-script",
         path: "./db/init.sql",

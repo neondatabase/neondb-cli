@@ -9,16 +9,19 @@ export type SqlScript = {
  * @param {string} dotEnvKey - Environment variable name to store the connection string
  * @param {string} referrer - referrer name for tracking
  * @param {SqlScript} seed - Path to the `.sql` file to be pushed to the database
+ * @param {string} envPrefix - Prefix for public environment variables (default: "PUBLIC_")
  */
 export interface InstantNeonParams {
 	dotEnvFile?: string;
 	dotEnvKey?: string;
 	referrer?: string;
 	seed?: SqlScript;
+	envPrefix?: string;
 }
 
 export interface Defaults {
 	dotEnvPath: string;
 	dotEnvKey: string;
 	seed?: SqlScript;
+	envPrefix: string;
 }

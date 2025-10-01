@@ -1,6 +1,4 @@
-// const HOST = "https://neon.new";
-
-const HOST = "http://localhost:3200";
+const HOST = "https://neon.new";
 
 export const LAUNCHPAD_URLS = {
 	GET_DATABASE_DATA: (dbId: string) => `${HOST}/api/v1/database/${dbId}`,

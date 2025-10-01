@@ -8,6 +8,7 @@ const DEFAULTS = {
 	dotEnvKey: "DATABASE_URL",
 	referrer: "unknown",
 	seed: undefined,
+	envPrefix: "VITE_",
 } satisfies InstantNeonParams;
 
 type PostgresPluginOptions = Partial<InstantNeonParams> & {
@@ -25,6 +26,7 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 		dotEnvKey: envKey,
 		referrer,
 		seed,
+		envPrefix,
 	} = {
 		...DEFAULTS,
 		...options,
@@ -68,6 +70,7 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 				dotEnvKey: envKey,
 				referrer: `npm:@neondatabase/vite-plugin-postgres|${referrer}`,
 				seed,
+				envPrefix,
 			});
 			outro("Neon database created successfully.");
 		},

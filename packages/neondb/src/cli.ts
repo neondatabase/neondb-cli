@@ -6,16 +6,27 @@ import { instantNeon } from "./lib/instant-neon.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
 import type { Defaults } from "./lib/types.js";
 import { DEFAULTS, getArgs } from "./lib/utils/args.js";
+import { claim } from "./lib/utils/claim.js";
 import { prepEnv } from "./lib/utils/fs.js";
 import { validateEnvKey, validateEnvPath } from "./lib/utils/validate.js";
 
 async function main() {
 	const {
+		command,
 		env: flagEnvPath,
 		key: flagEnvKey,
 		seed: flagSeedPath,
+		prefix: flagPrefix,
 		yes: shouldUseDefaults,
 	} = getArgs();
+
+	// Handle claim command
+	if (command === "claim") {
+		const envPath = flagEnvPath || DEFAULTS.dotEnvPath;
+		const envPrefix = flagPrefix || DEFAULTS.envPrefix;
+		await claim(envPath, envPrefix);
+		return;
+	}
 
 	console.log(cristal(INTRO_ART));
 	const s = spinner();
@@ -36,6 +47,7 @@ async function main() {
 			dotEnvKey: DEFAULTS.dotEnvKey,
 			referrer: "npm:neondb/cli",
 			seed: seedConfig,
+			envPrefix: flagPrefix || DEFAULTS.envPrefix,
 		});
 	} else {
 		/**
@@ -122,6 +134,31 @@ async function main() {
 			};
 		}
 
+		// Always set envPrefix from flag if present
+		if (flagPrefix) {
+			log.step(messages.info.defaultPrefix(flagPrefix));
+			userInput.envPrefix = flagPrefix;
+		}
+
+		// Prompt for envPrefix if not set by flag
+		if (!userInput.envPrefix) {
+			userInput.envPrefix = (await text({
+				message: messages.questions.prefix,
+			})) as Defaults["envPrefix"];
+
+			// user cancelled with CTRL+C
+			if (isCancel(userInput.envPrefix)) {
+				outro(messages.info.userCancelled);
+				process.exit(1);
+			}
+
+			// User accepted default value.
+			if (!userInput.envPrefix) {
+				userInput.envPrefix = DEFAULTS.envPrefix;
+				log.step(messages.info.defaultPrefix(userInput.envPrefix));
+			}
+		}
+
 		prepEnv(userInput.dotEnvPath, userInput.dotEnvKey);
 
 		s.start(messages.generating);
@@ -131,6 +168,7 @@ async function main() {
 			dotEnvKey: userInput.dotEnvKey,
 			referrer: "npm:neondb/cli",
 			seed: userInput.seed,
+			envPrefix: userInput.envPrefix,
 		});
 	}
 	s.stop("Database generated!");

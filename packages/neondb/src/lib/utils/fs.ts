@@ -86,6 +86,7 @@ export async function writeToEnv(
 	claimUrl: URL,
 	connString: string,
 	poolerString: string,
+	envPrefix: string = "PUBLIC_",
 ) {
 	if (!existsSync(dirname(dotEnvFile))) {
 		mkdirSync(dirname(dotEnvFile), { recursive: true });
@@ -98,6 +99,7 @@ export async function writeToEnv(
 # Claim it now to your account: ${claimUrl.href}
 ${dotEnvKey}=${connString}
 ${dotEnvKey}_POOLER=${poolerString}
+${envPrefix}NEON_LAUNCHPAD_CLAIM_URL=${claimUrl.href}
 `,
 	);
 	closeSync(openedFile);

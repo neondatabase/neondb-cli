@@ -45,6 +45,7 @@ ${url}
 		seedPath: `Enter the path to your seed (.sql) file (default: ${
 			DEFAULTS.seed?.path || "none"
 		})`,
+		prefix: `Enter the prefix for public environment variables (default: ${DEFAULTS.envPrefix})`,
 	},
 
 	info: {
@@ -54,6 +55,8 @@ ${url}
 			`using ${dotEnvKey} as the environment variable key`,
 		defaultEnvFilePath: (dotEnvPath: string) =>
 			`using ${dotEnvPath} as the .env file`,
+		defaultPrefix: (prefix: string) =>
+			`using ${prefix} as the prefix for public environment variables`,
 	},
 
 	errors: {

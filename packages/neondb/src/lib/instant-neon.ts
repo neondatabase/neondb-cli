@@ -19,6 +19,7 @@ export const instantNeon = async ({
 	dotEnvKey = "DATABASE_URL",
 	referrer = "unknown",
 	seed = undefined,
+	envPrefix = "PUBLIC_",
 }: InstantNeonParams) => {
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
@@ -47,6 +48,7 @@ export const instantNeon = async ({
 		claimUrl,
 		connString,
 		poolerString,
+		envPrefix,
 	);
 
 	log.success(messages.envSuccess(dotEnvFile, dotEnvKey));
