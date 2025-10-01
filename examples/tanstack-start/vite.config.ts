@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 
 const config = defineConfig({
+<<<<<<< HEAD
   plugins: [
     postgres({
       seed: {
@@ -20,6 +21,22 @@ const config = defineConfig({
     tailwindcss(),
     tanstackStart(),
   ],
+=======
+	plugins: [
+		postgres({
+			seed: {
+				type: "sql-script",
+				path: "./db/init.sql",
+			},
+		}),
+		// this is the plugin that enables path aliases
+		viteTsConfigPaths({
+			projects: ["./tsconfig.json"],
+		}),
+		tailwindcss(),
+		tanstackStart(),
+	],
+>>>>>>> f2f4d0b (feat: add Claim URL as env var and claim command)
 });
 
 export default config;
