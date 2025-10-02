@@ -23,14 +23,7 @@ export const instantNeon = async ({
 }: InstantNeonParams) => {
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-	const createDbUrl = new URL(
-		LAUNCHPAD_URLS.CREATE_CLAIMABLE_DATABASE(
-			dbId,
-			`npm:neondb|${referrer}`,
-		),
-	);
 	const claimUrl = new URL(LAUNCHPAD_URLS.CLAIM_DATABASE(dbId));
-	log.step(messages.botCheck(createDbUrl.href));
 
 	const connString = await createClaimableDatabase(
 		dbId,

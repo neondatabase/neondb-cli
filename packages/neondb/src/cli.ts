@@ -32,6 +32,7 @@ async function main() {
 	const s = spinner();
 
 	intro(messages.welcome);
+	log.info(messages.nonInteractive);
 	const userInput: Partial<Defaults> = {};
 
 	if (shouldUseDefaults) {
@@ -112,7 +113,6 @@ async function main() {
 			if (!userInput.dotEnvKey) {
 				userInput.dotEnvKey = DEFAULTS.dotEnvKey;
 				log.step(messages.info.defaultEnvKey(userInput.dotEnvKey));
-				log.step(`using ${userInput.dotEnvKey} as the .env key`);
 			}
 		}
 
