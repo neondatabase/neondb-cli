@@ -22,19 +22,13 @@ export const messages = {
 	 *
 	 * @see https://github.com/bombshell-dev/clack/issues/132
 	 */
-	welcome: "Welcome! Let's get you set with a Postgres database on Neon. \n",
+	welcome: "Let's get you set with a Postgres database on Neon.",
+	nonInteractive: "`neondb --yes` for non-interactive flow with defaults.",
 	generating: "Generating your database... ",
 	envKeyExistsExit:
 		"Please try again or select a different key for your connection string.",
 	connectionString: (s: string) => `Connection string: ${s}`,
 	poolerString: (s: string) => `Pooler string: ${s}`,
-	botCheck: (
-		url: string,
-	) => `A tab will open in your browser just to check your're not a bot.
-Paste the link below in your browser if it doesn't open automatically:
-${url}
-
-`,
 	envSuccess: (dotEnvFile: string, dotEnvKey: string) =>
 		`Saved it to ${dotEnvFile} as ${dotEnvKey} \n\n\n`,
 	happyCoding: "Happy coding! 🚀",
