@@ -5,7 +5,7 @@ export const LAUNCHPAD_URLS = {
 	CREATE_CLAIMABLE_DATABASE: (dbId: string, referrer?: string) =>
 		`${HOST}/db?uuid=${dbId}${referrer ? `&ref=${referrer}` : ""}`,
 	CLAIM_DATABASE: (dbId: string) => `${HOST}/database/${dbId}`,
-	CREATE_DATABASE_POST: (dbId: string, referrer?: string) =>
+	CREATE_DATABASE: (dbId: string, referrer?: string) =>
 		`${HOST}/api/v1/database/${dbId}${
 			referrer ? `?referrer=${referrer}` : ""
 		}`,

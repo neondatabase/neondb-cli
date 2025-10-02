@@ -2,7 +2,7 @@ import { LAUNCHPAD_URLS } from "./urls.js";
 
 export async function createClaimableDatabase(dbId: string, referrer: string) {
 	const dbCreation = await fetch(
-		LAUNCHPAD_URLS.CREATE_DATABASE_POST(dbId, referrer),
+		LAUNCHPAD_URLS.CREATE_DATABASE(dbId, referrer),
 		{
 			method: "POST",
 			headers: {
