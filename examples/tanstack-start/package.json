@@ -21,8 +21,8 @@
     "react-dom": "^19.1.1",
     "tailwindcss": "^4.1.13",
     "vite-tsconfig-paths": "^5.1.4"
-},
-"devDependencies": {
+  },
+  "devDependencies": {
     "@neondatabase/vite-plugin-postgres": "workspace:*",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.2.0",

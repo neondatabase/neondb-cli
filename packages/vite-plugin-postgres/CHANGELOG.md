@@ -1,5 +1,37 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.3.0
+
+### Minor Changes
+
+- f4f6621: Add named export, deprecate default export
+- 9ad30b8: Adds `claim` command
+
+  - This command opens the browser in the Claim URL directly.
+  - Adds a new environment variable with such Claim URL to be consumed by the client-side as well (useful for templates).
+
+  ## neondb cli
+
+  default is `PUBLIC_`
+
+  ## vite-plugin-postgres
+
+  default is `VITE_`
+
+- 4ac5175: No more CAPTCHAs
+
+  We have removed Cloudflare Turnstile Bot protection from our system.
+  This unlocks a completely non-interactive flow to create new databases in Launchpad 🎉
+
+### Patch Changes
+
+- 45937cb: Allow Vite 7
+- bf6ec47: Make logs more discrete on Vite-Plugin output
+- Updated dependencies [9ad30b8]
+- Updated dependencies [bf6ec47]
+- Updated dependencies [4ac5175]
+  - neondb@0.8.0
+
 ## 0.2.3
 
 ### Patch Changes
