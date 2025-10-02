@@ -1,6 +1,6 @@
 {
 	"name": "@neondatabase/vite-plugin-postgres",
-	"version": "0.2.3",
+	"version": "0.3.0",
 	"keywords": [
 		"neon",
 		"database",
