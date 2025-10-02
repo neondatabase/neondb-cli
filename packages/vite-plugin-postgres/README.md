@@ -36,6 +36,7 @@ You can pass an options object to customize the `.env` file path, the environmen
 postgresPlugin({
 	env: ".env.local", // Path to your .env file (default: ".env")
 	envKey: "DATABASE_URL", // Name of the env variable (default: "DATABASE_URL")
+	envPrefix: "VITE_", // Prefix for public env vars (default: "VITE_")
 	seed: {
 		type: "sql-script",
 		path: "./schema.sql", // Path to SQL file to execute after database creation
@@ -43,11 +44,12 @@ postgresPlugin({
 });
 ```
 
-| Option   | Type   | Description                            | Default        |
-| -------- | ------ | -------------------------------------- | -------------- |
-| `env`    | string | Path to the `.env` file                | `.env`         |
-| `envKey` | string | Name of the environment variable       | `DATABASE_URL` |
-| `seed`   | object | Configuration for seeding the database | -              |
+| Option      | Type   | Description                            | Default        |
+| ----------- | ------ | -------------------------------------- | -------------- |
+| `env`       | string | Path to the `.env` file                | `.env`         |
+| `envKey`    | string | Name of the environment variable       | `DATABASE_URL` |
+| `envPrefix` | string | Prefix for public environment variables| `VITE_`        |
+| `seed`      | object | Configuration for seeding the database | -              |
 
 ### seed Options
 
@@ -59,7 +61,7 @@ postgresPlugin({
 ## What gets written
 
 -   The plugin writes both a direct connection string and a pooled connection string to your `.env`.
--   It also provides a claim URL (valid for 7 days) to take ownership of the database.
+-   It also provides a claim URL (valid for 7 days) to take ownership of the database with the configured `envPrefix` (defaults to `VITE_` for Vite projects).
 -   If `seed` is configured, the specified SQL script will be executed after database creation.
 
 ## Type Definitions
@@ -68,6 +70,7 @@ postgresPlugin({
 interface PostgresPluginOptions {
 	env: string; // Path to the .env file
 	envKey: string; // Name of the environment variable
+	envPrefix: string; // Prefix for public environment variables
 	seed?: {
 		type: "sql-script";
 		path: string;

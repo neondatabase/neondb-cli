@@ -21,6 +21,11 @@ Options:
 -   `-y, --yes` Use defaults, skip prompts
 -   `-e, --env` Path to .env file (default: ./.env)
 -   `-k, --key` Env key for connection string (default: DATABASE_URL)
+<<<<<<< HEAD
+-   `-p, --prefix` Prefix for public env vars (default: PUBLIC_)
+=======
+-   `-p, --prefix` Prefix for public env vars (default: PUBLIC\_)
+>>>>>>> f2f4d0b (feat: add Claim URL as env var and claim command)
 -   `-s, --seed` Path to SQL file to execute after database creation
 -   `-h, --help` Show help
 
@@ -40,6 +45,7 @@ Create a claimable Neon Postgres database and save credentials to your .env:
 await instantNeon({
 	dotEnvFile: ".env",
 	dotEnvKey: "DATABASE_URL",
+	envPrefix: "PUBLIC_",
 	// This below is to help us understand where usage comes from.
 	// If you're publishing a library, we'd love that you re-expose a
 	// referrer parameter in your lib and set this to `npm:your-lib-package-name|${referrer}`
@@ -48,11 +54,14 @@ await instantNeon({
 });
 ```
 
-| Option     | Default        | Description               | Validation            |
-| ---------- | -------------- | ------------------------- | --------------------- |
-| dotEnvFile | ".env"         | Path to env file          | letters and `.`       |
-| dotEnvKey  | "DATABASE_URL" | Environment variable name | `SCREAMING_SNAKE_CASE |
-| referrer   | "unknown"      | Referrer identifier       | -                     |
+| Option     | Default        | Description                        | Validation            |
+| ---------- | -------------- | ---------------------------------- | --------------------- |
+| dotEnvFile | ".env"         | Path to env file                   | letters and `.`       |
+| dotEnvKey  | "DATABASE_URL" | Environment variable name          | `SCREAMING_SNAKE_CASE |
+| envPrefix  | "PUBLIC_"      | Prefix for public environment vars | -                     |
+| referrer   | "unknown"      | Referrer identifier                | -                     |
+
+> **Note**: The Vite plugin uses `VITE_` as the default `envPrefix` to match Vite's convention for client-side environment variables.
 
 Returns:
 
@@ -72,6 +81,7 @@ Returns:
 interface InstantNeonParams {
 	dotEnvFile?: string;
 	dotEnvKey?: string;
+	envPrefix?: string;
 	referrer?: string;
 }
 ```
