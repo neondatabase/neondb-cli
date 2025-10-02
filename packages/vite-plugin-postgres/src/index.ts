@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { intro, note, outro } from "@clack/prompts";
+import { intro, log, outro } from "@clack/prompts";
 import { type InstantNeonParams, instantNeon } from "neondb/launchpad";
 import { loadEnv, type Plugin } from "vite";
 
@@ -51,11 +51,11 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 			if (Object.keys(envVars).length > 0) {
 				const envVar = envVars[envKey];
 				if (!envVar) {
-					note(
+					log.info(
 						`Environment variable ${envKey} not found in ${resolvedEnvPath}. We will create one for you.`,
 					);
 				} else {
-					note(
+					log.info(
 						`Environment variable ${envKey} found in ${resolvedEnvPath}. If you wish to create a new Neon database, please remove the existing variable.`,
 					);
 
