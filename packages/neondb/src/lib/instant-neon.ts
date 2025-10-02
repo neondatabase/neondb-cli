@@ -31,7 +31,10 @@ export const instantNeon = async ({
 	const claimUrl = new URL(LAUNCHPAD_URLS.CLAIM_DATABASE(dbId));
 	log.step(messages.botCheck(createDbUrl.href));
 
-	const connString = await createClaimableDatabase(dbId, createDbUrl);
+	const connString = await createClaimableDatabase(
+		dbId,
+		`npm:neondb|${referrer}`,
+	);
 	const poolerString = getPoolerString(connString);
 
 	log.step(messages.connectionString(connString));
