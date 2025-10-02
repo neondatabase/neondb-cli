@@ -1,27 +1,29 @@
-import open from "open";
-import pWaitFor from "p-wait-for";
 import { LAUNCHPAD_URLS } from "./urls.js";
 
-export async function createClaimableDatabase(dbId: string, launchpadUrl: URL) {
-	void open(launchpadUrl.href);
-
-	const connString = await pWaitFor<string>(
-		async () => {
-			const apiUrl = LAUNCHPAD_URLS.GET_DATABASE_DATA(dbId);
-			const res = await fetch(apiUrl, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			if (!res.ok) return false;
-			return pWaitFor.resolveWith(
-				((await res.json()) as { connection_string: string })
-					.connection_string,
-			);
+export async function createClaimableDatabase(dbId: string, referrer: string) {
+	const dbCreation = await fetch(
+		LAUNCHPAD_URLS.CREATE_DATABASE_POST(dbId, referrer),
+		{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
 		},
-		{ before: false, interval: 2000 },
 	);
 
-	return connString;
+	if (!dbCreation.ok) {
+		throw new Error("Failed to create database");
+	}
+
+	const dbInfo: { connection_string: string } = await fetch(
+		LAUNCHPAD_URLS.GET_DATABASE_DATA(dbId),
+		{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		},
+	).then((res) => res.json());
+
+	return dbInfo.connection_string;
 }
