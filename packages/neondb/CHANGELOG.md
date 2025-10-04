@@ -1,5 +1,11 @@
 # neondb
 
+## 0.8.1
+
+### Patch Changes
+
+- ba1f576: Fix bad rebase on docs
+
 ## 0.8.0
 
 ### Minor Changes
