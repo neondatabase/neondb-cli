@@ -21,11 +21,7 @@ Options:
 -   `-y, --yes` Use defaults, skip prompts
 -   `-e, --env` Path to .env file (default: ./.env)
 -   `-k, --key` Env key for connection string (default: DATABASE_URL)
-<<<<<<< HEAD
--   `-p, --prefix` Prefix for public env vars (default: PUBLIC_)
-=======
 -   `-p, --prefix` Prefix for public env vars (default: PUBLIC\_)
->>>>>>> f2f4d0b (feat: add Claim URL as env var and claim command)
 -   `-s, --seed` Path to SQL file to execute after database creation
 -   `-h, --help` Show help
 
@@ -58,7 +54,7 @@ await instantNeon({
 | ---------- | -------------- | ---------------------------------- | --------------------- |
 | dotEnvFile | ".env"         | Path to env file                   | letters and `.`       |
 | dotEnvKey  | "DATABASE_URL" | Environment variable name          | `SCREAMING_SNAKE_CASE |
-| envPrefix  | "PUBLIC_"      | Prefix for public environment vars | -                     |
+| envPrefix  | "PUBLIC\_"     | Prefix for public environment vars | -                     |
 | referrer   | "unknown"      | Referrer identifier                | -                     |
 
 > **Note**: The Vite plugin uses `VITE_` as the default `envPrefix` to match Vite's convention for client-side environment variables.
