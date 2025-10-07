@@ -5,8 +5,8 @@
 		"bump": "changeset",
 		"build:cli": "pnpm --filter neondb build",
 		"build:plugin": "pnpm --filter vite-plugin-postgres build",
-		"build": "pnpm --filter neondb build && pnpm --filter vite-plugin-postgres build",
-		"format": "biome check --error-on-warnings --fix",
+		"build": "pnpm --recursive --filter='./packages/**' build",
+		"format": "biome check --error-on-warnings --write",
 		"lint:ci": "biome ci --error-on-warnings",
 		"test:ci": "pnpm --recursive test:ci",
 		"prepare": "husky"
