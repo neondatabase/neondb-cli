@@ -217,9 +217,9 @@ Let them know you're ready to help with more:
 
 ## Additional Resources
 
--   [Neon Documentation](https://neon.tech/docs)
--   [Neon Serverless Driver](https://neon.tech/docs/serverless/serverless-driver)
--   [Neon API Reference](https://api-docs.neon.tech/)
--   [Postgres Documentation](https://www.postgresql.org/docs/)
+-   [Neon Documentation](https://neon.com/docs)
+-   [Neon Serverless Driver](https://neon.com/docs/serverless/serverless-driver)
+-   [Neon API Reference](https://neon.com/docs/reference/api-reference)
+-   [Postgres Documentation](https://www.postgresql.org/docs)
 
 ---
