@@ -1,8 +1,8 @@
 ---
-"neon-init": major
+"neon-init": minor
 ---
 
-Initial release of neon-init
+Initial pre-release of neon-init
 
 -   OAuth-based authentication via neonctl
 -   Automatic Neon MCP Server configuration in ~/.cursor/mcp.json
