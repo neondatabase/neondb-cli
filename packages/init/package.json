@@ -1,6 +1,6 @@
 {
 	"name": "neon-init",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"description": "Initialize Neon projects",
 	"keywords": [
 		"neon",
@@ -19,6 +19,9 @@
 	},
 	"type": "module",
 	"main": "dist/index.js",
+	"bin": {
+		"neon-init": "dist/cli.js"
+	},
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
@@ -28,7 +31,8 @@
 	"files": [
 		"README.md",
 		"dist/",
-		"package.json"
+		"package.json",
+		"src/agents-template.md"
 	],
 	"scripts": {
 		"build": "tsc --noEmit && tsdown",
@@ -43,6 +47,9 @@
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
+	},
+	"dependencies": {
+		"@clack/prompts": "0.10.1"
 	},
 	"packageManager": "pnpm@10.4.0",
 	"engines": {
