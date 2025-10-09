@@ -319,16 +319,25 @@ async function installMCPServer(): Promise<{
 	const cursorDir = resolve(homeDir, ".cursor");
 	const config = getMCPConfig(cursorDir);
 
-	if (config.mcpServers.Neon) {
+	// Check if already configured
+	const alreadyConfigured = Boolean(config.mcpServers.Neon);
+	let shouldReconfigure = false;
+
+	if (alreadyConfigured) {
 		log.info("Neon MCP Server is already configured globally");
-		const shouldReconfigure = await confirm({
+		const response = await confirm({
 			message: "Would you like to reconfigure it?",
 			initialValue: false,
 		});
 
-		if (isCancel(shouldReconfigure) || !shouldReconfigure) {
+		if (isCancel(response)) {
+			return { success: false };
+		}
+
+		shouldReconfigure = response as boolean;
+
+		if (!shouldReconfigure) {
 			log.info("Keeping existing global configuration.");
-			return { success: true };
 		}
 	}
 
@@ -349,23 +358,7 @@ async function installMCPServer(): Promise<{
 
 	authSpinner.stop("Authentication successful ✓");
 
-	// Step 2: Create API key using the OAuth token
-	const s = spinner();
-	s.start("Creating API key...");
-	const apiKey = await createApiKeyFromNeonctl();
-	s.stop(
-		apiKey ? "API key created successfully ✓" : "Failed to create API key",
-	);
-
-	if (!apiKey) {
-		log.error("Could not create API key after authentication.");
-		log.info(
-			"You can manually create one at: https://console.neon.tech/app/settings/api-keys",
-		);
-		return { success: false };
-	}
-
-	// Step 3: Fetch organizations and let user select
+	// Step 2: Fetch organizations and let user select
 	let selectedOrgId: string | undefined;
 
 	const orgSpinner = spinner();
@@ -400,6 +393,27 @@ async function installMCPServer(): Promise<{
 	} else {
 		// No organizations found (personal account)
 		log.info("Using personal account");
+	}
+
+	// If user chose not to reconfigure, we're done (but we still return the org ID)
+	if (alreadyConfigured && !shouldReconfigure) {
+		return { success: true, orgId: selectedOrgId };
+	}
+
+	// Step 3: Create API key using the OAuth token
+	const s = spinner();
+	s.start("Creating API key...");
+	const apiKey = await createApiKeyFromNeonctl();
+	s.stop(
+		apiKey ? "API key created successfully ✓" : "Failed to create API key",
+	);
+
+	if (!apiKey) {
+		log.error("Could not create API key after authentication.");
+		log.info(
+			"You can manually create one at: https://console.neon.tech/app/settings/api-keys",
+		);
+		return { success: false };
 	}
 
 	// Step 4: Configure Neon MCP Server
