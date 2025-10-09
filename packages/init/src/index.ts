@@ -11,7 +11,6 @@ import {
 	outro,
 	select,
 	spinner,
-	text,
 } from "@clack/prompts";
 
 const execAsync = promisify(exec);
@@ -161,7 +160,7 @@ async function fetchOrganizations(): Promise<NeonOrganization[]> {
 
 		// The neon CLI returns an array of organizations
 		const organizations: NeonOrganization[] = Array.isArray(data)
-			? data.map((org: any) => ({
+			? data.map((org: { id: string; name?: string }) => ({
 					id: org.id,
 					name: org.name || org.id,
 				}))
@@ -186,7 +185,7 @@ function getMCPConfig(cursorDir: string): MCPConfig {
 		try {
 			const content = readFileSync(mcpConfigPath, "utf-8");
 			return JSON.parse(content);
-		} catch (error) {
+		} catch (_error) {
 			log.warn(
 				"Failed to parse existing mcp.json. Creating a new configuration.",
 			);
