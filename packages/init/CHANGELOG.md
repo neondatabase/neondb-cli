@@ -1,5 +1,11 @@
 # neon-init
 
+## 0.2.1
+
+### Patch Changes
+
+- 218de01: Fix release flow
+
 ## 0.2.0
 
 ### Minor Changes
