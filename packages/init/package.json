@@ -36,6 +36,7 @@
 	],
 	"scripts": {
 		"build": "tsc --noEmit && tsdown",
+		"prepublishOnly": "pnpm build",
 		"test": "vitest --passWithNoTests",
 		"test:ci": "vitest run --passWithNoTests",
 		"tsc": "tsc"
