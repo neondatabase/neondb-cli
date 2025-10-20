@@ -63,6 +63,7 @@ export function prepEnv(dotEnvFile: string, dotEnvKey: string) {
 			outro(messages.envKeyExistsExit);
 			process.exit(0);
 		}
+
 		return;
 	} catch (error) {
 		// getDotEnvContent will create empty file if it doesn't exist
