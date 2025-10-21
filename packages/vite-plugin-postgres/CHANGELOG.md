@@ -1,5 +1,17 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.3.2
+
+### Patch Changes
+
+- 9978eb4: Fix existing settings check.
+
+  - Env preparation was wrongfully checking only for default variable and file name.
+  - `--yes` flag was supressing other flags. Now it's possible to override promptless path.
+
+- Updated dependencies [9978eb4]
+  - neondb@0.8.2
+
 ## 0.3.1
 
 ### Patch Changes
