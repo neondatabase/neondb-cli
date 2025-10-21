@@ -57,7 +57,9 @@ Options:
   -s, --seed      Path to the seed (.sql) file (default: "${
 		DEFAULTS.seed?.path || "none"
   }")
-  -p, --prefix    Prefix for public environment variables (default: "${DEFAULTS.envPrefix}")
+  -p, --prefix    Prefix for public environment variables (default: "${
+		DEFAULTS.envPrefix
+  }")
   -h, --help      Show this help message
 `);
 		process.exit(0);

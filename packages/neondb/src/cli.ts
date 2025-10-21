@@ -11,19 +11,12 @@ import { prepEnv } from "./lib/utils/fs.js";
 import { validateEnvKey, validateEnvPath } from "./lib/utils/validate.js";
 
 async function main() {
-	const {
-		command,
-		env: flagEnvPath,
-		key: flagEnvKey,
-		seed: flagSeedPath,
-		prefix: flagPrefix,
-		yes: shouldUseDefaults,
-	} = getArgs();
+	const { command, yes: shouldUseDefaults, ...flags } = getArgs();
 
 	// Handle claim command
 	if (command === "claim") {
-		const envPath = flagEnvPath || DEFAULTS.dotEnvPath;
-		const envPrefix = flagPrefix || DEFAULTS.envPrefix;
+		const envPath = flags.env || DEFAULTS.dotEnvKey;
+		const envPrefix = flags.prefix || DEFAULTS.envPrefix;
 		await claim(envPath, envPrefix);
 		return;
 	}
@@ -36,34 +29,38 @@ async function main() {
 	const userInput: Partial<Defaults> = {};
 
 	if (shouldUseDefaults) {
-		prepEnv(DEFAULTS.dotEnvPath, DEFAULTS.dotEnvKey);
+		const envPath = flags.env || DEFAULTS.dotEnvPath;
+		const envKey = flags.key || DEFAULTS.dotEnvKey;
+		const envPrefix = flags.prefix || DEFAULTS.envPrefix;
+
+		prepEnv(envPath, envKey);
 		s.start(messages.generating);
 
-		const seedConfig = flagSeedPath
-			? { type: "sql-script" as const, path: flagSeedPath }
+		const seedConfig = flags.seed
+			? { type: "sql-script" as const, path: flags.seed }
 			: DEFAULTS.seed;
 
 		await instantNeon({
-			dotEnvFile: DEFAULTS.dotEnvPath,
-			dotEnvKey: DEFAULTS.dotEnvKey,
+			dotEnvFile: envPath,
+			dotEnvKey: envKey,
 			referrer: "npm:neondb/cli",
 			seed: seedConfig,
-			envPrefix: flagPrefix || DEFAULTS.envPrefix,
+			envPrefix: envPrefix,
 		});
 	} else {
 		/**
 		 * Get Env file path (e.g.: .env)
 		 */
-		if (flagEnvPath) {
-			const isEnvPathInvalid = validateEnvPath(flagEnvPath);
+		if (flags.env) {
+			const isEnvPathInvalid = validateEnvPath(flags.env);
 
 			if (isEnvPathInvalid) {
 				log.error(isEnvPathInvalid.message);
 				process.exit(1);
 			}
 
-			log.step(messages.info.defaultEnvFilePath(flagEnvPath));
-			userInput.dotEnvPath = flagEnvPath;
+			log.step(messages.info.defaultEnvFilePath(flags.env));
+			userInput.dotEnvPath = flags.env;
 		} else {
 			userInput.dotEnvPath = (await text({
 				message: messages.questions.dotEnvFilePath,
@@ -86,14 +83,14 @@ async function main() {
 		}
 
 		// Always set dotEnvKey from flag if present
-		if (flagEnvKey) {
-			const isEnvKeyInvalid = validateEnvKey(flagEnvKey);
+		if (flags.key) {
+			const isEnvKeyInvalid = validateEnvKey(flags.key);
 			if (isEnvKeyInvalid) {
 				log.error(isEnvKeyInvalid.message);
 				process.exit(1);
 			}
-			log.step(messages.info.defaultEnvKey(flagEnvKey));
-			userInput.dotEnvKey = flagEnvKey;
+			log.step(messages.info.defaultEnvKey(flags.key));
+			userInput.dotEnvKey = flags.key;
 		}
 
 		// Prompt for dotEnvKey if not set by flag
@@ -116,7 +113,7 @@ async function main() {
 			}
 		}
 
-		if (!flagSeedPath) {
+		if (!flags.seed) {
 			userInput.seed = {
 				type: "sql-script",
 				path: await text({
@@ -130,14 +127,14 @@ async function main() {
 		} else {
 			userInput.seed = {
 				type: "sql-script",
-				path: flagSeedPath,
+				path: flags.seed,
 			};
 		}
 
 		// Always set envPrefix from flag if present
-		if (flagPrefix) {
-			log.step(messages.info.defaultPrefix(flagPrefix));
-			userInput.envPrefix = flagPrefix;
+		if (flags.prefix) {
+			log.step(messages.info.defaultPrefix(flags.prefix));
+			userInput.envPrefix = flags.prefix;
 		}
 
 		// Prompt for envPrefix if not set by flag
