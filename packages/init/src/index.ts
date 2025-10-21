@@ -3,15 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
-import {
-	confirm,
-	intro,
-	isCancel,
-	log,
-	outro,
-	select,
-	spinner,
-} from "@clack/prompts";
+import { intro, isCancel, log, outro, select, spinner } from "@clack/prompts";
 
 const execAsync = promisify(exec);
 
@@ -45,9 +37,10 @@ async function ensureNeonctlAuth(): Promise<boolean> {
 		await new Promise<void>((resolve, reject) => {
 			const meProcess = spawn(
 				"npx",
-				["-y", "neon", "me", "--output", "json", "--no-analytics"],
+				["-y", "neonctl", "me", "--output", "json", "--no-analytics"],
 				{
 					stdio: "inherit", // Shows OAuth URL and prompts to the user
+					shell: true, // Run through cmd.exe on Windows for proper npm command resolution
 				},
 			);
 
@@ -152,7 +145,7 @@ async function createApiKeyFromNeonctl(): Promise<string | null> {
 async function fetchOrganizations(): Promise<NeonOrganization[]> {
 	try {
 		const { stdout } = await execAsync(
-			"npx -y neon orgs list --output json --no-analytics",
+			"npx -y neonctl orgs list --output json --no-analytics",
 			{ maxBuffer: 1024 * 1024 },
 		);
 
@@ -176,10 +169,10 @@ async function fetchOrganizations(): Promise<NeonOrganization[]> {
 }
 
 /**
- * Gets or creates the .cursor/mcp.json configuration
+ * Gets or creates the MCP configuration for a given platform
  */
-function getMCPConfig(cursorDir: string): MCPConfig {
-	const mcpConfigPath = resolve(cursorDir, "mcp.json");
+function getMCPConfig(configDir: string, filename: string): MCPConfig {
+	const mcpConfigPath = resolve(configDir, filename);
 
 	if (existsSync(mcpConfigPath)) {
 		try {
@@ -187,7 +180,7 @@ function getMCPConfig(cursorDir: string): MCPConfig {
 			return JSON.parse(content);
 		} catch (_error) {
 			log.warn(
-				"Failed to parse existing mcp.json. Creating a new configuration.",
+				`Failed to parse existing ${filename}. Creating a new configuration.`,
 			);
 			return { mcpServers: {} };
 		}
@@ -197,13 +190,17 @@ function getMCPConfig(cursorDir: string): MCPConfig {
 }
 
 /**
- * Writes the MCP configuration to .cursor/mcp.json
+ * Writes the MCP configuration to the specified config file
  */
-function writeMCPConfig(cursorDir: string, config: MCPConfig): void {
-	const mcpConfigPath = resolve(cursorDir, "mcp.json");
+function writeMCPConfig(
+	configDir: string,
+	config: MCPConfig,
+	filename: string,
+): void {
+	const mcpConfigPath = resolve(configDir, filename);
 
-	if (!existsSync(cursorDir)) {
-		mkdirSync(cursorDir, { recursive: true });
+	if (!existsSync(configDir)) {
+		mkdirSync(configDir, { recursive: true });
 	}
 
 	writeFileSync(mcpConfigPath, JSON.stringify(config, null, 2), "utf-8");
@@ -303,11 +300,59 @@ ${content}`;
 	}
 }
 
+type Platform = "cursor" | "claude-code" | "both";
+
 /**
- * Installs Neon's MCP Server by configuring it globally in ~/.cursor/mcp.json
+ * Gets the appropriate config directory and file path for Cursor
+ */
+function getCursorConfig(homeDir: string) {
+	return {
+		dir: resolve(homeDir, ".cursor"),
+		file: "mcp.json",
+	};
+}
+
+/**
+ * Checks if the claude CLI is available
+ */
+async function isClaudeCLIAvailable(): Promise<boolean> {
+	try {
+		await execAsync("claude --version");
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Adds Neon MCP Server using the claude CLI
+ */
+async function addMCPServerViaCLI(apiKey: string): Promise<boolean> {
+	try {
+		// Remove existing server if it exists
+		try {
+			await execAsync("claude mcp remove Neon");
+		} catch {
+			// Ignore if server doesn't exist
+		}
+
+		// Add the Neon MCP server
+		const command = `claude mcp add Neon npx -- -y @neondatabase/mcp-server-neon start ${apiKey}`;
+		await execAsync(command);
+		return true;
+	} catch (error) {
+		log.error(
+			`Failed to add MCP server via claude CLI: ${error instanceof Error ? error.message : "Unknown error"}`,
+		);
+		return false;
+	}
+}
+
+/**
+ * Installs Neon's MCP Server by configuring it globally
  * Returns the selected organization ID if one was chosen
  */
-async function installMCPServer(): Promise<{
+async function installMCPServer(platform: Platform = "cursor"): Promise<{
 	success: boolean;
 	orgId?: string;
 }> {
@@ -316,30 +361,25 @@ async function installMCPServer(): Promise<{
 		log.error("Could not determine home directory");
 		return { success: false };
 	}
-	const cursorDir = resolve(homeDir, ".cursor");
-	const config = getMCPConfig(cursorDir);
 
-	// Check if already configured
-	const alreadyConfigured = Boolean(config.mcpServers.Neon);
-	let shouldReconfigure = false;
-
-	if (alreadyConfigured) {
-		log.info("Neon MCP Server is already configured globally");
-		const response = await confirm({
-			message: "Would you like to reconfigure it?",
-			initialValue: false,
-		});
-
-		if (isCancel(response)) {
+	// Check if claude CLI is available for claude-code or both platforms
+	if (platform === "claude-code" || platform === "both") {
+		const claudeCLIAvailable = await isClaudeCLIAvailable();
+		if (!claudeCLIAvailable) {
+			log.error("Claude CLI is not available.");
+			log.info(
+				"Please install it from: https://docs.anthropic.com/en/docs/claude-code",
+			);
 			return { success: false };
 		}
-
-		shouldReconfigure = response as boolean;
-
-		if (!shouldReconfigure) {
-			log.info("Keeping existing global configuration.");
-		}
 	}
+
+	const platformName =
+		platform === "both"
+			? "Cursor and Claude Code"
+			: platform === "cursor"
+				? "Cursor"
+				: "Claude Code";
 
 	// Step 1: Ensure authentication (will trigger OAuth if needed)
 	log.step("Authenticating with Neon...");
@@ -395,11 +435,6 @@ async function installMCPServer(): Promise<{
 		log.info("Using personal account");
 	}
 
-	// If user chose not to reconfigure, we're done (but we still return the org ID)
-	if (alreadyConfigured && !shouldReconfigure) {
-		return { success: true, orgId: selectedOrgId };
-	}
-
 	// Step 3: Create API key using the OAuth token
 	const s = spinner();
 	s.start("Creating API key...");
@@ -416,25 +451,47 @@ async function installMCPServer(): Promise<{
 		return { success: false };
 	}
 
-	// Step 4: Configure Neon MCP Server
-	const args = ["-y", "@neondatabase/mcp-server-neon", "start", apiKey];
+	// Step 4: Configure Neon MCP Server for each platform
+	const configSpinner = spinner();
+	configSpinner.start(`Configuring ${platformName}...`);
 
-	config.mcpServers.Neon = {
-		command: "npx",
-		args,
-	};
-
-	// Write configuration
 	try {
-		writeMCPConfig(cursorDir, config);
-		log.success(
-			`Neon MCP Server configured globally at ${resolve(cursorDir, "mcp.json")}`,
-		);
+		// Configure Cursor
+		if (platform === "cursor" || platform === "both") {
+			const cursorConfig = getCursorConfig(homeDir);
+			const config = getMCPConfig(cursorConfig.dir, cursorConfig.file);
+
+			// Use npx.cmd on Windows for better compatibility
+			const npxCommand = process.platform === "win32" ? "npx.cmd" : "npx";
+
+			config.mcpServers.Neon = {
+				command: "npx",
+				args: ["-y", "@neondatabase/mcp-server-neon", "start", apiKey],
+			};
+
+			writeMCPConfig(cursorConfig.dir, config, cursorConfig.file);
+			log.success(
+				`Neon MCP Server configured for Cursor at ${resolve(cursorConfig.dir, cursorConfig.file)}`,
+			);
+		}
+
+		// Configure Claude Code using CLI
+		if (platform === "claude-code" || platform === "both") {
+			const cliSuccess = await addMCPServerViaCLI(apiKey);
+			if (!cliSuccess) {
+				configSpinner.stop("Failed to configure Claude Code");
+				return { success: false };
+			}
+			log.success("Neon MCP Server configured for Claude Code");
+		}
+
+		configSpinner.stop("Configuration complete ✓");
 		log.info("This configuration will be available in all your projects.");
 		return { success: true, orgId: selectedOrgId };
 	} catch (error) {
+		configSpinner.stop("Configuration failed");
 		log.error(
-			`Failed to write global configuration: ${error instanceof Error ? error.message : "Unknown error"}`,
+			`Failed to write configuration: ${error instanceof Error ? error.message : "Unknown error"}`,
 		);
 		return { success: false };
 	}
@@ -450,8 +507,30 @@ export async function init(): Promise<void> {
 		"This will set up your project with Neon's MCP Server and AI coding best practices.",
 	);
 
+	// Ask user which platform they want to configure
+	const platformChoice = await select({
+		message: "Which AI coding assistant(s) would you like to configure?",
+		options: [
+			{ value: "cursor", label: "Cursor" },
+			{
+				value: "claude-code",
+				label: "Claude Code (requires claude CLI)",
+			},
+			{ value: "both", label: "Both Cursor and Claude Code" },
+		],
+		initialValue: "cursor",
+	});
+
+	if (isCancel(platformChoice)) {
+		outro("❌ Initialization cancelled.");
+		process.exit(1);
+	}
+
+	const selectedPlatform = platformChoice as Platform;
+
 	log.step("Step 1/2: Configuring Neon MCP Server");
-	const { success: mcpSuccess, orgId } = await installMCPServer();
+	const { success: mcpSuccess, orgId } =
+		await installMCPServer(selectedPlatform);
 
 	if (!mcpSuccess) {
 		outro("❌ Initialization cancelled or failed.");
@@ -473,9 +552,15 @@ export async function init(): Promise<void> {
 	console.log("");
 	console.log("Next steps:");
 	console.log("");
-	console.log(
-		"    1. Restart your AI coding assistant (Cursor, Windsurf, etc.)",
-	);
+
+	const assistantName =
+		selectedPlatform === "both"
+			? "Cursor or Claude Code"
+			: selectedPlatform === "cursor"
+				? "Cursor"
+				: "Claude Code";
+
+	console.log(`    1. Restart ${assistantName}`);
 	console.log("");
 	console.log("    2. Type this in your AI chat to begin:");
 	console.log("");
