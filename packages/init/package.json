@@ -1,6 +1,6 @@
 {
 	"name": "neon-init",
-	"version": "0.5.0",
+	"version": "0.6.0",
 	"description": "Initialize Neon projects",
 	"keywords": [
 		"neon",
