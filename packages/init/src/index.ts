@@ -45,9 +45,10 @@ async function ensureNeonctlAuth(): Promise<boolean> {
 		await new Promise<void>((resolve, reject) => {
 			const meProcess = spawn(
 				"npx",
-				["-y", "neon", "me", "--output", "json", "--no-analytics"],
+				["-y", "neonctl", "me", "--output", "json", "--no-analytics"],
 				{
 					stdio: "inherit", // Shows OAuth URL and prompts to the user
+					shell: true, // Run through cmd.exe on Windows for proper npm command resolution
 				},
 			);
 
@@ -152,7 +153,7 @@ async function createApiKeyFromNeonctl(): Promise<string | null> {
 async function fetchOrganizations(): Promise<NeonOrganization[]> {
 	try {
 		const { stdout } = await execAsync(
-			"npx -y neon orgs list --output json --no-analytics",
+			"npx -y neonctl orgs list --output json --no-analytics",
 			{ maxBuffer: 1024 * 1024 },
 		);
 
@@ -210,15 +211,15 @@ function writeMCPConfig(cursorDir: string, config: MCPConfig): void {
 }
 
 /**
- * Gets the AGENTS.md template with Neon-specific best practices
+ * Gets the neon.md template with Neon-specific best practices
  */
-function getAgentsMdTemplate(): string {
+function getNeonMdTemplate(): string {
 	const templatePath = resolve(__dirname, "../src/agents-template.md");
 	return readFileSync(templatePath, "utf-8");
 }
 
 /**
- * Generates the organization configuration section for AGENTS.md
+ * Generates the organization configuration section for neon.md
  */
 function getOrgConfigSection(orgId: string): string {
 	return `## Neon Project Configuration
@@ -239,59 +240,100 @@ When using any Neon MCP tools or API calls, always pass this \`org_id\` paramete
 }
 
 /**
- * Creates or updates AGENTS.md with Neon-specific best practices
+ * Gets the reference text to add to AGENTS.md
  */
-async function createAgentsMd(orgId?: string): Promise<boolean> {
+function getAgentsNeonReference(): string {
+	return `## Working with Neon Database
+
+When the user asks to **"Get started with Neon"** or something similar, refer to the detailed guidelines in \`neon.md\`.`;
+}
+
+/**
+ * Creates or updates neon.md with detailed Neon guidelines
+ */
+async function createNeonMd(orgId?: string): Promise<boolean> {
+	const neonMdPath = resolve(process.cwd(), "neon.md");
+
+	try {
+		// Check if neon.md already exists
+		if (existsSync(neonMdPath)) {
+			log.info("neon.md already exists");
+			const response = await confirm({
+				message:
+					"Replace existing neon.md with updated guidelines? (suggested)",
+				initialValue: true,
+			});
+
+			if (isCancel(response)) {
+				return false;
+			}
+
+			if (!response) {
+				log.info("Keeping existing neon.md");
+				return true;
+			}
+		}
+
+		let content = "";
+
+		// Add org ID context if provided
+		if (orgId) {
+			content += getOrgConfigSection(orgId);
+		}
+
+		content += getNeonMdTemplate();
+
+		writeFileSync(neonMdPath, content, "utf-8");
+		log.success(
+			`Created neon.md with detailed guidelines at ${neonMdPath}`,
+		);
+		return true;
+	} catch (error) {
+		log.error(
+			`Failed to create neon.md: ${error instanceof Error ? error.message : "Unknown error"}`,
+		);
+		return false;
+	}
+}
+
+/**
+ * Creates or updates AGENTS.md with a reference to neon.md
+ */
+async function createAgentsMd(): Promise<boolean> {
 	const agentsPath = resolve(process.cwd(), "AGENTS.md");
 
 	try {
+		const neonReference = getAgentsNeonReference();
+
 		// Check if AGENTS.md already exists
 		if (existsSync(agentsPath)) {
 			// Append to existing file
 			const existingContent = readFileSync(agentsPath, "utf-8");
 
 			// Check if Neon section already exists to avoid duplicates
-			if (existingContent.includes("## Neon Database Guidelines")) {
-				log.info("Neon guidelines already exist in AGENTS.md");
+			if (existingContent.includes("## Working with Neon Database")) {
+				log.info("Neon reference already exists in AGENTS.md");
 				return true;
 			}
 
 			const separator = "\n\n---\n\n";
-			let content = "";
-
-			// Add org ID context if provided
-			if (orgId) {
-				content += getOrgConfigSection(orgId);
-			}
-
-			content += getAgentsMdTemplate();
-
-			const updatedContent = existingContent + separator + content;
+			const updatedContent = existingContent + separator + neonReference;
 			writeFileSync(agentsPath, updatedContent, "utf-8");
 			log.success(
-				`Appended Neon best practices to existing AGENTS.md at ${agentsPath}`,
+				`Appended Neon reference to existing AGENTS.md at ${agentsPath}`,
 			);
 		} else {
 			// Create new file with proper header
-			let content = "";
-
-			// Add org ID context if provided
-			if (orgId) {
-				content += getOrgConfigSection(orgId);
-			}
-
-			content += getAgentsMdTemplate();
-
 			const newContent = `# AGENTS.md
 
 This file provides guidance to AI coding assistants when working with code in this project.
 
 ---
 
-${content}`;
+${neonReference}`;
 			writeFileSync(agentsPath, newContent, "utf-8");
 			log.success(
-				`Created AGENTS.md with Neon best practices at ${agentsPath}`,
+				`Created AGENTS.md with Neon reference at ${agentsPath}`,
 			);
 		}
 		return true;
@@ -326,8 +368,8 @@ async function installMCPServer(): Promise<{
 	if (alreadyConfigured) {
 		log.info("Neon MCP Server is already configured globally");
 		const response = await confirm({
-			message: "Would you like to reconfigure it?",
-			initialValue: false,
+			message: "Would you like to reconfigure it? (suggested)",
+			initialValue: true,
 		});
 
 		if (isCancel(response)) {
@@ -446,11 +488,29 @@ async function installMCPServer(): Promise<{
 export async function init(): Promise<void> {
 	intro("🚀 Neon Project Initialization");
 
+	// Check if Cursor is installed
+	const homeDir = process.env.HOME || process.env.USERPROFILE;
+	if (!homeDir) {
+		log.error("Could not determine home directory");
+		process.exit(1);
+	}
+
+	const cursorDir = resolve(homeDir, ".cursor");
+	if (!existsSync(cursorDir)) {
+		log.warn("This tool currently only supports Cursor IDE.");
+		log.info("We'd love to hear which IDE you're using!");
+		log.info("");
+		log.info("Please send your feedback to: init-feedback@neon.tech");
+		log.info("");
+		outro("❌ Cursor IDE is required to continue.");
+		process.exit(1);
+	}
+
 	log.info(
 		"This will set up your project with Neon's MCP Server and AI coding best practices.",
 	);
 
-	log.step("Step 1/2: Configuring Neon MCP Server");
+	log.step("Step 1/3: Configuring Neon MCP Server...");
 	const { success: mcpSuccess, orgId } = await installMCPServer();
 
 	if (!mcpSuccess) {
@@ -458,8 +518,15 @@ export async function init(): Promise<void> {
 		process.exit(1);
 	}
 
-	log.step("Step 2/2: Creating AGENTS.md with Neon best practices");
-	const agentsSuccess = await createAgentsMd(orgId);
+	log.step("Step 2/3: Creating neon.md with detailed guidelines...");
+	const neonMdSuccess = await createNeonMd(orgId);
+
+	if (!neonMdSuccess) {
+		log.warn("Failed to create neon.md, but MCP Server is configured.");
+	}
+
+	log.step("Step 3/3: Creating AGENTS.md for Cursor...");
+	const agentsSuccess = await createAgentsMd();
 
 	if (!agentsSuccess) {
 		log.warn("Failed to create AGENTS.md, but MCP Server is configured.");
@@ -473,11 +540,9 @@ export async function init(): Promise<void> {
 	console.log("");
 	console.log("Next steps:");
 	console.log("");
-	console.log(
-		"    1. Restart your AI coding assistant (Cursor, Windsurf, etc.)",
-	);
+	console.log("    1. Restart Cursor");
 	console.log("");
-	console.log("    2. Type this in your AI chat to begin:");
+	console.log("    2. Type this in your Cursor chat to begin:");
 	console.log("");
 	console.log("       ┌──────────────────────────────────────┐");
 	console.log("       │                                      │");
@@ -486,8 +551,9 @@ export async function init(): Promise<void> {
 	console.log("       └──────────────────────────────────────┘");
 	console.log("");
 	console.log(
-		"Your AI assistant now has access to Neon best practices via AGENTS.md",
+		"Your AI assistant now has access to Neon best practices via neon.md",
 	);
+	console.log("(referenced in AGENTS.md for easy discovery)");
 	console.log("");
 	console.log(
 		"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
