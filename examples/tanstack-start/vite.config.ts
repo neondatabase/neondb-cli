@@ -11,7 +11,7 @@ const config = defineConfig({
         type: "sql-script",
         path: "./db/init.sql",
       },
-      referrer: "github:neondatabase/vite-plugin-db/examples/tanstack-start",
+      referrer: "github:neondb-cli/examples/tanstack-start",
     }),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({

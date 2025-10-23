@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
 	plugins: [
 		postgres({
-			referrer: "github:neondatabase/vite-plugin-db/examples/react-spa",
+			referrer: "github:neondb-cli/examples/react-spa",
 		}),
 		react(),
 	],
