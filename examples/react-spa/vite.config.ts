@@ -1,20 +1,11 @@
-import postgresPlugin from "@neondatabase/vite-plugin-postgres";
+import { postgres } from "vite-plugin-db";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
 	plugins: [
-		postgresPlugin({
-			/**
-			 * @todo
-			 * [IMPORTANT] This helps us understand where DB creations on Neon come from.
-			 * Please change this as soon as you can, to add your project name:
-			 *
-			 * @example
-			 * ""github:org/your-repo"
-			 * "npm:your-package"
-			 */
-			referrer: "github:neondatabase/neondb/react-spa",
+		postgres({
+			referrer: "github:neondatabase/vite-plugin-db/examples/react-spa",
 		}),
 		react(),
 	],

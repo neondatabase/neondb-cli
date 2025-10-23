@@ -1,109 +1,51 @@
-# Vite-Plugin-Postgres by Neon
+# ⚠️ DEPRECATED: @neondatabase/vite-plugin-postgres
 
-This Vite plugin instantly provisions a Postgres instance (via Neon) and injects the connection string into your `.env` file, so you can start developing immediately.
+**This package has been renamed to [`vite-plugin-db`](https://www.npmjs.com/package/vite-plugin-db).**
 
-## How it works
+## Migration Guide
 
--   On first `vite dev`, the plugin checks for a `DATABASE_URL` (or your configured key) in your `.env`.
--   If not found, it creates a claimable Neon database and writes the connection string to your `.env`.
--   The plugin is a noop in production builds.
+Please update your dependencies to use the new package name:
 
-## Installation
+### Installation
 
-```sh
-npm add @neondatabase/vite-plugin-postgres
+**Before:**
+```bash
+npm install @neondatabase/vite-plugin-postgres
+# or
+pnpm add @neondatabase/vite-plugin-postgres
 ```
 
-## Usage
+**After:**
+```bash
+npm install vite-plugin-db
+# or
+pnpm add vite-plugin-db
+```
 
-Add the plugin as the first entry in your Vite config:
+### Usage in vite.config.ts
 
-```ts
-import postgresPlugin from "@neondatabase/vite-plugin-postgres";
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+**Before:**
+```typescript
+import { postgres } from '@neondatabase/vite-plugin-postgres';
 
 export default defineConfig({
-	plugins: [postgresPlugin(), react()],
+  plugins: [postgres()],
 });
 ```
 
-## Configuration
+**After:**
+```typescript
+import { postgres } from 'vite-plugin-db';
 
-You can pass an options object to customize the `.env` file path, the environment variable name, and database seeding:
-
-```ts
-postgresPlugin({
-	env: ".env.local", // Path to your .env file (default: ".env")
-	envKey: "DATABASE_URL", // Name of the env variable (default: "DATABASE_URL")
-	envPrefix: "VITE_", // Prefix for public env vars (default: "VITE_")
-	seed: {
-		type: "sql-script",
-		path: "./schema.sql", // Path to SQL file to execute after database creation
-	},
+export default defineConfig({
+  plugins: [postgres()],
 });
 ```
 
-| Option      | Type   | Description                            | Default        |
-| ----------- | ------ | -------------------------------------- | -------------- |
-| `env`       | string | Path to the `.env` file                | `.env`         |
-| `envKey`    | string | Name of the environment variable       | `DATABASE_URL` |
-| `envPrefix` | string | Prefix for public environment variables| `VITE_`        |
-| `seed`      | object | Configuration for seeding the database | -              |
+## Why the Rename?
 
-### seed Options
+The package was renamed to `vite-plugin-db` to align with the CLI package rename from `neondb` to `get-db`, providing a more consistent and intuitive naming scheme.
 
-| Property | Type   | Description                                     | Default |
-| -------- | ------ | ----------------------------------------------- | ------- |
-| `type`   | string | Type of seeding (currently only `"sql-script"`) | -       |
-| `path`   | string | Path to SQL file to execute after creation      | -       |
+## Support
 
-## What gets written
-
--   The plugin writes both a direct connection string and a pooled connection string to your `.env`.
--   It also provides a claim URL (valid for 7 days) to take ownership of the database with the configured `envPrefix` (defaults to `VITE_` for Vite projects).
--   If `seed` is configured, the specified SQL script will be executed after database creation.
-
-## Type Definitions
-
-```ts
-interface PostgresPluginOptions {
-	env: string; // Path to the .env file
-	envKey: string; // Name of the environment variable
-	envPrefix: string; // Prefix for public environment variables
-	seed?: {
-		type: "sql-script";
-		path: string;
-	};
-}
-```
-
----
-
-## FAQ
-
-<details>
-<summary>What if I already have a <code>DATABASE_URL</code> env var?</summary>
- 
-The plugin will not overwrite it. Remove the variable if you want to generate a new Neon database.
-
-</details>
-
-<details>
-<summary>Is this safe to run on CI when building for production?</summary>
-
-The plugin is a noop in production mode (`vite build`), so it won't create databases or modify your `.env` in CI.
-
-</details>
-
-<details>
-<summary>Can I use this with other frameworks?</summary>
-
-Yes, this plugin is framework-agnostic. The example uses React, but you can use it with any Vite-compatible framework.
-</sumamry>
-
-## Advanced
-
-If you want to generate claimable databases outside of Vite, use the [`neondb`](https://github.com/neondatabase/neondb-cli/tree/main/packages/neondb) library directly.
-
-> See [documentation on Neon](https://neon.com/docs/reference/neon-launchpad) for more.
+For issues, questions, or contributions, please visit the [repository](https://github.com/neondatabase/neondb-cli).

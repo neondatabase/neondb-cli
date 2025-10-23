@@ -1,13 +1,12 @@
 {
-	"name": "neondb",
+	"name": "get-db",
 	"version": "0.8.2",
-	"description": "[DEPRECATED] This package has been renamed to 'get-db'. Please use 'get-db' instead.",
+	"description": "create a claimable Neon database in seconds!",
 	"keywords": [
 		"neon",
 		"database",
 		"postgres",
-		"cli",
-		"deprecated"
+		"cli"
 	],
 	"repository": {
 		"type": "git",
@@ -21,16 +20,16 @@
 	"type": "module",
 	"main": "dist/index.js",
 	"bin": {
-		"neondb": "dist/cli.js"
+		"get-db": "dist/cli.js"
 	},
 	"exports": {
 		"./sdk": {
-			"import": "./dist/lib/index.js",
-			"types": "./dist/lib/index.d.ts"
+			"import": "./dist/lib/instant-neon.js",
+			"types": "./dist/lib/instant-neon.d.ts"
 		},
 		"./launchpad": {
-			"import": "./dist/lib/index.js",
-			"types": "./dist/lib/index.d.ts"
+			"import": "./dist/lib/instant-neon.js",
+			"types": "./dist/lib/instant-neon.d.ts"
 		}
 	},
 	"files": [
@@ -42,15 +41,19 @@
 		"build": "tsc --noEmit && tsdown",
 		"test": "vitest --passWithNoTests",
 		"test:ci": "vitest run --passWithNoTests",
-		"tsc": "tsc"
+		"tsc": "tsc",
+		"dry:run:prompt": "pnpm build && node dist/cli.js",
+		"dry:run": "pnpm build && node dist/cli.js --yes"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "3.0.9",
+		"console-fail-test": "0.5.0",
+		"husky": "9.1.7",
+		"lint-staged": "15.5.0",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
-
 	},
 	"packageManager": "pnpm@10.4.0",
 	"engines": {
@@ -60,7 +63,11 @@
 		"provenance": false
 	},
 	"dependencies": {
-		"get-db": "workspace:*"
-	},
-	"deprecated": "This package has been renamed to 'get-db'. Please update your dependencies."
+		"@clack/prompts": "0.10.1",
+		"@neondatabase/serverless": "^1.0.1",
+		"dotenv": "^16.6.1",
+		"gradient-string": "^3.0.0",
+		"open": "^10.2.0",
+		"p-wait-for": "^5.0.2"
+	}
 }

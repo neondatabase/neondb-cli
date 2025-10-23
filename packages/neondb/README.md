@@ -1,89 +1,45 @@
-<h1 align="center">Neondb</h1>
+# ⚠️ DEPRECATED: neondb
 
-<p align="center">CLI to help you hit the ground running without any sign-up. Instantiate a database with a single-command!</p>
+**This package has been renamed to [`get-db`](https://www.npmjs.com/package/get-db).**
 
-## Usage
+## Migration Guide
 
-```shell
-npx neondb
+Please update your dependencies to use the new package name:
+
+### CLI Usage
+
+**Before:**
+```bash
+npm install -g neondb
+neondb
 ```
 
----
-
-## CLI Usage
-
-```sh
-npx neondb [options]
+**After:**
+```bash
+npm install -g get-db
+get-db
 ```
 
-Options:
+### Programmatic Usage
 
--   `-y, --yes` Use defaults, skip prompts
--   `-e, --env` Path to .env file (default: ./.env)
--   `-k, --key` Env key for connection string (default: DATABASE_URL)
--   `-p, --prefix` Prefix for public env vars (default: PUBLIC\_)
--   `-s, --seed` Path to SQL file to execute after database creation
--   `-h, --help` Show help
-
----
-
-## SDK/API Usage
-
-Import the SDK:
-
-```ts
-import { instantNeon } from "neondb/sdk";
+**Before:**
+```javascript
+import { instantNeon } from 'neondb/sdk';
 ```
 
-Create a claimable Neon Postgres database and save credentials to your .env:
-
-```ts
-await instantNeon({
-	dotEnvFile: ".env",
-	dotEnvKey: "DATABASE_URL",
-	envPrefix: "PUBLIC_",
-	// This below is to help us understand where usage comes from.
-	// If you're publishing a library, we'd love that you re-expose a
-	// referrer parameter in your lib and set this to `npm:your-lib-package-name|${referrer}`
-	// So we can understand the chain better and give you all the credit you deserve!
-	referrer: "npm:your-cli-package-name",
-});
+**After:**
+```javascript
+import { instantNeon } from 'get-db/sdk';
 ```
 
-| Option     | Default        | Description                        | Validation            |
-| ---------- | -------------- | ---------------------------------- | --------------------- |
-| dotEnvFile | ".env"         | Path to env file                   | letters and `.`       |
-| dotEnvKey  | "DATABASE_URL" | Environment variable name          | `SCREAMING_SNAKE_CASE |
-| envPrefix  | "PUBLIC\_"     | Prefix for public environment vars | -                     |
-| referrer   | "unknown"      | Referrer identifier                | -                     |
+### Vite Plugin
 
-> **Note**: The Vite plugin uses `VITE_` as the default `envPrefix` to match Vite's convention for client-side environment variables.
+The Vite plugin package (`@neondatabase/vite-plugin-postgres`) has been updated to use `get-db` internally. Make sure to update to the latest version.
 
-Returns:
+## Why the Rename?
 
-| Property         | Description              |
-| ---------------- | ------------------------ |
-| `databaseUrl`    | connection string        |
-| `poolerUrl`      | pooled connection string |
-| `claimUrl`       | claim link               |
-| `claimExpiresAt` | expiration date          |
+The package was renamed to `get-db` to better reflect its purpose and improve discoverability.
 
----
+## Support
 
-## Types
-
-```ts
-// Params for instantNeon
-interface InstantNeonParams {
-	dotEnvFile?: string;
-	dotEnvKey?: string;
-	envPrefix?: string;
-	referrer?: string;
-}
-```
-
-> See [documentation on Neon](https://neon.com/docs/reference/neon-launchpad) for more.
-
----
-
-This package was templated with [`create-typescript-app`](https://github.com/JoshuaKGoldberg/create-typescript-app) using the [Bingo engine](https://create.bingo).
+For issues, questions, or contributions, please visit the [get-db repository](https://github.com/neondatabase/neondb-cli).

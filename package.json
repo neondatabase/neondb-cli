@@ -3,8 +3,8 @@
 	"private": true,
 	"scripts": {
 		"bump": "changeset",
-		"build:cli": "pnpm --filter neondb build",
-		"build:plugin": "pnpm --filter vite-plugin-postgres build",
+		"build:cli": "pnpm --filter get-db build",
+		"build:plugin": "pnpm --filter vite-plugin-db build",
 		"build": "pnpm --recursive --filter='./packages/**' build",
 		"format": "biome check --error-on-warnings --write",
 		"lint:ci": "biome ci --error-on-warnings",
