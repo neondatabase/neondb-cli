@@ -27,7 +27,7 @@ export const instantNeon = async ({
 
 	const connString = await createClaimableDatabase(
 		dbId,
-		`npm:neondb|${referrer}`,
+		`npm:get-db|${referrer}`,
 	);
 	const poolerString = getPoolerString(connString);
 

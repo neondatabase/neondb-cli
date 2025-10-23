@@ -1,12 +1,12 @@
 {
-	"name": "neon-init",
-	"version": "0.6.0",
-	"description": "Initialize Neon projects",
+	"name": "get-db",
+	"version": "0.8.2",
+	"description": "create a claimable Neon database in seconds!",
 	"keywords": [
 		"neon",
 		"database",
 		"postgres",
-		"init"
+		"cli"
 	],
 	"repository": {
 		"type": "git",
@@ -20,36 +20,40 @@
 	"type": "module",
 	"main": "dist/index.js",
 	"bin": {
-		"neon-init": "dist/cli.js"
+		"get-db": "dist/cli.js"
 	},
 	"exports": {
-		".": {
-			"import": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+		"./sdk": {
+			"import": "./dist/lib/instant-neon.js",
+			"types": "./dist/lib/instant-neon.d.ts"
+		},
+		"./launchpad": {
+			"import": "./dist/lib/instant-neon.js",
+			"types": "./dist/lib/instant-neon.d.ts"
 		}
 	},
 	"files": [
 		"README.md",
 		"dist/",
-		"package.json",
-		"src/agents-template.md"
+		"package.json"
 	],
 	"scripts": {
 		"build": "tsc --noEmit && tsdown",
 		"test": "vitest --passWithNoTests",
 		"test:ci": "vitest run --passWithNoTests",
-		"tsc": "tsc"
+		"tsc": "tsc",
+		"dry:run:prompt": "pnpm build && node dist/cli.js",
+		"dry:run": "pnpm build && node dist/cli.js --yes"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "3.0.9",
 		"console-fail-test": "0.5.0",
+		"husky": "9.1.7",
+		"lint-staged": "15.5.0",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
-	},
-	"dependencies": {
-		"@clack/prompts": "0.10.1"
 	},
 	"packageManager": "pnpm@10.4.0",
 	"engines": {
@@ -57,5 +61,13 @@
 	},
 	"publishConfig": {
 		"provenance": false
+	},
+	"dependencies": {
+		"@clack/prompts": "0.10.1",
+		"@neondatabase/serverless": "^1.0.1",
+		"dotenv": "^16.6.1",
+		"gradient-string": "^3.0.0",
+		"open": "^10.2.0",
+		"p-wait-for": "^5.0.2"
 	}
 }
