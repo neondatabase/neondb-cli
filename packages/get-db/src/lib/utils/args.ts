@@ -42,7 +42,7 @@ export function getArgs() {
 
 	if (values.help) {
 		console.log(`
-Usage: neondb [command] [options]
+Usage: get-db [command] [options]
 
 Commands:
   (default)       Create a new database (default command)

@@ -43,7 +43,7 @@ async function main() {
 		await instantNeon({
 			dotEnvFile: envPath,
 			dotEnvKey: envKey,
-			referrer: "npm:neondb/cli",
+			referrer: "npm:get-db/cli",
 			seed: seedConfig,
 			envPrefix: envPrefix,
 		});
@@ -163,7 +163,7 @@ async function main() {
 		await instantNeon({
 			dotEnvFile: userInput.dotEnvPath,
 			dotEnvKey: userInput.dotEnvKey,
-			referrer: "npm:neondb/cli",
+			referrer: "npm:get-db/cli",
 			seed: userInput.seed,
 			envPrefix: userInput.envPrefix,
 		});

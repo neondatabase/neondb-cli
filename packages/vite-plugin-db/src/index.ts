@@ -32,7 +32,7 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 		...options,
 	} satisfies InstantNeonParams;
 	return {
-		name: "@neondatabase/vite-plugin-postgres",
+		name: "vite-plugin-db",
 		enforce: "pre",
 
 		async config({ root, envDir }, { mode }) {
@@ -68,7 +68,7 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 			await instantNeon({
 				dotEnvFile: envPath,
 				dotEnvKey: envKey,
-				referrer: `npm:@neondatabase/vite-plugin-postgres|${referrer}`,
+				referrer: `npm:vite-plugin-db|${referrer}`,
 				seed,
 				envPrefix,
 			});
