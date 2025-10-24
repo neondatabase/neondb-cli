@@ -1,5 +1,11 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.4.1
+
+### Patch Changes
+
+- vite-plugin-db@0.4.1
+
 ## 0.4.0
 
 ### Minor Changes
