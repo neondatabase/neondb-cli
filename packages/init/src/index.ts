@@ -12,6 +12,7 @@ import {
 	select,
 	spinner,
 } from "@clack/prompts";
+import { execa } from "execa";
 
 const execAsync = promisify(exec);
 
@@ -21,9 +22,8 @@ const __dirname = dirname(__filename);
 interface MCPConfig {
 	mcpServers: {
 		[key: string]: {
-			command: string;
-			args: string[];
-			env?: Record<string, string>;
+			url: string;
+			headers?: Record<string, string>;
 		};
 	};
 }
@@ -39,33 +39,14 @@ interface NeonOrganization {
  */
 async function ensureNeonctlAuth(): Promise<boolean> {
 	try {
-		// Use spawn to show OAuth URL if authentication is needed
-		const { spawn } = await import("node:child_process");
-
-		await new Promise<void>((resolve, reject) => {
-			const meProcess = spawn(
-				"npx",
-				["-y", "neonctl", "me", "--output", "json", "--no-analytics"],
-				{
-					stdio: "inherit", // Shows OAuth URL and prompts to the user
-					shell: true, // Run through cmd.exe on Windows for proper npm command resolution
-				},
-			);
-
-			meProcess.on("close", (code) => {
-				if (code === 0) {
-					resolve();
-				} else {
-					reject(
-						new Error(
-							`Authentication failed with exit code ${code}`,
-						),
-					);
-				}
-			});
-
-			meProcess.on("error", reject);
-		});
+		// Use execa to authenticate with neonctl
+		await execa(
+			"npx",
+			["-y", "neonctl", "me", "--output", "json", "--no-analytics"],
+			{
+				stdio: "inherit", // Shows OAuth URL and prompts to the user
+			},
+		);
 
 		return true;
 	} catch (error) {
@@ -459,11 +440,13 @@ async function installMCPServer(): Promise<{
 	}
 
 	// Step 4: Configure Neon MCP Server
-	const args = ["-y", "@neondatabase/mcp-server-neon", "start", apiKey];
-
+	// Using remote MCP server with API key authentication
+	// Ref: https://neon.com/docs/ai/neon-mcp-server#api-key-based-authentication
 	config.mcpServers.Neon = {
-		command: "npx",
-		args,
+		url: "https://mcp.neon.tech/mcp",
+		headers: {
+			Authorization: `Bearer ${apiKey}`,
+		},
 	};
 
 	// Write configuration
@@ -537,6 +520,10 @@ export async function init(): Promise<void> {
 	console.log(
 		"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
 	);
+	console.log("");
+	console.log("⚠️  The init command is still in its early stages.");
+	console.log("   We'd appreciate any feedback! Send us an email at:");
+	console.log("   init-feedback@neon.tech");
 	console.log("");
 	console.log("Next steps:");
 	console.log("");
