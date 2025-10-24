@@ -39,7 +39,7 @@ interface NeonOrganization {
  */
 async function ensureNeonctlAuth(): Promise<boolean> {
 	try {
-		// Use execa to show OAuth URL if authentication is needed
+		// Use execa to authenticate with neonctl
 		await execa(
 			"npx",
 			["-y", "neonctl", "me", "--output", "json", "--no-analytics"],
