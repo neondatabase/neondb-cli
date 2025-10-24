@@ -1,5 +1,16 @@
 # neondb
 
+## 0.9.0
+
+### Minor Changes
+
+- 759488b: New minor release for deprecation logs and new names
+
+### Patch Changes
+
+- Updated dependencies [759488b]
+  - get-db@0.9.0
+
 ## 0.8.2
 
 ### Patch Changes

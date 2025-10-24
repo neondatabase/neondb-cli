@@ -1,5 +1,13 @@
 # neon-init
 
+## 0.7.0
+
+### Minor Changes
+
+- 40cd439: - Use execa instead of spawn for Windows support
+  - Update copy for CLI output
+  - Install the remote MCP server for users
+
 ## 0.6.0
 
 ### Minor Changes
