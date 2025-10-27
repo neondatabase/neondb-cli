@@ -386,9 +386,6 @@ async function installMCPServer(): Promise<{
 		}
 
 		selectedOrgId = orgChoice.toString();
-		const selectedOrg = organizations.find(
-			(org) => org.id === selectedOrgId,
-		);
 	} else if (organizations.length === 1) {
 		// Only one org, auto-select it
 		selectedOrgId = organizations[0].id;
