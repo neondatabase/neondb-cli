@@ -339,7 +339,7 @@ async function installMCPServer(): Promise<{
 	if (alreadyConfigured) {
 		const response = await confirm({
 			message:
-				"Neon MCP Server is already configured. Would you like to reconfigure it? (suggested)?",
+				"Neon MCP Server is already configured. Would you like to reconfigure it? (Y/n)",
 			initialValue: true,
 		});
 
@@ -460,7 +460,9 @@ export async function init(): Promise<void> {
 	const { success: mcpSuccess, orgId } = await installMCPServer();
 
 	if (!mcpSuccess) {
-		outro("Initialization cancelled or failed.");
+		outro(
+			"Initialization cancelled or failed. Please check the output above and try again.",
+		);
 		process.exit(1);
 	} else {
 		log.info("Installed Neon MCP server");
@@ -480,10 +482,7 @@ export async function init(): Promise<void> {
 		log.step("Added Neon instructions to AGENTS.md");
 	}
 
-	outro("Success! Neon is now ready to use with Cursor.");
-	log.info("");
-	log.info("📣 Have feedback? Email us at feedback@neon.tech");
-	log.info("");
-	log.info("");
+	outro("Success! Neon is now ready to use with Cursor. \n");
+	log.info(" 📣 Have feedback? Email us at feedback@neon.tech \n \n");
 	log.info('Next Steps: Ask Cursor to "Get started with Neon" in the chat');
 }
