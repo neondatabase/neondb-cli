@@ -226,22 +226,27 @@ When using any Neon MCP tools or API calls, always pass this \`org_id\` paramete
 function getAgentsNeonReference(): string {
 	return `## Working with Neon Database
 
-When the user asks to **"Get started with Neon"** or something similar, refer to the detailed guidelines in \`neon.md\`.`;
+When the user asks to **"Get started with Neon"** or something similar, refer to the detailed guidelines in \`.neon/AGENTS.md\`.`;
 }
 
 /**
- * Creates or updates neon.md with detailed Neon guidelines
+ * Creates or updates .neon/AGENTS.md with detailed Neon guidelines
  */
 async function createNeonMd(orgId?: string): Promise<boolean> {
-	const neonMdPath = resolve(process.cwd(), "neon.md");
+	const neonDir = resolve(process.cwd(), ".neon");
+	const neonAgentsPath = resolve(neonDir, "AGENTS.md");
 
 	try {
-		// Check if neon.md already exists
-		if (existsSync(neonMdPath)) {
-			log.info("neon.md already exists");
+		// Create .neon directory if it doesn't exist
+		if (!existsSync(neonDir)) {
+			mkdirSync(neonDir, { recursive: true });
+		}
+
+		// Check if .neon/AGENTS.md already exists
+		if (existsSync(neonAgentsPath)) {
 			const response = await confirm({
 				message:
-					"Replace existing neon.md with updated guidelines? (suggested)",
+					"Replace existing .neon/AGENTS.md with updated guidelines? (suggested)",
 				initialValue: true,
 			});
 
@@ -250,7 +255,6 @@ async function createNeonMd(orgId?: string): Promise<boolean> {
 			}
 
 			if (!response) {
-				log.info("Keeping existing neon.md");
 				return true;
 			}
 		}
@@ -264,21 +268,18 @@ async function createNeonMd(orgId?: string): Promise<boolean> {
 
 		content += getNeonMdTemplate();
 
-		writeFileSync(neonMdPath, content, "utf-8");
-		log.success(
-			`Created neon.md with detailed guidelines at ${neonMdPath}`,
-		);
+		writeFileSync(neonAgentsPath, content, "utf-8");
 		return true;
 	} catch (error) {
 		log.error(
-			`Failed to create neon.md: ${error instanceof Error ? error.message : "Unknown error"}`,
+			`Failed to create .neon/AGENTS.md: ${error instanceof Error ? error.message : "Unknown error"}`,
 		);
 		return false;
 	}
 }
 
 /**
- * Creates or updates AGENTS.md with a reference to neon.md
+ * Creates or updates AGENTS.md with a reference to .neon/AGENTS.md
  */
 async function createAgentsMd(): Promise<boolean> {
 	const agentsPath = resolve(process.cwd(), "AGENTS.md");
@@ -300,9 +301,6 @@ async function createAgentsMd(): Promise<boolean> {
 			const separator = "\n\n---\n\n";
 			const updatedContent = existingContent + separator + neonReference;
 			writeFileSync(agentsPath, updatedContent, "utf-8");
-			log.success(
-				`Appended Neon reference to existing AGENTS.md at ${agentsPath}`,
-			);
 		} else {
 			// Create new file with proper header
 			const newContent = `# AGENTS.md
@@ -313,9 +311,6 @@ This file provides guidance to AI coding assistants when working with code in th
 
 ${neonReference}`;
 			writeFileSync(agentsPath, newContent, "utf-8");
-			log.success(
-				`Created AGENTS.md with Neon reference at ${agentsPath}`,
-			);
 		}
 		return true;
 	} catch (error) {
@@ -347,9 +342,9 @@ async function installMCPServer(): Promise<{
 	let shouldReconfigure = false;
 
 	if (alreadyConfigured) {
-		log.info("Neon MCP Server is already configured globally");
 		const response = await confirm({
-			message: "Would you like to reconfigure it? (suggested)",
+			message:
+				"Neon MCP Server is already configured. Would you like to reconfigure it? (Y/n)",
 			initialValue: true,
 		});
 
@@ -364,13 +359,9 @@ async function installMCPServer(): Promise<{
 		}
 	}
 
-	// Step 1: Ensure authentication (will trigger OAuth if needed)
-	log.step("Authenticating with Neon...");
-	log.info("The authentication URL will be displayed below if needed.");
-	log.info("");
-
+	// Ensure authentication (will trigger OAuth if needed)
 	const authSpinner = spinner();
-	authSpinner.start("Waiting for authentication...");
+	authSpinner.start("Authenticating...");
 
 	const authSuccess = await ensureNeonctlAuth();
 
@@ -381,15 +372,10 @@ async function installMCPServer(): Promise<{
 
 	authSpinner.stop("Authentication successful ✓");
 
-	// Step 2: Fetch organizations and let user select
+	// Fetch organizations and let user select
 	let selectedOrgId: string | undefined;
 
-	const orgSpinner = spinner();
-	orgSpinner.start("Fetching your organizations...");
 	const organizations = await fetchOrganizations();
-	orgSpinner.stop(
-		`Found ${organizations.length} organization${organizations.length !== 1 ? "s" : ""}`,
-	);
 
 	if (organizations.length > 1) {
 		const orgChoice = await select({
@@ -405,10 +391,6 @@ async function installMCPServer(): Promise<{
 		}
 
 		selectedOrgId = orgChoice.toString();
-		const selectedOrg = organizations.find(
-			(org) => org.id === selectedOrgId,
-		);
-		log.success(`Selected organization: ${selectedOrg?.name}`);
 	} else if (organizations.length === 1) {
 		// Only one org, auto-select it
 		selectedOrgId = organizations[0].id;
@@ -423,13 +405,8 @@ async function installMCPServer(): Promise<{
 		return { success: true, orgId: selectedOrgId };
 	}
 
-	// Step 3: Create API key using the OAuth token
-	const s = spinner();
-	s.start("Creating API key...");
+	// Create API key using the OAuth token
 	const apiKey = await createApiKeyFromNeonctl();
-	s.stop(
-		apiKey ? "API key created successfully ✓" : "Failed to create API key",
-	);
 
 	if (!apiKey) {
 		log.error("Could not create API key after authentication.");
@@ -452,10 +429,6 @@ async function installMCPServer(): Promise<{
 	// Write configuration
 	try {
 		writeMCPConfig(cursorDir, config);
-		log.success(
-			`Neon MCP Server configured globally at ${resolve(cursorDir, "mcp.json")}`,
-		);
-		log.info("This configuration will be available in all your projects.");
 		return { success: true, orgId: selectedOrgId };
 	} catch (error) {
 		log.error(
@@ -469,7 +442,7 @@ async function installMCPServer(): Promise<{
  * Initialize Neon projects with MCP Server and AI assistant rules
  */
 export async function init(): Promise<void> {
-	intro("🚀 Neon Project Initialization");
+	intro("Adding Neon to your project");
 
 	// Check if Cursor is installed
 	const homeDir = process.env.HOME || process.env.USERPROFILE;
@@ -480,69 +453,43 @@ export async function init(): Promise<void> {
 
 	const cursorDir = resolve(homeDir, ".cursor");
 	if (!existsSync(cursorDir)) {
-		log.warn("This tool currently only supports Cursor IDE.");
-		log.info("We'd love to hear which IDE you're using!");
+		log.warn("Cursor not found.");
+		log.warn(
+			"Error: Cursor is required to continue. Support for additional agents is coming soon.",
+		);
 		log.info("");
-		log.info("Please send your feedback to: init-feedback@neon.tech");
-		log.info("");
-		outro("❌ Cursor IDE is required to continue.");
+		outro("📣 Is this unexpected? Email us at feedback@neon.tech");
 		process.exit(1);
 	}
 
-	log.info(
-		"This will set up your project with Neon's MCP Server and AI coding best practices.",
-	);
-
-	log.step("Step 1/3: Configuring Neon MCP Server...");
 	const { success: mcpSuccess, orgId } = await installMCPServer();
 
 	if (!mcpSuccess) {
-		outro("❌ Initialization cancelled or failed.");
+		outro(
+			"Initialization cancelled or failed. Please check the output above and try again.",
+		);
 		process.exit(1);
+	} else {
+		log.info("Installed Neon MCP server");
 	}
 
-	log.step("Step 2/3: Creating neon.md with detailed guidelines...");
 	const neonMdSuccess = await createNeonMd(orgId);
 
 	if (!neonMdSuccess) {
-		log.warn("Failed to create neon.md, but MCP Server is configured.");
+		log.warn(
+			"Failed to create .neon/AGENTS.md, but MCP Server is configured.",
+		);
 	}
 
-	log.step("Step 3/3: Creating AGENTS.md for Cursor...");
 	const agentsSuccess = await createAgentsMd();
 
 	if (!agentsSuccess) {
 		log.warn("Failed to create AGENTS.md, but MCP Server is configured.");
+	} else {
+		log.step("Added Neon instructions to AGENTS.md");
 	}
 
-	outro("Success! Neon project initialized.");
-	console.log("");
-	console.log(
-		"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-	);
-	console.log("");
-	console.log("⚠️  The init command is still in its early stages.");
-	console.log("   We'd appreciate any feedback! Send us an email at:");
-	console.log("   init-feedback@neon.tech");
-	console.log("");
-	console.log("Next steps:");
-	console.log("");
-	console.log("    1. Restart Cursor");
-	console.log("");
-	console.log("    2. Type this in your Cursor chat to begin:");
-	console.log("");
-	console.log("       ┌──────────────────────────────────────┐");
-	console.log("       │                                      │");
-	console.log("       │    Get started with Neon             │");
-	console.log("       │                                      │");
-	console.log("       └──────────────────────────────────────┘");
-	console.log("");
-	console.log(
-		"Your AI assistant now has access to Neon best practices via neon.md",
-	);
-	console.log("(referenced in AGENTS.md for easy discovery)");
-	console.log("");
-	console.log(
-		"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-	);
+	outro("Success! Neon is now ready to use with Cursor. \n");
+	log.info(" 📣 Have feedback? Email us at feedback@neon.tech \n \n");
+	log.info('Next Steps: Ask Cursor to "Get started with Neon" in the chat');
 }
