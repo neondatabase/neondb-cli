@@ -226,22 +226,27 @@ When using any Neon MCP tools or API calls, always pass this \`org_id\` paramete
 function getAgentsNeonReference(): string {
 	return `## Working with Neon Database
 
-When the user asks to **"Get started with Neon"** or something similar, refer to the detailed guidelines in \`neon.md\`.`;
+When the user asks to **"Get started with Neon"** or something similar, refer to the detailed guidelines in \`.neon/AGENTS.md\`.`;
 }
 
 /**
- * Creates or updates neon.md with detailed Neon guidelines
+ * Creates or updates .neon/AGENTS.md with detailed Neon guidelines
  */
 async function createNeonMd(orgId?: string): Promise<boolean> {
-	const neonMdPath = resolve(process.cwd(), "neon.md");
+	const neonDir = resolve(process.cwd(), ".neon");
+	const neonAgentsPath = resolve(neonDir, "AGENTS.md");
 
 	try {
-		// Check if neon.md already exists
-		if (existsSync(neonMdPath)) {
-			log.info("neon.md already exists");
+		// Create .neon directory if it doesn't exist
+		if (!existsSync(neonDir)) {
+			mkdirSync(neonDir, { recursive: true });
+		}
+
+		// Check if .neon/AGENTS.md already exists
+		if (existsSync(neonAgentsPath)) {
 			const response = await confirm({
 				message:
-					"Replace existing neon.md with updated guidelines? (suggested)",
+					"Replace existing .neon/AGENTS.md with updated guidelines? (suggested)",
 				initialValue: true,
 			});
 
@@ -263,18 +268,18 @@ async function createNeonMd(orgId?: string): Promise<boolean> {
 
 		content += getNeonMdTemplate();
 
-		writeFileSync(neonMdPath, content, "utf-8");
+		writeFileSync(neonAgentsPath, content, "utf-8");
 		return true;
 	} catch (error) {
 		log.error(
-			`Failed to create neon.md: ${error instanceof Error ? error.message : "Unknown error"}`,
+			`Failed to create .neon/AGENTS.md: ${error instanceof Error ? error.message : "Unknown error"}`,
 		);
 		return false;
 	}
 }
 
 /**
- * Creates or updates AGENTS.md with a reference to neon.md
+ * Creates or updates AGENTS.md with a reference to .neon/AGENTS.md
  */
 async function createAgentsMd(): Promise<boolean> {
 	const agentsPath = resolve(process.cwd(), "AGENTS.md");
@@ -471,7 +476,9 @@ export async function init(): Promise<void> {
 	const neonMdSuccess = await createNeonMd(orgId);
 
 	if (!neonMdSuccess) {
-		log.warn("Failed to create neon.md, but MCP Server is configured.");
+		log.warn(
+			"Failed to create .neon/AGENTS.md, but MCP Server is configured.",
+		);
 	}
 
 	const agentsSuccess = await createAgentsMd();
