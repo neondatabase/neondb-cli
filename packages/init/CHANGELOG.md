@@ -1,5 +1,11 @@
 # neon-init
 
+## 0.8.0
+
+### Minor Changes
+
+- aeefc80: Consolidate CLI output and other minor edits to CLI flow
+
 ## 0.7.0
 
 ### Minor Changes
