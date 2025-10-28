@@ -14,6 +14,7 @@ import {
 	spinner,
 } from "@clack/prompts";
 import { execa } from "execa";
+import { bold, cyan } from "yoctocolors";
 
 const execAsync = promisify(exec);
 
@@ -486,8 +487,9 @@ export async function init(): Promise<void> {
 
 	log.step("Success! Neon is now ready to use with Cursor.\n");
 
+	// \x1b[0m is the ANSI escape code for "reset all styles" to clear any dimming/fading that clack's note() applies
 	note(
-		`\x1b[22;97mAsk Cursor to "\x1b[1;36mGet started with Neon\x1b[22;97m" in the chat`,
+		`\x1b[0mAsk Cursor to "${bold(cyan("Get started with Neon"))}\x1b[0m" in the chat`,
 		"What's next?",
 	);
 
