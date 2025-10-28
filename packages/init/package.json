@@ -50,7 +50,8 @@
 	},
 	"dependencies": {
 		"@clack/prompts": "0.10.1",
-		"execa": "^9.5.2"
+		"execa": "^9.5.2",
+		"yoctocolors": "^2.1.2"
 	},
 	"packageManager": "pnpm@10.4.0",
 	"engines": {

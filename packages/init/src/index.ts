@@ -8,11 +8,13 @@ import {
 	intro,
 	isCancel,
 	log,
+	note,
 	outro,
 	select,
 	spinner,
 } from "@clack/prompts";
 import { execa } from "execa";
+import { bold, cyan } from "yoctocolors";
 
 const execAsync = promisify(exec);
 
@@ -40,13 +42,9 @@ interface NeonOrganization {
 async function ensureNeonctlAuth(): Promise<boolean> {
 	try {
 		// Use execa to authenticate with neonctl
-		await execa(
-			"npx",
-			["-y", "neonctl", "me", "--output", "json", "--no-analytics"],
-			{
-				stdio: "inherit", // Shows OAuth URL and prompts to the user
-			},
-		);
+		await execa("npx", ["-y", "neonctl", "me", "--no-analytics"], {
+			stdio: "inherit", // Shows OAuth URL and prompts to the user
+		});
 
 		return true;
 	} catch (error) {
@@ -294,7 +292,6 @@ async function createAgentsMd(): Promise<boolean> {
 
 			// Check if Neon section already exists to avoid duplicates
 			if (existingContent.includes("## Working with Neon Database")) {
-				log.info("Neon reference already exists in AGENTS.md");
 				return true;
 			}
 
@@ -457,7 +454,6 @@ export async function init(): Promise<void> {
 		log.warn(
 			"Error: Cursor is required to continue. Support for additional agents is coming soon.",
 		);
-		log.info("");
 		outro("📣 Is this unexpected? Email us at feedback@neon.tech");
 		process.exit(1);
 	}
@@ -470,7 +466,7 @@ export async function init(): Promise<void> {
 		);
 		process.exit(1);
 	} else {
-		log.info("Installed Neon MCP server");
+		log.step("Installed Neon MCP server");
 	}
 
 	const neonMdSuccess = await createNeonMd(orgId);
@@ -489,7 +485,13 @@ export async function init(): Promise<void> {
 		log.step("Added Neon instructions to AGENTS.md");
 	}
 
-	outro("Success! Neon is now ready to use with Cursor. \n");
-	log.info(" 📣 Have feedback? Email us at feedback@neon.tech \n \n");
-	log.info('Next Steps: Ask Cursor to "Get started with Neon" in the chat');
+	log.step("Success! Neon is now ready to use with Cursor.\n");
+
+	// \x1b[0m is the ANSI escape code for "reset all styles" to clear any dimming/fading that clack's note() applies
+	note(
+		`\x1b[0mAsk Cursor to "${bold(cyan("Get started with Neon"))}\x1b[0m" in the chat`,
+		"What's next?",
+	);
+
+	outro("Have feedback? Email us at feedback@neon.tech");
 }

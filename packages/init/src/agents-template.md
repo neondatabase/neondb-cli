@@ -71,13 +71,16 @@ Use the Neon MCP Server to check if the user has existing projects (remember to 
 -   Most projects use a `.env` file with `DATABASE_URL`
 -   For other setups (deployed platforms, containers, cloud configs), check their project structure and ask where they store credentials
 
-**Important:** If you cannot write to the file (permissions, file location, etc.), run the command to allow the user to add it themselves:
+**Before modifying .env:**
 
-```bash
-echo "DATABASE_URL=postgresql://..." >> .env
-```
-
-Or show them the exact line to add:
+1. **Always try to read the .env file first** to check if `DATABASE_URL` already exists
+2. If the file exists and is readable:
+    - Use `search_replace` to update existing `DATABASE_URL`, or
+    - Append new `DATABASE_URL` if it doesn't exist
+3. If the file is unreadable (in .cursorignore/.gitignore) or you lack write permissions:
+    - **DO NOT use the write tool** (it would overwrite the entire file)
+    - Instead, run the append command: `echo "DATABASE_URL=postgresql://..." >> .env`
+    - Or show them the exact line to add manually:
 
 ```
 DATABASE_URL=postgresql://user:password@host/database
@@ -115,7 +118,7 @@ Ask the user briefly (1-2 questions):
 
 **If it's an established project:**
 
-Skip the questions - you can infer what they're building from the existing codebase.
+Skip the questions - you can infer what they're building from the existing codebase. Update any relevant code to use the driver you just installed to connect to their Neon database.
 
 **Remember the context** (whether from questions or code analysis) for all subsequent MCP Server interactions and recommendations. However, stay focused on Neon setup - don't get sidetracked into other architectural discussions until setup is complete.
 
