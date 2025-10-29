@@ -2,11 +2,11 @@
 
 import { intro, isCancel, log, outro, spinner, text } from "@clack/prompts";
 import { cristal } from "gradient-string";
+import { claim } from "./lib/claim-command.js";
 import { instantNeon } from "./lib/instant-neon.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
 import type { Defaults } from "./lib/types.js";
 import { DEFAULTS, getArgs } from "./lib/utils/args.js";
-import { claim } from "./lib/utils/claim.js";
 import { prepEnv } from "./lib/utils/fs.js";
 import { validateEnvKey, validateEnvPath } from "./lib/utils/validate.js";
 
@@ -15,9 +15,8 @@ async function main() {
 
 	// Handle claim command
 	if (command === "claim") {
-		const envPath = flags.env || DEFAULTS.dotEnvKey;
-		const envPrefix = flags.prefix || DEFAULTS.envPrefix;
-		await claim(envPath, envPrefix);
+		const envPath = flags.env || DEFAULTS.dotEnvPath;
+		await claim(envPath, flags.prefix);
 		return;
 	}
 
