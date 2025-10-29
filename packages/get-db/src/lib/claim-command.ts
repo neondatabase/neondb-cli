@@ -22,11 +22,10 @@ export async function claim(
 	envPrefix?: string,
 ): Promise<void> {
 	const dotEnvContent = getDotEnvContent(dotEnvPath);
-	let claimUrlKey: string | undefined;
 	let claimUrl: string | undefined;
 
 	if (envPrefix) {
-		claimUrlKey = `${envPrefix}NEON_LAUNCHPAD_CLAIM_URL`;
+		const claimUrlKey = `${envPrefix}NEON_LAUNCHPAD_CLAIM_URL`;
 		claimUrl = dotEnvContent[claimUrlKey];
 
 		if (!claimUrl) {
