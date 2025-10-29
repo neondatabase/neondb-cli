@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { log } from "@clack/prompts";
 import { seedDatabase } from "./seed-database.js";
 import { messages } from "./texts.js";
-import type { InstantNeonParams, InstantPostgresParams } from "./types.js";
+import type { InstantPostgresParams } from "./types.js";
 import { createClaimableDatabase } from "./utils/create-db.js";
 import { getPoolerString } from "./utils/format.js";
 import { writeToEnv } from "./utils/fs.js";
@@ -20,7 +20,7 @@ export const instantPostgres = async ({
 	referrer = "unknown",
 	seed = undefined,
 	envPrefix = "PUBLIC_",
-}: InstantNeonParams) => {
+}: InstantPostgresParams) => {
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 	const claimUrl = new URL(LAUNCHPAD_URLS.CLAIM_DATABASE(dbId));
@@ -61,9 +61,14 @@ export const instantPostgres = async ({
 	} as const;
 };
 
-export type { InstantPostgresParams } from "./types.js";
-
 /**
  * @deprecated Use `instantPostgres` instead
  */
 export const instantNeon = instantPostgres;
+
+export type { InstantPostgresParams };
+
+/**
+ * @deprecated Use `InstantPostgresParams` instead
+ */
+export type InstantNeonParams = InstantPostgresParams;
