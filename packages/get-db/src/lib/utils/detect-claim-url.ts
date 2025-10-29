@@ -20,7 +20,7 @@ export function detectClaimUrl(
 	if (!claimUrl) {
 		log.error(`${claimUrlKey} found but empty.`);
 		outro(
-			"Use `get-db claim -p {{ correct-prefix }}` to override URL auto-detection.",
+			"Use `get-db claim -p <prefix>` to override URL auto-detection. For example, use `get-db claim -p PROD_` if your key is `PROD_NEON_LAUNCHPAD_CLAIM_URL`.",
 		);
 		process.exit(1);
 	}
