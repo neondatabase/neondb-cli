@@ -17,7 +17,7 @@ export async function claim(
 			claimUrl = dotEnvContent[claimUrlKey];
 
 			if (!claimUrl) {
-				log.error(`${claimUrlKey} not found in ${dotEnvPath}. `);
+				log.error(`${claimUrlKey} not found in ${dotEnvPath}.`);
 				outro(
 					`Use \`get-db claim -p {{ correct-prefix }}\` to override URL auto-detection.`,
 				);
