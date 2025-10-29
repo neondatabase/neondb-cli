@@ -6,7 +6,7 @@ import { instantNeon } from "./lib/instant-neon.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
 import type { Defaults } from "./lib/types.js";
 import { DEFAULTS, getArgs } from "./lib/utils/args.js";
-import { claim } from "./lib/utils/claim.js";
+import { claim } from "./lib/utils/detect-claim-url.js";
 import { prepEnv } from "./lib/utils/fs.js";
 import { validateEnvKey, validateEnvPath } from "./lib/utils/validate.js";
 
