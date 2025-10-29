@@ -15,9 +15,8 @@ async function main() {
 
 	// Handle claim command
 	if (command === "claim") {
-		const envPath = flags.env || DEFAULTS.dotEnvKey;
-		const envPrefix = flags.prefix || DEFAULTS.envPrefix;
-		await claim(envPath, envPrefix);
+		const envPath = flags.env || DEFAULTS.dotEnvPath;
+		await claim(envPath, flags.prefix);
 		return;
 	}
 
