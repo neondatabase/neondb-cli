@@ -24,7 +24,7 @@ export async function claim(
 				process.exit(1);
 			}
 		} else {
-			const claimUrl = detectClaimUrl(dotEnvContent, dotEnvPath);
+			claimUrl = detectClaimUrl(dotEnvContent, dotEnvPath);
 
 			log.success(`URL located. Opening your default browser.`);
 			await open(claimUrl);
