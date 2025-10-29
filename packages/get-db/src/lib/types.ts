@@ -11,7 +11,7 @@ export type SqlScript = {
  * @param {SqlScript} seed - Path to the `.sql` file to be pushed to the database
  * @param {string} envPrefix - Prefix for public environment variables (default: "PUBLIC_")
  */
-export interface InstantNeonParams {
+export interface InstantPostgresParams {
 	dotEnvFile?: string;
 	dotEnvKey?: string;
 	referrer?: string;

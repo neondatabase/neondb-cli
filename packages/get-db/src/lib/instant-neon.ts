@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { log } from "@clack/prompts";
 import { seedDatabase } from "./seed-database.js";
 import { messages } from "./texts.js";
-import type { InstantNeonParams } from "./types.js";
+import type { InstantNeonParams, InstantPostgresParams } from "./types.js";
 import { createClaimableDatabase } from "./utils/create-db.js";
 import { getPoolerString } from "./utils/format.js";
 import { writeToEnv } from "./utils/fs.js";
@@ -14,7 +14,7 @@ import { LAUNCHPAD_URLS } from "./utils/urls.js";
  * Prompts the user to optionally generate a connection string,
  * saves it to the .env file, and returns the connection string.
  */
-export const instantNeon = async ({
+export const instantPostgres = async ({
 	dotEnvFile = ".env",
 	dotEnvKey = "DATABASE_URL",
 	referrer = "unknown",
@@ -61,4 +61,9 @@ export const instantNeon = async ({
 	} as const;
 };
 
-export type { InstantNeonParams };
+export type { InstantPostgresParams } from "./types.js";
+
+/**
+ * @deprecated Use `instantPostgres` instead
+ */
+export const instantNeon = instantPostgres;
