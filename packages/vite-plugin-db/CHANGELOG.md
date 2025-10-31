@@ -1,5 +1,12 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [7b894b4]
+  - get-db@0.9.2
+
 ## 0.4.1
 
 ### Patch Changes
