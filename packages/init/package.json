@@ -31,8 +31,7 @@
 	"files": [
 		"README.md",
 		"dist/",
-		"package.json",
-		"src/agents-template.md"
+		"package.json"
 	],
 	"scripts": {
 		"build": "tsc --noEmit && tsdown",
