@@ -271,7 +271,7 @@ export async function init(): Promise<void> {
 
 	// \x1b[0m is the ANSI escape code for "reset all styles" to clear any dimming/fading that clack's note() applies
 	note(
-		`\x1b[0mAsk Cursor to "${bold(cyan("Get started with Neon using MCP Resource"))}\x1b[0m" in the chat`,
+		`\x1b[0m1. Restart Cursor and ask Cursor to "${bold(cyan("Get started with Neon using MCP Resource"))}\x1b[0m" in the chat`,
 		"What's next?",
 	);
 
