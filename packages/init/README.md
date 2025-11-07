@@ -1,6 +1,6 @@
 # neon-init
 
-Set up Neon's MCP Server globally for AI-powered database operations in VS Code and Cursor.
+Set up Neon's MCP Server for AI-powered database operations in VS Code and Cursor.
 
 ## Installation
 
@@ -39,7 +39,7 @@ Then:
 -   **VS Code** with GitHub Copilot
 -   **Cursor**
 
-The tool automatically detects which editors are installed on your system. If both are detected, you'll be prompted to choose which one(s) to configure.
+The tool automatically detects which editors are installed on your system but you'll be prompted to choose which one(s) to configure.
 
 **Authentication:** Uses OAuth via `neonctl` and creates an API key for you - opens your browser, no manual API keys needed.
 
