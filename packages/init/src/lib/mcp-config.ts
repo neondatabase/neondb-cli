@@ -40,9 +40,6 @@ export function getMCPConfig(
 				configPath: mcpConfigPath,
 			};
 		} catch (_error) {
-			log.warn(
-				"Failed to parse existing mcp.json. Creating a new configuration.",
-			);
 			return {
 				config:
 					editor === "VS Code" ? { servers: {} } : { mcpServers: {} },
