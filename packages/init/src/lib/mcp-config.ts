@@ -1,6 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { log } from "@clack/prompts";
 import { getVSCodeGlobalConfigDir } from "./editors.js";
 import type { Editor, MCPConfig } from "./types.js";
 
