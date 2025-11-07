@@ -53,7 +53,8 @@ export async function init(): Promise<void> {
 
 	// Determine which editors to configure
 	const response = await multiselect({
-		message: "Which editor(s) would you like to configure?",
+		message:
+			"Which editor(s) would you like to configure? (Space to toggle each option, Enter to confirm your selection)",
 		options: ["Cursor", "VS Code"].map((editor) => ({
 			value: editor,
 			label: editor,
