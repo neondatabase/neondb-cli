@@ -4,11 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a monorepo for Neon Launchpad packages that provide instant Postgres database provisioning without sign-ups. It contains four main packages:
+This is a monorepo for Neon Launchpad packages that provide instant Postgres database provisioning without sign-ups. It contains five main packages:
 - `get-db`: A CLI tool for creating claimable Neon databases (formerly `neondb`)
 - `neondb`: Deprecated alias package for `get-db` (shows deprecation warning)
 - `vite-plugin-db`: A Vite plugin that automatically provisions databases (formerly `@neondatabase/vite-plugin-postgres`)
 - `@neondatabase/vite-plugin-postgres`: Deprecated alias package for `vite-plugin-db` (shows deprecation warning)
+- `neon-init`: A setup tool for initializing your project with Neon and Neon MCP Server
 
 ## Development Commands
 
@@ -91,6 +92,19 @@ pnpm --filter get-db dry:run
 
 -   **Purpose**: Deprecated alias for `vite-plugin-db` - shows deprecation warning and re-exports `vite-plugin-db`
 -   **Status**: Maintained for backwards compatibility but users should migrate to `vite-plugin-db`
+
+### neon-init Package
+
+-   **Purpose**: Setup tool for configuring Neon with the user's project
+-   **Entry points**: CLI (`dist/cli.js`) and SDK export (`init()` function)
+-   **Core functionality**: Configures MCP server for VS Code and Cursor
+-   **Behavior**:
+    -   Detects available editors installed on the system
+    -   Prompts user to select which editor(s) to configure
+    -   Authenticates via OAuth using `neonctl`
+    -   Creates API key automatically via Neon API
+    -   Writes MCP configuration
+-   **Dependencies**: Uses `@clack/prompts` for interactive CLI, `execa` for running `neonctl`
 
 ### Key Implementation Details
 

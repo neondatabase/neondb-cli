@@ -1,6 +1,6 @@
 # neon-init
 
-Set up your project with Neon's MCP Server for AI-powered database operations.
+Set up Neon's MCP Server for AI-powered database operations in VS Code and Cursor.
 
 ## Installation
 
@@ -16,16 +16,30 @@ import { init } from "neon-init";
 await init();
 ```
 
+Or via CLI:
+
+```sh
+npx neon-init
+```
+
 Then:
 
-1. Restart your AI coding assistant (Cursor, Windsurf, etc.)
+1. Restart your editor (VS Code or Cursor)
 2. Type **"Get started with Neon using MCP Resource"** in your AI chat
 
 ## What It Does
 
 ### Configures Neon MCP Server
 
-Creates `~/.cursor/mcp.json` (global config) to enable AI-powered database operations through the Model Context Protocol.
+-   **Cursor**: Creates `~/.cursor/mcp.json` (global config - works across all projects)
+-   **VS Code**: Creates global `mcp.json` if VS Code is installed, otherwise falls back to `.vscode/mcp.json` (workspace config)
+
+**Supported Editors:**
+
+-   **VS Code** with GitHub Copilot
+-   **Cursor**
+
+The tool automatically detects which editors are installed on your system but you'll be prompted to choose which one(s) to configure.
 
 **Authentication:** Uses OAuth via `neonctl` and creates an API key for you - opens your browser, no manual API keys needed.
 
