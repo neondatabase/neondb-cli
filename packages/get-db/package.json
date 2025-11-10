@@ -30,6 +30,10 @@
 		"./launchpad": {
 			"import": "./dist/lib/instant-neon.js",
 			"types": "./dist/lib/instant-neon.d.ts"
+		},
+		".": {
+			"import": "./dist/lib/instant-neon.js",
+			"types": "./dist/lib/instant-neon.d.ts"
 		}
 	},
 	"files": [
