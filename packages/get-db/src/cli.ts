@@ -3,7 +3,7 @@
 import { intro, isCancel, log, outro, spinner, text } from "@clack/prompts";
 import { cristal } from "gradient-string";
 import { claim } from "./lib/claim-command.js";
-import { instantNeon } from "./lib/instant-postgres.js";
+import { instantPostgres } from "./lib/instant-postgres.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
 import type { Defaults } from "./lib/types.js";
 import { DEFAULTS, getArgs } from "./lib/utils/args.js";
@@ -39,7 +39,7 @@ async function main() {
 			? { type: "sql-script" as const, path: flags.seed }
 			: DEFAULTS.seed;
 
-		await instantNeon({
+		await instantPostgres({
 			dotEnvFile: envPath,
 			dotEnvKey: envKey,
 			referrer: "npm:get-db/cli",
@@ -159,7 +159,7 @@ async function main() {
 
 		s.start(messages.generating);
 
-		await instantNeon({
+		await instantPostgres({
 			dotEnvFile: userInput.dotEnvPath,
 			dotEnvKey: userInput.dotEnvKey,
 			referrer: "npm:get-db/cli",
