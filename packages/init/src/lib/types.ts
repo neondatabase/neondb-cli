@@ -1,4 +1,4 @@
-export type Editor = "Cursor" | "VS Code";
+export type Editor = "Cursor" | "VS Code" | "Claude CLI";
 
 export type InstallStatus = "success" | "failed";
 

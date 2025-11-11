@@ -1,6 +1,6 @@
 # neon-init
 
-Set up Neon's MCP Server for AI-powered database operations in VS Code and Cursor.
+Set up Neon's MCP Server for AI-powered database operations in VS Code, Cursor, and Claude CLI.
 
 ## Installation
 
@@ -24,22 +24,24 @@ npx neon-init
 
 Then:
 
-1. Restart your editor (VS Code or Cursor)
+1. Restart your editor (VS Code, Cursor, or Claude CLI)
 2. Type **"Get started with Neon using MCP Resource"** in your AI chat
 
 ## What It Does
 
 ### Configures Neon MCP Server
 
--   **Cursor**: Creates `~/.cursor/mcp.json` (global config - works across all projects)
--   **VS Code**: Creates global `mcp.json` if VS Code is installed, otherwise falls back to `.vscode/mcp.json` (workspace config)
+-   **Cursor**: Creates or updates `~/.cursor/mcp.json` (global config - works across all projects)
+-   **VS Code**: Creates or updates global `mcp.json` if VS Code is installed, otherwise falls back to `.vscode/mcp.json` (workspace config)
+-   **Claude CLI**: Creates or updates `~/.claude.json` (global config - works across all projects)
 
 **Supported Editors:**
 
 -   **VS Code** with GitHub Copilot
 -   **Cursor**
+-   **Claude CLI**
 
-The tool automatically detects which editors are installed on your system but you'll be prompted to choose which one(s) to configure.
+The tool automatically detects which editors are installed on your system and you'll be prompted to choose which one(s) to configure.
 
 **Authentication:** Uses OAuth via `neonctl` and creates an API key for you - opens your browser, no manual API keys needed.
 
