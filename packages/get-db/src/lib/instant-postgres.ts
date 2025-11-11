@@ -20,7 +20,12 @@ export const instantPostgres = async ({
 	referrer = "unknown",
 	seed = undefined,
 	envPrefix = "PUBLIC_",
-}: InstantPostgresParams) => {
+}: InstantPostgresParams = {}): Promise<{
+	databaseUrl: string;
+	poolerUrl: string;
+	claimUrl: string;
+	claimExpiresAt: Date;
+}> => {
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 	const claimUrl = new URL(LAUNCHPAD_URLS.CLAIM_DATABASE(dbId));

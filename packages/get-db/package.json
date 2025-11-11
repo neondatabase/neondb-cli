@@ -24,16 +24,16 @@
 	},
 	"exports": {
 		"./sdk": {
-			"import": "./dist/lib/instant-neon.js",
-			"types": "./dist/lib/instant-neon.d.ts"
+			"import": "./dist/lib/instant-postgres.js",
+			"types": "./dist/lib/instant-postgres.d.ts"
 		},
 		"./launchpad": {
-			"import": "./dist/lib/instant-neon.js",
-			"types": "./dist/lib/instant-neon.d.ts"
+			"import": "./dist/lib/instant-postgres.js",
+			"types": "./dist/lib/instant-postgres.d.ts"
 		},
 		".": {
-			"import": "./dist/lib/instant-neon.js",
-			"types": "./dist/lib/instant-neon.d.ts"
+			"import": "./dist/lib/instant-postgres.js",
+			"types": "./dist/lib/instant-postgres.d.ts"
 		}
 	},
 	"files": [

@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import { intro, log, outro } from "@clack/prompts";
-import { type InstantNeonParams, instantNeon } from "get-db/launchpad";
+import { type InstantPostgresParams, instantPostgres } from "get-db";
 import { loadEnv, type Plugin } from "vite";
 
 const DEFAULTS = {
@@ -9,9 +9,9 @@ const DEFAULTS = {
 	referrer: "unknown",
 	seed: undefined,
 	envPrefix: "VITE_",
-} satisfies InstantNeonParams;
+} satisfies InstantPostgresParams;
 
-type PostgresPluginOptions = Partial<InstantNeonParams> & {
+type PostgresPluginOptions = Partial<InstantPostgresParams> & {
 	seed?: {
 		type: "sql-script";
 		path: string;
@@ -30,7 +30,7 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 	} = {
 		...DEFAULTS,
 		...options,
-	} satisfies InstantNeonParams;
+	} satisfies InstantPostgresParams;
 	return {
 		name: "vite-plugin-db",
 		enforce: "pre",
@@ -65,7 +65,7 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 			claimProcessStarted = true;
 
 			intro("Setting up your project with a Neon database.");
-			await instantNeon({
+			await instantPostgres({
 				dotEnvFile: envPath,
 				dotEnvKey: envKey,
 				referrer: `npm:vite-plugin-db|${referrer}`,
