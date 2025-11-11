@@ -7,29 +7,31 @@ import type { Editor, MCPConfig } from "./types.js";
  * Gets or creates the MCP configuration for a specific editor
  * - Cursor: Global config at ~/.cursor/mcp.json
  * - VS Code: Try global config first, then workspace
+ * - Claude CLI: Global config at ~/.claude.json
  */
 export function getMCPConfig(
 	homeDir: string,
 	workspaceDir: string,
 	editor: Editor,
 ): { config: MCPConfig; configPath: string } {
-	let editorDir: string;
+	let mcpConfigPath: string;
 
 	if (editor === "VS Code") {
 		// Try global config first
 		const vscodeGlobalDir = getVSCodeGlobalConfigDir(homeDir);
 		if (vscodeGlobalDir && existsSync(vscodeGlobalDir)) {
-			editorDir = vscodeGlobalDir;
+			mcpConfigPath = resolve(vscodeGlobalDir, "mcp.json");
 		} else {
 			// Fall back to workspace
-			editorDir = resolve(workspaceDir, ".vscode");
+			mcpConfigPath = resolve(workspaceDir, ".vscode", "mcp.json");
 		}
+	} else if (editor === "Claude CLI") {
+		// Claude CLI uses ~/.claude.json
+		mcpConfigPath = resolve(homeDir, ".claude.json");
 	} else {
-		// Cursor always uses global config
-		editorDir = resolve(homeDir, ".cursor");
+		// Cursor uses ~/.cursor/mcp.json
+		mcpConfigPath = resolve(homeDir, ".cursor", "mcp.json");
 	}
-
-	const mcpConfigPath = resolve(editorDir, "mcp.json");
 
 	if (existsSync(mcpConfigPath)) {
 		try {
@@ -57,6 +59,7 @@ export function getMCPConfig(
  * Writes the MCP configuration to the appropriate location
  * - Cursor: Global config at ~/.cursor/mcp.json
  * - VS Code: Global config (preferred) or workspace config (fallback)
+ * - Claude CLI: Global config at ~/.claude.json
  */
 export function writeMCPConfig(configPath: string, config: MCPConfig): void {
 	const editorDir = dirname(configPath);

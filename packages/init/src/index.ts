@@ -30,7 +30,7 @@ export async function init(): Promise<void> {
 	const workspaceDir = process.cwd();
 
 	// Detect available editors
-	const availableEditors = detectAvailableEditors(homeDir);
+	const availableEditors = await detectAvailableEditors(homeDir);
 
 	// If no editors detected, offer to continue anyway
 	if (availableEditors.length === 0) {
@@ -38,6 +38,7 @@ export async function init(): Promise<void> {
 		log.info("Supported editors:");
 		log.info("  • VS Code (with GitHub Copilot)");
 		log.info("  • Cursor");
+		log.info("  • Claude CLI");
 
 		const continueAnyway = await confirm({
 			message:
@@ -55,7 +56,7 @@ export async function init(): Promise<void> {
 	const response = await multiselect({
 		message:
 			"Which editor(s) would you like to configure? (Space to toggle each option, Enter to confirm your selection)",
-		options: ["Cursor", "VS Code"].map((editor) => ({
+		options: ["Cursor", "VS Code", "Claude CLI"].map((editor) => ({
 			value: editor,
 			label: editor,
 		})),

@@ -7,6 +7,7 @@ import type { Editor, InstallStatus } from "./types.js";
  * Installs Neon's MCP Server for a specific editor
  * - Cursor: Global config
  * - VS Code: Global config (preferred) or workspace config (fallback)
+ * - Claude CLI: Global config
  */
 async function installMCPServerForEditor(
 	homeDir: string,
@@ -49,7 +50,7 @@ async function installMCPServerForEditor(
 		},
 	};
 
-	// VS Code uses "servers" key, Cursor uses "mcpServers" key
+	// VS Code uses "servers" key, Cursor and Claude CLI use "mcpServers" key
 	if (editor === "VS Code") {
 		if (!config.servers) {
 			config.servers = {};
@@ -77,7 +78,8 @@ async function installMCPServerForEditor(
 /**
  * Installs Neon's MCP Server
  * - Cursor: Global config
- * - VS Code: Workspace config
+ * - VS Code: Global config (preferred) or workspace config (fallback)
+ * - Claude CLI: Global config
  */
 export async function installMCPServer(
 	homeDir: string,
