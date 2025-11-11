@@ -1,5 +1,15 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.4.3
+
+### Patch Changes
+
+- d91f813: Refactor: Rename `instantNeon` to `instantPostgres`.
+  Fix: allow `instantPostgres` to receive no parameters.
+- Updated dependencies [d91f813]
+- Updated dependencies [d9e78d5]
+  - get-db@0.9.3
+
 ## 0.4.2
 
 ### Patch Changes
