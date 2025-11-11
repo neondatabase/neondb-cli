@@ -3,7 +3,7 @@
 import { intro, isCancel, log, outro, spinner, text } from "@clack/prompts";
 import { cristal } from "gradient-string";
 import { claim } from "./lib/claim-command.js";
-import { instantNeon } from "./lib/instant-neon.js";
+import { instantNeon } from "./lib/instant-postgres.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
 import type { Defaults } from "./lib/types.js";
 import { DEFAULTS, getArgs } from "./lib/utils/args.js";
