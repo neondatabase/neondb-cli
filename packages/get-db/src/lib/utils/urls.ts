@@ -1,6 +1,6 @@
 const HOST = "https://neon.new";
 
-export const LAUNCHPAD_URLS = {
+export const INSTAGRES_URLS = {
 	GET_DATABASE_DATA: (dbId: string) => `${HOST}/api/v1/database/${dbId}`,
 	CREATE_CLAIMABLE_DATABASE: (dbId: string, referrer?: string) =>
 		`${HOST}/db?uuid=${dbId}${referrer ? `&ref=${referrer}` : ""}`,
