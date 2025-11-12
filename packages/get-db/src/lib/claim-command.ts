@@ -25,7 +25,7 @@ export async function claim(
 	let claimUrl: string | undefined;
 
 	if (envPrefix) {
-		const claimUrlKey = `${envPrefix}INSTAGRESCLAIM_URL`;
+		const claimUrlKey = `${envPrefix}INSTAGRES_CLAIM_URL`;
 		claimUrl = dotEnvContent[claimUrlKey];
 
 		if (!claimUrl) {
