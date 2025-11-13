@@ -113,7 +113,7 @@ export async function init(): Promise<void> {
 	}
 
 	note(
-		`\x1b[0mRestart ${successList} and type in "${bold(cyan("Get started with Neon using MCP resource"))}\x1b[0m" in the chat`,
+		`\x1b[0mRestart ${successList} and type in "${bold(cyan("Get started with Neon"))}\x1b[0m" in the chat`,
 		"What's next?",
 	);
 
