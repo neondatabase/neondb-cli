@@ -6,7 +6,7 @@ import type { InstantPostgresParams } from "./types.js";
 import { createClaimableDatabase } from "./utils/create-db.js";
 import { getPoolerString } from "./utils/format.js";
 import { writeToEnv } from "./utils/fs.js";
-import { LAUNCHPAD_URLS } from "./utils/urls.js";
+import { INSTAGRES_URLS } from "./utils/urls.js";
 
 /**
  * Creates an instant Postgres connection string from Instagres by Neon
@@ -28,7 +28,7 @@ export const instantPostgres = async ({
 }> => {
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-	const claimUrl = new URL(LAUNCHPAD_URLS.CLAIM_DATABASE(dbId));
+	const claimUrl = new URL(INSTAGRES_URLS.CLAIM_DATABASE(dbId));
 
 	const connString = await createClaimableDatabase(
 		dbId,
