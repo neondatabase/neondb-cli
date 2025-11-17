@@ -100,7 +100,7 @@ export async function writeToEnv(
 # Claim it now to your account: ${claimUrl.href}
 ${dotEnvKey}=${connString}
 ${dotEnvKey}_POOLER=${poolerString}
-${envPrefix}NEON_LAUNCHPAD_CLAIM_URL=${claimUrl.href}
+${envPrefix}INSTAGRES_CLAIM_URL=${claimUrl.href}
 `,
 	);
 	closeSync(openedFile);

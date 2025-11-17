@@ -1,8 +1,8 @@
-import { LAUNCHPAD_URLS } from "./urls.js";
+import { INSTAGRES_URLS } from "./urls.js";
 
 export async function createClaimableDatabase(dbId: string, referrer: string) {
 	const dbCreation = await fetch(
-		LAUNCHPAD_URLS.CREATE_DATABASE_POST(dbId, referrer),
+		INSTAGRES_URLS.CREATE_DATABASE_POST(dbId, referrer),
 		{
 			method: "POST",
 			headers: {
@@ -16,7 +16,7 @@ export async function createClaimableDatabase(dbId: string, referrer: string) {
 	}
 
 	const dbInfo: { connection_string: string } = await fetch(
-		LAUNCHPAD_URLS.GET_DATABASE_DATA(dbId),
+		INSTAGRES_URLS.GET_DATABASE_DATA(dbId),
 		{
 			method: "GET",
 			headers: {
