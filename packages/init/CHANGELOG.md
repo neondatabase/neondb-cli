@@ -1,5 +1,11 @@
 # neon-init
 
+## 0.10.1
+
+### Patch Changes
+
+- 0f3cc14: Update init output message to "Get started with Neon" instead of "Get started with Neon using MCP resource"
+
 ## 0.10.0
 
 ### Minor Changes
