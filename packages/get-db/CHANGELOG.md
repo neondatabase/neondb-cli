@@ -1,5 +1,11 @@
 # get-db
 
+## 0.9.4
+
+### Patch Changes
+
+- 65e1130: Rename variables to Instagres related names
+
 ## 0.9.3
 
 ### Patch Changes

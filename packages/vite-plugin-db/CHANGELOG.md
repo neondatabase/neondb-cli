@@ -1,5 +1,13 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.4.4
+
+### Patch Changes
+
+- 65e1130: Rename variables to Instagres related names
+- Updated dependencies [65e1130]
+  - get-db@0.9.4
+
 ## 0.4.3
 
 ### Patch Changes
