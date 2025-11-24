@@ -1,5 +1,20 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.4.5
+
+### Patch Changes
+
+- 52a24df: The referrer flag is important for the **Instagres Affiliates Program**.
+  People building templates or spinning apps that connect to an Instagres db can receive payouts based on their usage.
+
+  ***
+
+  This PR adds back support to the `--ref` / `-ref` flag to the CLI. And ensures encoding is properly done.
+  It also adds thorough test coverage to this functionality to ensure payouts land without fault.
+
+- Updated dependencies [52a24df]
+  - vite-plugin-db@0.4.5
+
 ## 0.4.4
 
 ### Patch Changes
