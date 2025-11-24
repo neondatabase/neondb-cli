@@ -24,4 +24,5 @@ export interface Defaults {
 	dotEnvKey: string;
 	seed?: SqlScript;
 	envPrefix: string;
+	referrer: string;
 }

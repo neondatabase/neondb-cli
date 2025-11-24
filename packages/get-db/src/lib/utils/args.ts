@@ -6,6 +6,7 @@ export const DEFAULTS: Defaults = {
 	dotEnvKey: "DATABASE_URL",
 	seed: undefined,
 	envPrefix: "PUBLIC_",
+	referrer: "npm:get-db/cli",
 };
 
 export function getArgs() {
@@ -64,7 +65,7 @@ Options:
   -p, --prefix    Prefix for public environment variables (default: "${
 		DEFAULTS.envPrefix
   }")
-  -r, --ref       Referrer identifier for tracking (default: "npm:get-db/cli")
+  -r, --ref       Referrer identifier for tracking (default: "${DEFAULTS.referrer}")
   -h, --help      Show this help message
 `);
 		process.exit(0);

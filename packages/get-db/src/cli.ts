@@ -31,7 +31,7 @@ async function main() {
 		const envPath = flags.env || DEFAULTS.dotEnvPath;
 		const envKey = flags.key || DEFAULTS.dotEnvKey;
 		const envPrefix = flags.prefix || DEFAULTS.envPrefix;
-		const referrer = flags.ref || "npm:get-db/cli";
+		const referrer = flags.ref || DEFAULTS.referrer;
 
 		prepEnv(envPath, envKey);
 		s.start(messages.generating);
@@ -160,7 +160,7 @@ async function main() {
 
 		s.start(messages.generating);
 
-		const referrer = flags.ref || "npm:get-db/cli";
+		const referrer = flags.ref || DEFAULTS.referrer;
 
 		await instantPostgres({
 			dotEnvFile: userInput.dotEnvPath,
