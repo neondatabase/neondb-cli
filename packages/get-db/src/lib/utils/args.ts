@@ -32,6 +32,10 @@ export function getArgs() {
 				type: "string",
 				short: "p",
 			},
+			ref: {
+				type: "string",
+				short: "r",
+			},
 			help: {
 				type: "boolean",
 				short: "h",
@@ -60,6 +64,7 @@ Options:
   -p, --prefix    Prefix for public environment variables (default: "${
 		DEFAULTS.envPrefix
   }")
+  -r, --ref       Referrer identifier for tracking (default: "npm:get-db/cli")
   -h, --help      Show this help message
 `);
 		process.exit(0);
