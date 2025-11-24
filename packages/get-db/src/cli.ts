@@ -165,7 +165,7 @@ async function main() {
 		await instantPostgres({
 			dotEnvFile: userInput.dotEnvPath,
 			dotEnvKey: userInput.dotEnvKey,
-			referrer: referrer,
+			referrer,
 			seed: userInput.seed,
 			envPrefix: userInput.envPrefix,
 		});
