@@ -43,7 +43,7 @@ async function main() {
 		await instantPostgres({
 			dotEnvFile: envPath,
 			dotEnvKey: envKey,
-			referrer: referrer,
+			referrer,
 			seed: seedConfig,
 			envPrefix: envPrefix,
 		});
