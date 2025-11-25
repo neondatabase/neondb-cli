@@ -96,8 +96,7 @@ export async function writeToEnv(
 	const openedFile = openSync(dotEnvFile, "a");
 	writeSync(
 		openedFile,
-		`
-${dotEnvKey}=${poolerString}
+		`${dotEnvKey}=${poolerString}
 ${dotEnvKey}_DIRECT=${connString}
 # Claimable DB expires at: ${claimExpiresAt.toUTCString()}
 # Claim it now to your account using the link below:
