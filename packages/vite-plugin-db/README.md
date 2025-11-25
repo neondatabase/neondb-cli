@@ -62,9 +62,17 @@ postgres({
 
 ## What gets written
 
--   The plugin writes both a direct connection string and a pooled connection string to your `.env`.
--   It also provides a claim URL (valid for 7 days) to take ownership of the database with the configured `envPrefix` (defaults to `VITE_` for Vite projects).
--   If `seed` is configured, the specified SQL script will be executed after database creation.
+The plugin writes the following environment variables to your `.env`:
+
+| Variable                           | Description                                                |
+| ---------------------------------- | ---------------------------------------------------------- |
+| `DATABASE_URL`                     | The **pooler** connection string (default connection)      |
+| `DATABASE_URL_DIRECT`              | The direct connection string                               |
+| `{envPrefix}INSTAGRES_CLAIM_URL`   | Claim URL (valid for 7 days) to take ownership of the DB  |
+
+> **Note:** The pooler connection is now the default for `DATABASE_URL` (as of the latest version). The pooler provides connection pooling and is recommended for most use cases, especially serverless environments.
+
+If `seed` is configured, the specified SQL script will be executed after database creation.
 
 ## Type Definitions
 
