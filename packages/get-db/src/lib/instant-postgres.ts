@@ -17,15 +17,28 @@ import { INSTAGRES_URLS } from "./utils/urls.js";
 export const instantPostgres = async ({
 	dotEnvFile = ".env",
 	dotEnvKey = "DATABASE_URL",
-	referrer = "unknown",
+	referrer,
 	seed = undefined,
 	envPrefix = "PUBLIC_",
-}: InstantPostgresParams = {}): Promise<{
+}: InstantPostgresParams): Promise<{
 	databaseUrl: string;
 	poolerUrl: string;
 	claimUrl: string;
 	claimExpiresAt: Date;
 }> => {
+	if (!referrer || referrer.trim() === "") {
+		throw new Error(
+			"referrer parameter is required.\n\n" +
+				"The referrer helps track usage for the Instagres Affiliates Program.\n\n" +
+				"Usage:\n" +
+				"  instantPostgres({ referrer: 'your-app-name', dotEnvFile: '.env' })\n\n" +
+				"Examples:\n" +
+				"  referrer: 'npm:my-package-name'\n" +
+				"  referrer: 'my-app-name'\n\n" +
+				"For more information, visit: https://neon.com/docs/get-db",
+		);
+	}
+
 	const dbId = randomUUID();
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 	const claimUrl = new URL(INSTAGRES_URLS.CLAIM_DATABASE(dbId));
