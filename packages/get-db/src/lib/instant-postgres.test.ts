@@ -51,7 +51,7 @@ describe("instantPostgres", () => {
 	});
 
 	test("returns database connection info with all required properties", async () => {
-		const result = await instantPostgres();
+		const result = await instantPostgres({ referrer: "test-referrer" });
 
 		expect(result).toBeDefined();
 		expect(result).toHaveProperty("databaseUrl");
@@ -61,14 +61,14 @@ describe("instantPostgres", () => {
 	});
 
 	test("returns correct connection strings", async () => {
-		const result = await instantPostgres();
+		const result = await instantPostgres({ referrer: "test-referrer" });
 
 		expect(result.databaseUrl).toBe(mockConnectionString);
 		expect(result.poolerUrl).toBe(mockPoolerString);
 	});
 
 	test("generates valid claim URL with UUID", async () => {
-		const result = await instantPostgres();
+		const result = await instantPostgres({ referrer: "test-referrer" });
 
 		expect(result.claimUrl).toMatch(/^https:\/\/neon\.new\/database\//);
 		// Check that URL contains a valid UUID pattern
@@ -79,7 +79,7 @@ describe("instantPostgres", () => {
 
 	test("sets claim expiration to 3 days from now", async () => {
 		const beforeCall = Date.now();
-		const result = await instantPostgres();
+		const result = await instantPostgres({ referrer: "test-referrer" });
 		const afterCall = Date.now();
 
 		const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
@@ -94,12 +94,12 @@ describe("instantPostgres", () => {
 		);
 	});
 
-	test("uses default parameters when none provided", async () => {
-		await instantPostgres();
+	test("uses default parameters when only referrer provided", async () => {
+		await instantPostgres({ referrer: "test-referrer" });
 
 		expect(createClaimableDatabase).toHaveBeenCalledWith(
 			expect.any(String),
-			"npm:get-db|unknown",
+			"npm:get-db|test-referrer",
 		);
 		expect(writeToEnv).toHaveBeenCalledWith(
 			".env",
@@ -115,7 +115,10 @@ describe("instantPostgres", () => {
 	test("accepts custom dotEnvFile parameter", async () => {
 		const customEnvFile = ".env.local";
 
-		await instantPostgres({ dotEnvFile: customEnvFile });
+		await instantPostgres({
+			referrer: "test-referrer",
+			dotEnvFile: customEnvFile,
+		});
 
 		expect(writeToEnv).toHaveBeenCalledWith(
 			customEnvFile,
@@ -131,7 +134,10 @@ describe("instantPostgres", () => {
 	test("accepts custom dotEnvKey parameter", async () => {
 		const customEnvKey = "POSTGRES_URL";
 
-		await instantPostgres({ dotEnvKey: customEnvKey });
+		await instantPostgres({
+			referrer: "test-referrer",
+			dotEnvKey: customEnvKey,
+		});
 
 		expect(writeToEnv).toHaveBeenCalledWith(
 			expect.any(String),
@@ -158,7 +164,10 @@ describe("instantPostgres", () => {
 	test("accepts custom envPrefix parameter", async () => {
 		const customPrefix = "VITE_";
 
-		await instantPostgres({ envPrefix: customPrefix });
+		await instantPostgres({
+			referrer: "test-referrer",
+			envPrefix: customPrefix,
+		});
 
 		expect(writeToEnv).toHaveBeenCalledWith(
 			expect.any(String),
@@ -197,7 +206,7 @@ describe("instantPostgres", () => {
 	});
 
 	test("logs connection string and pooler string", async () => {
-		await instantPostgres();
+		await instantPostgres({ referrer: "test-referrer" });
 
 		expect(log.step).toHaveBeenCalledWith(
 			expect.stringContaining(mockConnectionString),
@@ -208,14 +217,14 @@ describe("instantPostgres", () => {
 	});
 
 	test("logs success message after writing to env", async () => {
-		await instantPostgres();
+		await instantPostgres({ referrer: "test-referrer" });
 
 		expect(log.success).toHaveBeenCalled();
 		expect(log.info).toHaveBeenCalled();
 	});
 
 	test("does not call seedDatabase when seed is not provided", async () => {
-		await instantPostgres();
+		await instantPostgres({ referrer: "test-referrer" });
 
 		expect(seedDatabase).not.toHaveBeenCalled();
 	});
@@ -224,7 +233,7 @@ describe("instantPostgres", () => {
 		const seedPath = "./schema.sql";
 		const seed = { type: "sql-script" as const, path: seedPath };
 
-		await instantPostgres({ seed });
+		await instantPostgres({ referrer: "test-referrer", seed });
 
 		expect(seedDatabase).toHaveBeenCalledWith(
 			seedPath,
@@ -235,15 +244,15 @@ describe("instantPostgres", () => {
 	test("logs seeding progress when seed is provided", async () => {
 		const seed = { type: "sql-script" as const, path: "./schema.sql" };
 
-		await instantPostgres({ seed });
+		await instantPostgres({ referrer: "test-referrer", seed });
 
 		expect(log.step).toHaveBeenCalledWith("Pushing schema to database");
 		expect(log.success).toHaveBeenCalledWith("Schema pushed to database");
 	});
 
 	test("calls createClaimableDatabase with unique UUID each time", async () => {
-		await instantPostgres();
-		await instantPostgres();
+		await instantPostgres({ referrer: "test-referrer" });
+		await instantPostgres({ referrer: "test-referrer" });
 
 		const calls = vi.mocked(createClaimableDatabase).mock.calls;
 		const firstUuid = calls[0][0];
@@ -253,7 +262,7 @@ describe("instantPostgres", () => {
 	});
 
 	test("generates pooler string from connection string", async () => {
-		await instantPostgres();
+		await instantPostgres({ referrer: "test-referrer" });
 
 		expect(getPoolerString).toHaveBeenCalledWith(mockConnectionString);
 	});
@@ -262,18 +271,18 @@ describe("instantPostgres", () => {
 		const error = new Error("Failed to create database");
 		vi.mocked(createClaimableDatabase).mockRejectedValue(error);
 
-		await expect(instantPostgres()).rejects.toThrow(
-			"Failed to create database",
-		);
+		await expect(
+			instantPostgres({ referrer: "test-referrer" }),
+		).rejects.toThrow("Failed to create database");
 	});
 
 	test("propagates errors from writeToEnv", async () => {
 		const error = new Error("Failed to write to env");
 		vi.mocked(writeToEnv).mockRejectedValue(error);
 
-		await expect(instantPostgres()).rejects.toThrow(
-			"Failed to write to env",
-		);
+		await expect(
+			instantPostgres({ referrer: "test-referrer" }),
+		).rejects.toThrow("Failed to write to env");
 	});
 
 	test("propagates errors from seedDatabase", async () => {
@@ -281,9 +290,9 @@ describe("instantPostgres", () => {
 		vi.mocked(seedDatabase).mockRejectedValue(error);
 		const seed = { type: "sql-script" as const, path: "./schema.sql" };
 
-		await expect(instantPostgres({ seed })).rejects.toThrow(
-			"Failed to seed database",
-		);
+		await expect(
+			instantPostgres({ referrer: "test-referrer", seed }),
+		).rejects.toThrow("Failed to seed database");
 	});
 
 	test("maintains correct execution order", async () => {
@@ -308,6 +317,7 @@ describe("instantPostgres", () => {
 		});
 
 		await instantPostgres({
+			referrer: "test-referrer",
 			seed: { type: "sql-script", path: "./schema.sql" },
 		});
 
@@ -317,5 +327,31 @@ describe("instantPostgres", () => {
 			"writeEnv",
 			"seed",
 		]);
+	});
+
+	test("throws error when referrer is missing", async () => {
+		await expect(
+			instantPostgres({
+				dotEnvFile: ".env",
+			} as any),
+		).rejects.toThrow("referrer parameter is required");
+	});
+
+	test("throws error when referrer is empty string", async () => {
+		await expect(
+			instantPostgres({
+				dotEnvFile: ".env",
+				referrer: "",
+			}),
+		).rejects.toThrow("referrer parameter is required");
+	});
+
+	test("throws error when referrer is whitespace only", async () => {
+		await expect(
+			instantPostgres({
+				dotEnvFile: ".env",
+				referrer: "   ",
+			}),
+		).rejects.toThrow("referrer parameter is required");
 	});
 });

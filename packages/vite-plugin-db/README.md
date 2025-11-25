@@ -18,6 +18,8 @@ npm add vite-plugin-db
 
 ## Usage
 
+> ⚠️ **BREAKING CHANGE in v3.0.0**: The `referrer` option is now **required**.
+
 Add the plugin as the first entry in your Vite config:
 
 ```ts
@@ -26,7 +28,12 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-	plugins: [postgres(), react()],
+	plugins: [
+		postgres({
+			referrer: "github:username/repo-name", // REQUIRED
+		}),
+		react(),
+	],
 });
 ```
 
@@ -36,6 +43,7 @@ You can pass an options object to customize the `.env` file path, the environmen
 
 ```ts
 postgres({
+	referrer: "your-app-name", // REQUIRED - for tracking and affiliates
 	env: ".env.local", // Path to your .env file (default: ".env")
 	envKey: "DATABASE_URL", // Name of the env variable (default: "DATABASE_URL")
 	envPrefix: "VITE_", // Prefix for public env vars (default: "VITE_")
@@ -46,12 +54,13 @@ postgres({
 });
 ```
 
-| Option      | Type   | Description                            | Default        |
-| ----------- | ------ | -------------------------------------- | -------------- |
-| `env`       | string | Path to the `.env` file                | `.env`         |
-| `envKey`    | string | Name of the environment variable       | `DATABASE_URL` |
-| `envPrefix` | string | Prefix for public environment variables| `VITE_`        |
-| `seed`      | object | Configuration for seeding the database | -              |
+| Option      | Type   | Description                             | Required | Default        |
+| ----------- | ------ | --------------------------------------- | -------- | -------------- |
+| `referrer`  | string | Referrer identifier for tracking        | ✅ Yes   | -              |
+| `env`       | string | Path to the `.env` file                 | No       | `.env`         |
+| `envKey`    | string | Name of the environment variable        | No       | `DATABASE_URL` |
+| `envPrefix` | string | Prefix for public environment variables | No       | `VITE_`        |
+| `seed`      | object | Configuration for seeding the database  | No       | -              |
 
 ### seed Options
 
@@ -78,9 +87,10 @@ If `seed` is configured, the specified SQL script will be executed after databas
 
 ```ts
 interface PostgresPluginOptions {
-	env: string; // Path to the .env file
-	envKey: string; // Name of the environment variable
-	envPrefix: string; // Prefix for public environment variables
+	referrer: string; // Required - Referrer identifier for tracking
+	env?: string; // Path to the .env file
+	envKey?: string; // Name of the environment variable
+	envPrefix?: string; // Prefix for public environment variables
 	seed?: {
 		type: "sql-script";
 		path: string;
