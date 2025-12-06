@@ -1,0 +1,12 @@
+:host {
+	display: block;
+}
+
+:host h1 {
+	color: blue;
+	font-size: 2rem;
+}
+
+:host p {
+	margin: 0.5rem 0;
+}
