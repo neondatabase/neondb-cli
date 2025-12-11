@@ -14,6 +14,8 @@ npx get-db
 
 ## CLI Usage
 
+The CLI provides a default referrer value, so the `--ref` flag is optional.
+
 ```sh
 npx get-db [options]
 ```
@@ -24,12 +26,15 @@ Options:
 -   `-e, --env` Path to .env file (default: ./.env)
 -   `-k, --key` Env key for connection string (default: DATABASE_URL)
 -   `-p, --prefix` Prefix for public env vars (default: PUBLIC\_)
+-   `-r, --ref` Referrer identifier for tracking (default: npm:get-db/cli)
 -   `-s, --seed` Path to SQL file to execute after database creation
 -   `-h, --help` Show help
 
 ---
 
 ## SDK/API Usage
+
+> ⚠️ **BREAKING CHANGE in v3.0.0**: The `referrer` parameter is now **required** when using the SDK.
 
 Import the SDK:
 
@@ -41,23 +46,23 @@ Create a claimable Neon Postgres database and save credentials to your .env:
 
 ```ts
 await instantNeon({
+	referrer: "npm:your-cli-package-name", // REQUIRED
 	dotEnvFile: ".env",
 	dotEnvKey: "DATABASE_URL",
 	envPrefix: "PUBLIC_",
-	// This below is to help us understand where usage comes from.
+	// This referrer parameter helps us understand where usage comes from.
 	// If you're publishing a library, we'd love that you re-expose a
 	// referrer parameter in your lib and set this to `npm:your-lib-package-name|${referrer}`
 	// So we can understand the chain better and give you all the credit you deserve!
-	referrer: "npm:your-cli-package-name",
 });
 ```
 
-| Option     | Default        | Description                        | Validation            |
-| ---------- | -------------- | ---------------------------------- | --------------------- |
-| dotEnvFile | ".env"         | Path to env file                   | letters and `.`       |
-| dotEnvKey  | "DATABASE_URL" | Environment variable name          | `SCREAMING_SNAKE_CASE |
-| envPrefix  | "PUBLIC\_"     | Prefix for public environment vars | -                     |
-| referrer   | "unknown"      | Referrer identifier                | -                     |
+| Option     | Default        | Description                        | Required | Validation            |
+| ---------- | -------------- | ---------------------------------- | -------- | --------------------- |
+| referrer   | -              | Referrer identifier                | ✅ Yes   | -                     |
+| dotEnvFile | ".env"         | Path to env file                   | No       | letters and `.`       |
+| dotEnvKey  | "DATABASE_URL" | Environment variable name          | No       | `SCREAMING_SNAKE_CASE |
+| envPrefix  | "PUBLIC\_"     | Prefix for public environment vars | No       | -                     |
 
 > **Note**: The Vite plugin uses `VITE_` as the default `envPrefix` to match Vite's convention for client-side environment variables.
 
@@ -89,10 +94,10 @@ When you run `get-db`, the following environment variables are written to your `
 ```ts
 // Params for instantNeon
 interface InstantNeonParams {
+	referrer: string; // Required
 	dotEnvFile?: string;
 	dotEnvKey?: string;
 	envPrefix?: string;
-	referrer?: string;
 }
 ```
 

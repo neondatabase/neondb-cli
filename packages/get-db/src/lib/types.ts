@@ -14,7 +14,7 @@ export type SqlScript = {
 export interface InstantPostgresParams {
 	dotEnvFile?: string;
 	dotEnvKey?: string;
-	referrer?: string;
+	referrer: string;
 	seed?: SqlScript;
 	envPrefix?: string;
 }

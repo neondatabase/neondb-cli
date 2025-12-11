@@ -1,26 +1,42 @@
 import { resolve } from "node:path";
 import { intro, log, outro } from "@clack/prompts";
-import { type InstantPostgresParams, instantPostgres } from "get-db";
+import { instantPostgres } from "get-db";
 import { loadEnv, type Plugin } from "vite";
 
 const DEFAULTS = {
 	dotEnvFile: ".env",
 	dotEnvKey: "DATABASE_URL",
-	referrer: "unknown",
 	seed: undefined,
 	envPrefix: "VITE_",
-} satisfies InstantPostgresParams;
+};
 
-type PostgresPluginOptions = Partial<InstantPostgresParams> & {
+type PostgresPluginOptions = {
+	referrer: string;
+	dotEnvFile?: string;
+	dotEnvKey?: string;
 	seed?: {
 		type: "sql-script";
 		path: string;
 	};
+	envPrefix?: string;
 };
 
 let claimProcessStarted = false;
 
-function postgresPlugin(options?: PostgresPluginOptions): Plugin {
+function postgresPlugin(options: PostgresPluginOptions): Plugin {
+	if (!options?.referrer || options.referrer.trim() === "") {
+		throw new Error(
+			"vite-plugin-db: 'referrer' option is required.\n\n" +
+				"The referrer helps track usage for the Instagres Affiliates Program.\n\n" +
+				"Usage:\n" +
+				"  postgres({ referrer: 'your-app-name' })\n\n" +
+				"Examples:\n" +
+				"  postgres({ referrer: 'github:username/repo-name' })\n" +
+				"  postgres({ referrer: 'my-vite-app' })\n\n" +
+				"For more information, visit: https://neon.tech/docs/vite-plugin-db",
+		);
+	}
+
 	const {
 		dotEnvFile: envPath,
 		dotEnvKey: envKey,
@@ -30,7 +46,7 @@ function postgresPlugin(options?: PostgresPluginOptions): Plugin {
 	} = {
 		...DEFAULTS,
 		...options,
-	} satisfies InstantPostgresParams;
+	};
 	return {
 		name: "vite-plugin-db",
 		enforce: "pre",
