@@ -333,7 +333,7 @@ describe("instantPostgres", () => {
 		await expect(
 			instantPostgres({
 				dotEnvFile: ".env",
-			} as any),
+			} as InstantPostgresParams),
 		).rejects.toThrow("referrer parameter is required");
 	});
 

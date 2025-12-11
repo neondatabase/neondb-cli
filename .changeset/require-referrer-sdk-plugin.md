@@ -9,33 +9,33 @@
 
 ## Breaking Changes
 
-- **SDK/Library (get-db)**: The `referrer` parameter in `instantPostgres()` is now required
-- **Vite Plugin (vite-plugin-db)**: The `referrer` option in plugin configuration is now required
-- **CLI**: No changes - the `--ref` flag remains optional with default value `npm:get-db/cli`
+-   **SDK/Library (get-db)**: The `referrer` parameter in `instantPostgres()` is now required
+-   **Vite Plugin (vite-plugin-db)**: The `referrer` option in plugin configuration is now required
+-   **CLI**: No changes - the `--ref` flag remains optional with default value `npm:get-db/cli`
 
 ## Migration Guide
 
 ### For SDK/Library Users
 
 ```typescript
-// Before (v2.x)
+// Before
 await instantPostgres({ dotEnvFile: ".env" });
 
-// After (v3.x)
+// Now
 await instantPostgres({
-  referrer: "npm:your-package-name", // REQUIRED
-  dotEnvFile: ".env"
+	referrer: "npm:your-package-name", // REQUIRED
+	dotEnvFile: ".env",
 });
 ```
 
 ### For Vite Plugin Users
 
 ```typescript
-// Before (v2.x)
-postgres()
+// Before
+postgres();
 
-// After (v3.x)
-postgres({ referrer: "github:username/repo-name" }) // REQUIRED
+// Now
+postgres({ referrer: "github:username/repo-name" }); // REQUIRED
 ```
 
 ### For CLI Users

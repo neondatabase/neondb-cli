@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import { intro, log, outro } from "@clack/prompts";
-import { type InstantPostgresParams, instantPostgres } from "get-db";
+import { instantPostgres } from "get-db";
 import { loadEnv, type Plugin } from "vite";
 
 const DEFAULTS = {
