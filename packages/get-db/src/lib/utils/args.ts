@@ -33,6 +33,10 @@ export function getArgs() {
 				type: "string",
 				short: "p",
 			},
+			preset: {
+				type: "string",
+				short: "P",
+			},
 			ref: {
 				type: "string",
 				short: "r",
@@ -65,6 +69,7 @@ Options:
   -p, --prefix    Prefix for public environment variables (default: "${
 		DEFAULTS.envPrefix
   }")
+  -P, --preset    Framework preset (default, vite, next, nuxt)
   -r, --ref       Referrer identifier for tracking (default: "${DEFAULTS.referrer}")
   -h, --help      Show this help message
 `);
