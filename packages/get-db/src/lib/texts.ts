@@ -1,4 +1,4 @@
-import { DEFAULTS } from "./utils/args.js";
+import type { DEFAULTS } from "./utils/args.js";
 
 export const INTRO_ART = `
 
@@ -33,14 +33,14 @@ export const messages = {
 		`Saved it to ${dotEnvFile} as ${dotEnvKey} \n\n\n`,
 	happyCoding: "Happy coding! 🚀",
 	databaseGenerated: (url: string) => `Claim your Database at: ${url}`,
-	questions: {
-		dotEnvFilePath: `Enter the path to your environment file (default: ${DEFAULTS.dotEnvPath})`,
-		dotEnvKey: `Enter the key for the database connection string (default: ${DEFAULTS.dotEnvKey})`,
+	questions: (config: typeof DEFAULTS) => ({
+		dotEnvFilePath: `Enter the path to your environment file (default: ${config.dotEnvPath})`,
+		dotEnvKey: `Enter the key for the database connection string (default: ${config.dotEnvKey})`,
 		seedPath: `Enter the path to your seed (.sql) file (default: ${
-			DEFAULTS.seed?.path || "none"
+			config.seed?.path || "none"
 		})`,
-		prefix: `Enter the prefix for public environment variables (default: ${DEFAULTS.envPrefix})`,
-	},
+		prefix: `Enter the prefix for public environment variables (default: ${config.envPrefix})`,
+	}),
 
 	info: {
 		dotEnvFileNotFound: "No .env file found, creating one.",

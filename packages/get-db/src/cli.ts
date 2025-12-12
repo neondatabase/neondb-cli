@@ -1,8 +1,17 @@
 #!/usr/bin/env node
 
-import { intro, isCancel, log, outro, spinner, text } from "@clack/prompts";
+import {
+	intro,
+	isCancel,
+	log,
+	outro,
+	select,
+	spinner,
+	text,
+} from "@clack/prompts";
 import { cristal } from "gradient-string";
 import { claim } from "./lib/claim-command.js";
+import { validateAndGetConfig } from "./lib/frameworks.js";
 import { instantPostgres } from "./lib/instant-postgres.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
 import type { Defaults } from "./lib/types.js";
@@ -13,32 +22,106 @@ import { validateEnvKey, validateEnvPath } from "./lib/utils/validate.js";
 async function main() {
 	const { command, yes: shouldUseDefaults, ...flags } = getArgs();
 
-	// Handle claim command
+	// Handle claim command early (before framework selection)
 	if (command === "claim") {
-		const envPath = flags.env || DEFAULTS.dotEnvPath;
+		// For claim command, we need config for defaults
+		let claimConfig: Defaults;
+		try {
+			claimConfig = validateAndGetConfig(flags.framework, DEFAULTS);
+		} catch (error) {
+			if (error instanceof Error) {
+				log.error(error.message);
+			}
+			process.exit(1);
+		}
+		const envPath = flags.env || claimConfig.dotEnvPath;
 		await claim(envPath, flags.prefix);
 		return;
 	}
 
+	// Show intro art
 	console.log(cristal(INTRO_ART));
 	const s = spinner();
 
-	intro(messages.welcome);
-	log.info(messages.nonInteractive);
+	// Determine framework selection
+	let selectedFramework: string | undefined = flags.framework;
+
+	// Interactive mode: show welcome and prompt for framework
+	if (!shouldUseDefaults) {
+		intro(messages.welcome);
+		log.info(messages.nonInteractive);
+
+		// Framework selection prompt (if not provided via -f flag)
+		if (!selectedFramework) {
+			selectedFramework = (await select({
+				message: "Select a framework (or custom for full control):",
+				options: [
+					{
+						value: "default",
+						label: "Default",
+						hint: "PUBLIC_ prefix",
+					},
+					{ value: "vite", label: "Vite", hint: "VITE_ prefix" },
+					{
+						value: "next",
+						label: "Next.js",
+						hint: "NEXT_PUBLIC_ prefix",
+					},
+					{
+						value: "nuxt",
+						label: "Nuxt",
+						hint: "NUXT_PUBLIC_ prefix",
+					},
+					{
+						value: "custom",
+						label: "Custom",
+						hint: "Configure everything manually",
+					},
+				],
+				initialValue: "default",
+			})) as string;
+
+			// Handle cancellation
+			if (isCancel(selectedFramework)) {
+				outro(messages.info.userCancelled);
+				process.exit(1);
+			}
+		}
+	}
+
+	// Validate and apply framework configuration
+	let config: Defaults;
+	const isCustomMode = selectedFramework === "custom";
+
+	if (isCustomMode) {
+		// Custom mode: use base DEFAULTS without framework override
+		config = DEFAULTS;
+	} else {
+		// Apply framework configuration
+		try {
+			config = validateAndGetConfig(selectedFramework, DEFAULTS);
+		} catch (error) {
+			if (error instanceof Error) {
+				log.error(error.message);
+			}
+			process.exit(1);
+		}
+	}
+
 	const userInput: Partial<Defaults> = {};
 
 	if (shouldUseDefaults) {
-		const envPath = flags.env || DEFAULTS.dotEnvPath;
-		const envKey = flags.key || DEFAULTS.dotEnvKey;
-		const envPrefix = flags.prefix || DEFAULTS.envPrefix;
-		const referrer = flags.ref || DEFAULTS.referrer;
+		const envPath = flags.env || config.dotEnvPath;
+		const envKey = flags.key || config.dotEnvKey;
+		const envPrefix = flags.prefix || config.envPrefix;
+		const referrer = flags.ref || config.referrer;
 
 		prepEnv(envPath, envKey);
 		s.start(messages.generating);
 
 		const seedConfig = flags.seed
 			? { type: "sql-script" as const, path: flags.seed }
-			: DEFAULTS.seed;
+			: config.seed;
 
 		await instantPostgres({
 			dotEnvFile: envPath,
@@ -63,7 +146,7 @@ async function main() {
 			userInput.dotEnvPath = flags.env;
 		} else {
 			userInput.dotEnvPath = (await text({
-				message: messages.questions.dotEnvFilePath,
+				message: messages.questions(config).dotEnvFilePath,
 				validate: validateEnvPath,
 			})) as Defaults["dotEnvPath"];
 
@@ -75,7 +158,7 @@ async function main() {
 
 			// user entered an empty string -- opted for default value.
 			if (!userInput.dotEnvPath) {
-				userInput.dotEnvPath = DEFAULTS.dotEnvPath;
+				userInput.dotEnvPath = config.dotEnvPath;
 				log.step(
 					messages.info.defaultEnvFilePath(userInput.dotEnvPath),
 				);
@@ -96,7 +179,7 @@ async function main() {
 		// Prompt for dotEnvKey if not set by flag
 		if (!userInput.dotEnvKey) {
 			userInput.dotEnvKey = (await text({
-				message: messages.questions.dotEnvKey,
+				message: messages.questions(config).dotEnvKey,
 				validate: validateEnvKey,
 			})) as Defaults["dotEnvKey"];
 
@@ -108,7 +191,7 @@ async function main() {
 
 			// User accepted default value.
 			if (!userInput.dotEnvKey) {
-				userInput.dotEnvKey = DEFAULTS.dotEnvKey;
+				userInput.dotEnvKey = config.dotEnvKey;
 				log.step(messages.info.defaultEnvKey(userInput.dotEnvKey));
 			}
 		}
@@ -117,12 +200,12 @@ async function main() {
 			userInput.seed = {
 				type: "sql-script",
 				path: await text({
-					message: messages.questions.seedPath,
+					message: messages.questions(config).seedPath,
 				}),
 			} as Defaults["seed"];
 
 			if (!userInput.seed?.path) {
-				userInput.seed = DEFAULTS.seed;
+				userInput.seed = config.seed;
 			}
 		} else {
 			userInput.seed = {
@@ -140,7 +223,7 @@ async function main() {
 		// Prompt for envPrefix if not set by flag
 		if (!userInput.envPrefix) {
 			userInput.envPrefix = (await text({
-				message: messages.questions.prefix,
+				message: messages.questions(config).prefix,
 			})) as Defaults["envPrefix"];
 
 			// user cancelled with CTRL+C
@@ -151,7 +234,7 @@ async function main() {
 
 			// User accepted default value.
 			if (!userInput.envPrefix) {
-				userInput.envPrefix = DEFAULTS.envPrefix;
+				userInput.envPrefix = config.envPrefix;
 				log.step(messages.info.defaultPrefix(userInput.envPrefix));
 			}
 		}
@@ -160,7 +243,7 @@ async function main() {
 
 		s.start(messages.generating);
 
-		const referrer = flags.ref || DEFAULTS.referrer;
+		const referrer = flags.ref || config.referrer;
 
 		await instantPostgres({
 			dotEnvFile: userInput.dotEnvPath,
