@@ -33,9 +33,9 @@ export function getArgs() {
 				type: "string",
 				short: "p",
 			},
-			preset: {
+			framework: {
 				type: "string",
-				short: "P",
+				short: "f",
 			},
 			ref: {
 				type: "string",
@@ -69,7 +69,7 @@ Options:
   -p, --prefix    Prefix for public environment variables (default: "${
 		DEFAULTS.envPrefix
   }")
-  -P, --preset    Framework preset (default, vite, next, nuxt)
+  -f, --framework Framework to use (default, vite, next, nuxt)
   -r, --ref       Referrer identifier for tracking (default: "${DEFAULTS.referrer}")
   -h, --help      Show this help message
 `);

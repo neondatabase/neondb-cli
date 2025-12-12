@@ -1,134 +1,134 @@
 import { describe, expect, it } from "vitest";
 import {
-	applyPreset,
-	getPreset,
-	isValidPreset,
-	PRESETS,
-	type PresetName,
+	applyFramework,
+	FRAMEWORKS,
+	type FrameworkName,
+	getFramework,
+	isValidFramework,
 	validateAndGetConfig,
-} from "./presets.js";
+} from "./frameworks.js";
 import { DEFAULTS } from "./utils/args.js";
 
-describe("PRESETS", () => {
-	it("contains all expected presets", () => {
-		expect(PRESETS).toHaveProperty("default");
-		expect(PRESETS).toHaveProperty("vite");
-		expect(PRESETS).toHaveProperty("next");
-		expect(PRESETS).toHaveProperty("nuxt");
+describe("FRAMEWORKS", () => {
+	it("contains all expected frameworks", () => {
+		expect(FRAMEWORKS).toHaveProperty("default");
+		expect(FRAMEWORKS).toHaveProperty("vite");
+		expect(FRAMEWORKS).toHaveProperty("next");
+		expect(FRAMEWORKS).toHaveProperty("nuxt");
 	});
 
-	it("default preset has PUBLIC_ prefix", () => {
-		expect(PRESETS.default.envPrefix).toBe("PUBLIC_");
+	it("default framework has PUBLIC_ prefix", () => {
+		expect(FRAMEWORKS.default.envPrefix).toBe("PUBLIC_");
 	});
 
-	it("vite preset has VITE_ prefix", () => {
-		expect(PRESETS.vite.envPrefix).toBe("VITE_");
+	it("vite framework has VITE_ prefix", () => {
+		expect(FRAMEWORKS.vite.envPrefix).toBe("VITE_");
 	});
 
-	it("next preset has NEXT_PUBLIC_ prefix", () => {
-		expect(PRESETS.next.envPrefix).toBe("NEXT_PUBLIC_");
+	it("next framework has NEXT_PUBLIC_ prefix", () => {
+		expect(FRAMEWORKS.next.envPrefix).toBe("NEXT_PUBLIC_");
 	});
 
-	it("nuxt preset has NUXT_PUBLIC_ prefix", () => {
-		expect(PRESETS.nuxt.envPrefix).toBe("NUXT_PUBLIC_");
+	it("nuxt framework has NUXT_PUBLIC_ prefix", () => {
+		expect(FRAMEWORKS.nuxt.envPrefix).toBe("NUXT_PUBLIC_");
 	});
 });
 
-describe("isValidPreset", () => {
-	it("returns true for valid preset names", () => {
-		expect(isValidPreset("default")).toBe(true);
-		expect(isValidPreset("vite")).toBe(true);
-		expect(isValidPreset("next")).toBe(true);
-		expect(isValidPreset("nuxt")).toBe(true);
+describe("isValidFramework", () => {
+	it("returns true for valid framework names", () => {
+		expect(isValidFramework("default")).toBe(true);
+		expect(isValidFramework("vite")).toBe(true);
+		expect(isValidFramework("next")).toBe(true);
+		expect(isValidFramework("nuxt")).toBe(true);
 	});
 
-	it("returns false for invalid preset names", () => {
-		expect(isValidPreset("invalid")).toBe(false);
-		expect(isValidPreset("astro")).toBe(false);
-		expect(isValidPreset("sveltekit")).toBe(false);
-		expect(isValidPreset("remix")).toBe(false);
+	it("returns false for invalid framework names", () => {
+		expect(isValidFramework("invalid")).toBe(false);
+		expect(isValidFramework("astro")).toBe(false);
+		expect(isValidFramework("sveltekit")).toBe(false);
+		expect(isValidFramework("remix")).toBe(false);
 	});
 
 	it("returns false for empty string", () => {
-		expect(isValidPreset("")).toBe(false);
+		expect(isValidFramework("")).toBe(false);
 	});
 
 	it("returns false for special characters", () => {
-		expect(isValidPreset("vite!")).toBe(false);
-		expect(isValidPreset("next@latest")).toBe(false);
-		expect(isValidPreset("../vite")).toBe(false);
+		expect(isValidFramework("vite!")).toBe(false);
+		expect(isValidFramework("next@latest")).toBe(false);
+		expect(isValidFramework("../vite")).toBe(false);
 	});
 
 	it("is case-insensitive", () => {
-		expect(isValidPreset("Vite")).toBe(true);
-		expect(isValidPreset("VITE")).toBe(true);
-		expect(isValidPreset("Next")).toBe(true);
-		expect(isValidPreset("NEXT")).toBe(true);
-		expect(isValidPreset("nUxT")).toBe(true);
-		expect(isValidPreset("DeFaUlT")).toBe(true);
+		expect(isValidFramework("Vite")).toBe(true);
+		expect(isValidFramework("VITE")).toBe(true);
+		expect(isValidFramework("Next")).toBe(true);
+		expect(isValidFramework("NEXT")).toBe(true);
+		expect(isValidFramework("nUxT")).toBe(true);
+		expect(isValidFramework("DeFaUlT")).toBe(true);
 	});
 
 	it("returns false for whitespace", () => {
-		expect(isValidPreset(" ")).toBe(false);
-		expect(isValidPreset("  vite  ")).toBe(false);
-		expect(isValidPreset("\n")).toBe(false);
-		expect(isValidPreset("\t")).toBe(false);
+		expect(isValidFramework(" ")).toBe(false);
+		expect(isValidFramework("  vite  ")).toBe(false);
+		expect(isValidFramework("\n")).toBe(false);
+		expect(isValidFramework("\t")).toBe(false);
 	});
 });
 
-describe("getPreset", () => {
-	it("returns correct configuration for default preset", () => {
-		const config = getPreset("default");
+describe("getFramework", () => {
+	it("returns correct configuration for default framework", () => {
+		const config = getFramework("default");
 		expect(config).toEqual({ envPrefix: "PUBLIC_" });
 	});
 
-	it("returns correct configuration for vite preset", () => {
-		const config = getPreset("vite");
+	it("returns correct configuration for vite framework", () => {
+		const config = getFramework("vite");
 		expect(config).toEqual({ envPrefix: "VITE_" });
 	});
 
-	it("returns correct configuration for next preset", () => {
-		const config = getPreset("next");
+	it("returns correct configuration for next framework", () => {
+		const config = getFramework("next");
 		expect(config).toEqual({ envPrefix: "NEXT_PUBLIC_" });
 	});
 
-	it("returns correct configuration for nuxt preset", () => {
-		const config = getPreset("nuxt");
+	it("returns correct configuration for nuxt framework", () => {
+		const config = getFramework("nuxt");
 		expect(config).toEqual({ envPrefix: "NUXT_PUBLIC_" });
 	});
 
 	it("returns partial Defaults object", () => {
-		const config = getPreset("vite");
+		const config = getFramework("vite");
 		expect(config).toHaveProperty("envPrefix");
 		expect(config).not.toHaveProperty("dotEnvPath");
 		expect(config).not.toHaveProperty("dotEnvKey");
 	});
 });
 
-describe("applyPreset", () => {
-	it("applies preset configuration", () => {
-		const result = applyPreset("vite");
+describe("applyFramework", () => {
+	it("applies framework configuration", () => {
+		const result = applyFramework("vite");
 		expect(result).toEqual({ envPrefix: "VITE_" });
 	});
 
-	it("applies preset with no overrides", () => {
-		const result = applyPreset("next", {});
+	it("applies framework with no overrides", () => {
+		const result = applyFramework("next", {});
 		expect(result).toEqual({ envPrefix: "NEXT_PUBLIC_" });
 	});
 
-	it("applies preset with overrides", () => {
-		const result = applyPreset("vite", { envPrefix: "CUSTOM_" });
+	it("applies framework with overrides", () => {
+		const result = applyFramework("vite", { envPrefix: "CUSTOM_" });
 		expect(result).toEqual({ envPrefix: "CUSTOM_" });
 	});
 
-	it("overrides take precedence over preset values", () => {
-		const result = applyPreset("next", { envPrefix: "OVERRIDE_" });
+	it("overrides take precedence over framework values", () => {
+		const result = applyFramework("next", { envPrefix: "OVERRIDE_" });
 		expect(result.envPrefix).toBe("OVERRIDE_");
 		expect(result.envPrefix).not.toBe("NEXT_PUBLIC_");
 	});
 
-	it("preserves non-preset properties from overrides", () => {
-		const result = applyPreset("vite", {
+	it("preserves non-framework properties from overrides", () => {
+		const result = applyFramework("vite", {
 			envPrefix: "CUSTOM_",
 			dotEnvPath: "./custom.env",
 		});
@@ -137,7 +137,7 @@ describe("applyPreset", () => {
 	});
 
 	it("works with multiple override properties", () => {
-		const result = applyPreset("next", {
+		const result = applyFramework("next", {
 			dotEnvPath: ".env.production",
 			dotEnvKey: "PROD_DB_URL",
 			envPrefix: "PROD_",
@@ -151,17 +151,17 @@ describe("applyPreset", () => {
 });
 
 describe("validateAndGetConfig", () => {
-	it("returns baseDefaults when preset is undefined", () => {
+	it("returns baseDefaults when framework is undefined", () => {
 		const result = validateAndGetConfig(undefined, DEFAULTS);
 		expect(result).toEqual(DEFAULTS);
 	});
 
-	it("returns baseDefaults when preset is not provided", () => {
+	it("returns baseDefaults when framework is not provided", () => {
 		const result = validateAndGetConfig(undefined, DEFAULTS);
 		expect(result).toBe(DEFAULTS);
 	});
 
-	it("merges vite preset with base defaults", () => {
+	it("merges vite framework with base defaults", () => {
 		const result = validateAndGetConfig("vite", DEFAULTS);
 		expect(result).toEqual({
 			...DEFAULTS,
@@ -169,7 +169,7 @@ describe("validateAndGetConfig", () => {
 		});
 	});
 
-	it("merges next preset with base defaults", () => {
+	it("merges next framework with base defaults", () => {
 		const result = validateAndGetConfig("next", DEFAULTS);
 		expect(result).toEqual({
 			...DEFAULTS,
@@ -177,7 +177,7 @@ describe("validateAndGetConfig", () => {
 		});
 	});
 
-	it("merges nuxt preset with base defaults", () => {
+	it("merges nuxt framework with base defaults", () => {
 		const result = validateAndGetConfig("nuxt", DEFAULTS);
 		expect(result).toEqual({
 			...DEFAULTS,
@@ -185,7 +185,7 @@ describe("validateAndGetConfig", () => {
 		});
 	});
 
-	it("merges default preset with base defaults", () => {
+	it("merges default framework with base defaults", () => {
 		const result = validateAndGetConfig("default", DEFAULTS);
 		expect(result).toEqual({
 			...DEFAULTS,
@@ -201,32 +201,32 @@ describe("validateAndGetConfig", () => {
 		expect(result.referrer).toBe(DEFAULTS.referrer);
 	});
 
-	it("throws error for invalid preset", () => {
+	it("throws error for invalid framework", () => {
 		expect(() => validateAndGetConfig("invalid", DEFAULTS)).toThrow(
-			'Invalid preset: "invalid"',
+			'Invalid framework: "invalid"',
 		);
 	});
 
-	it("error message includes available presets", () => {
+	it("error message includes available frameworks", () => {
 		expect(() => validateAndGetConfig("astro", DEFAULTS)).toThrow(
-			"Available presets: default, vite, next, nuxt",
+			"Available frameworks: default, vite, next, nuxt",
 		);
 	});
 
-	it("throws error for empty string preset", () => {
+	it("throws error for empty string framework", () => {
 		expect(() => validateAndGetConfig("", DEFAULTS)).toThrow(
-			'Invalid preset: ""',
+			'Invalid framework: ""',
 		);
 	});
 
-	it("handles case-insensitive preset names", () => {
+	it("handles case-insensitive framework names", () => {
 		expect(() => validateAndGetConfig("Vite", DEFAULTS)).not.toThrow();
 		expect(() => validateAndGetConfig("VITE", DEFAULTS)).not.toThrow();
 		expect(() => validateAndGetConfig("Next", DEFAULTS)).not.toThrow();
 		expect(() => validateAndGetConfig("NEXT", DEFAULTS)).not.toThrow();
 	});
 
-	it("returns correct config for case-insensitive preset", () => {
+	it("returns correct config for case-insensitive framework", () => {
 		const viteUpper = validateAndGetConfig("VITE", DEFAULTS);
 		const viteMixed = validateAndGetConfig("ViTe", DEFAULTS);
 		const viteLower = validateAndGetConfig("vite", DEFAULTS);
@@ -236,15 +236,15 @@ describe("validateAndGetConfig", () => {
 		expect(viteLower.envPrefix).toBe("VITE_");
 	});
 
-	it("throws error for preset with special characters", () => {
+	it("throws error for framework with special characters", () => {
 		expect(() => validateAndGetConfig("vite!", DEFAULTS)).toThrow(
-			'Invalid preset: "vite!"',
+			'Invalid framework: "vite!"',
 		);
 	});
 
-	it("throws error for preset with whitespace", () => {
+	it("throws error for framework with whitespace", () => {
 		expect(() => validateAndGetConfig(" vite ", DEFAULTS)).toThrow(
-			'Invalid preset: " vite "',
+			'Invalid framework: " vite "',
 		);
 	});
 
@@ -270,14 +270,19 @@ describe("validateAndGetConfig", () => {
 });
 
 describe("Edge cases", () => {
-	it("handles all presets without errors", () => {
-		const presetNames: PresetName[] = ["default", "vite", "next", "nuxt"];
-		for (const name of presetNames) {
+	it("handles all frameworks without errors", () => {
+		const frameworkNames: FrameworkName[] = [
+			"default",
+			"vite",
+			"next",
+			"nuxt",
+		];
+		for (const name of frameworkNames) {
 			expect(() => validateAndGetConfig(name, DEFAULTS)).not.toThrow();
 		}
 	});
 
-	it("preset values override only specified properties", () => {
+	it("framework values override only specified properties", () => {
 		const result = validateAndGetConfig("vite", DEFAULTS);
 		// Only envPrefix should be different from DEFAULTS
 		expect(result.envPrefix).not.toBe(DEFAULTS.envPrefix);
@@ -287,16 +292,16 @@ describe("Edge cases", () => {
 		expect(result.referrer).toBe(DEFAULTS.referrer);
 	});
 
-	it("getPreset returns reference to preset object", () => {
-		const preset1 = getPreset("vite");
-		const preset2 = getPreset("vite");
-		expect(preset1).toBe(preset2);
+	it("getFramework returns reference to framework object", () => {
+		const framework1 = getFramework("vite");
+		const framework2 = getFramework("vite");
+		expect(framework1).toBe(framework2);
 	});
 
 	it("validateAndGetConfig creates new object", () => {
 		const result = validateAndGetConfig("vite", DEFAULTS);
 		expect(result).not.toBe(DEFAULTS);
-		expect(result).not.toBe(PRESETS.vite);
+		expect(result).not.toBe(FRAMEWORKS.vite);
 	});
 
 	describe("Case-insensitive matching", () => {
@@ -352,7 +357,7 @@ describe("Edge cases", () => {
 			}
 		});
 
-		it("invalid preset still fails regardless of case", () => {
+		it("invalid framework still fails regardless of case", () => {
 			expect(() => validateAndGetConfig("invalid", DEFAULTS)).toThrow();
 			expect(() => validateAndGetConfig("INVALID", DEFAULTS)).toThrow();
 			expect(() => validateAndGetConfig("Invalid", DEFAULTS)).toThrow();
@@ -360,12 +365,12 @@ describe("Edge cases", () => {
 			expect(() => validateAndGetConfig("ASTRO", DEFAULTS)).toThrow();
 		});
 
-		it("isValidPreset works with all cases", () => {
-			expect(isValidPreset("vite")).toBe(true);
-			expect(isValidPreset("VITE")).toBe(true);
-			expect(isValidPreset("Vite")).toBe(true);
-			expect(isValidPreset("invalid")).toBe(false);
-			expect(isValidPreset("INVALID")).toBe(false);
+		it("isValidFramework works with all cases", () => {
+			expect(isValidFramework("vite")).toBe(true);
+			expect(isValidFramework("VITE")).toBe(true);
+			expect(isValidFramework("Vite")).toBe(true);
+			expect(isValidFramework("invalid")).toBe(false);
+			expect(isValidFramework("INVALID")).toBe(false);
 		});
 	});
 });
