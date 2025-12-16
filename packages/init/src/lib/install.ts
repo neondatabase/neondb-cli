@@ -4,18 +4,15 @@ import { getMCPConfig, writeMCPConfig } from "./mcp-config.js";
 import type { Editor, InstallStatus } from "./types.js";
 
 /**
- * Installs Neon's MCP Server for a specific editor
- * - Cursor: Global config
- * - VS Code: Global config (preferred) or workspace config (fallback)
- * - Claude CLI: Global config
+ * Checks if an editor needs configuration (either not configured or user wants to reconfigure)
+ * Returns true if configuration is needed, false otherwise
  */
-async function installMCPServerForEditor(
+async function shouldConfigureEditor(
 	homeDir: string,
 	workspaceDir: string,
 	editor: Editor,
-	apiKey: string,
-): Promise<InstallStatus> {
-	const { config, configPath } = getMCPConfig(homeDir, workspaceDir, editor);
+): Promise<boolean> {
+	const { config } = getMCPConfig(homeDir, workspaceDir, editor);
 
 	// Check if already configured
 	const serverKey = editor === "VS Code" ? config.servers : config.mcpServers;
@@ -28,16 +25,33 @@ async function installMCPServerForEditor(
 		});
 
 		if (isCancel(response)) {
-			return "failed";
+			return false;
 		}
 
 		const shouldReconfigure = response as boolean;
 
 		if (!shouldReconfigure) {
 			log.info(`Keeping existing configuration for ${editor}.`);
-			return "success";
+			return false;
 		}
 	}
+
+	return true;
+}
+
+/**
+ * Installs Neon's MCP Server for a specific editor
+ * - Cursor: Global config
+ * - VS Code: Global config (preferred) or workspace config (fallback)
+ * - Claude CLI: Global config
+ */
+async function installMCPServerForEditor(
+	homeDir: string,
+	workspaceDir: string,
+	editor: Editor,
+	apiKey: string,
+): Promise<InstallStatus> {
+	const { config, configPath } = getMCPConfig(homeDir, workspaceDir, editor);
 
 	// Configure Neon MCP Server
 	// Using remote MCP server with API key authentication
@@ -88,7 +102,32 @@ export async function installMCPServer(
 ): Promise<Map<Editor, InstallStatus>> {
 	const results = new Map<Editor, InstallStatus>();
 
-	// Ensure authentication (will trigger OAuth if needed)
+	const editorsToConfigureMap = new Map<Editor, boolean>();
+	for (const editor of selectedEditors) {
+		const needsConfig = await shouldConfigureEditor(
+			homeDir,
+			workspaceDir,
+			editor,
+		);
+		editorsToConfigureMap.set(editor, needsConfig);
+
+		// If editor doesn't need configuration, mark as success
+		if (!needsConfig) {
+			results.set(editor, "success");
+		}
+	}
+
+	// Get list of editors that need configuration
+	const editorsToConfigure = selectedEditors.filter(
+		(editor) => editorsToConfigureMap.get(editor) === true,
+	);
+
+	// If no editors need configuration, return early
+	if (editorsToConfigure.length === 0) {
+		log.info("All selected editors are already configured.");
+		return results;
+	}
+
 	const authSpinner = spinner();
 	authSpinner.start("Authenticating...");
 
@@ -96,8 +135,8 @@ export async function installMCPServer(
 
 	if (!authSuccess) {
 		authSpinner.stop("Authentication failed");
-		// Mark all editors as failed due to auth failure
-		for (const editor of selectedEditors) {
+		// Mark all editors that need configuration as failed
+		for (const editor of editorsToConfigure) {
 			results.set(editor, "failed");
 		}
 		return results;
@@ -113,15 +152,15 @@ export async function installMCPServer(
 		log.info(
 			"You can manually create one at: https://console.neon.tech/app/settings/api-keys",
 		);
-		// Mark all editors as failed due to API key creation failure
-		for (const editor of selectedEditors) {
+		// Mark all editors that need configuration as failed
+		for (const editor of editorsToConfigure) {
 			results.set(editor, "failed");
 		}
 		return results;
 	}
 
-	// Install MCP server for each selected editor
-	for (const editor of selectedEditors) {
+	// Install MCP server for editors that need configuration
+	for (const editor of editorsToConfigure) {
 		const status = await installMCPServerForEditor(
 			homeDir,
 			workspaceDir,
