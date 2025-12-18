@@ -18,7 +18,6 @@ function getDirectString(connString: string) {
 
 	return [directFirst, ...rest].join(".");
 }
-}
 
 export function getConnectionStrings(connString: string) {
 	return {

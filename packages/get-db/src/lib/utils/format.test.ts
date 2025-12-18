@@ -28,4 +28,21 @@ describe("getConnectionStrings", () => {
 			"postgres://user:password@host:port/database.us-east-1.aws.neon.tech",
 		);
 	});
+
+	test("converts pooler connection string to direct connection string by removing '-pooler' suffix", () => {
+		expect(
+			getConnectionStrings(
+				"postgres://user:password@host:port/database-pooler.us-east-1.aws.neon.tech",
+			).direct,
+		).toMatch(
+			"postgres://user:password@host:port/database.us-east-1.aws.neon.tech",
+		);
+		expect(
+			getConnectionStrings(
+				"postgres://user:password@host:port/database-pooler.us-east-1.aws.neon.tech",
+			).pooler,
+		).toMatch(
+			"postgres://user:password@host:port/database-pooler.us-east-1.aws.neon.tech",
+		);
+	});
 });
