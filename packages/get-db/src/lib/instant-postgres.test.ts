@@ -20,7 +20,7 @@ vi.mock("./utils/create-db.js", () => ({
 }));
 
 vi.mock("./utils/format.js", () => ({
-	getPoolerString: vi.fn(),
+	getConnectionStrings: vi.fn(),
 }));
 
 vi.mock("./utils/fs.js", () => ({
