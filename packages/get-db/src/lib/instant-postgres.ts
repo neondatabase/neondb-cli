@@ -4,7 +4,7 @@ import { seedDatabase } from "./seed-database.js";
 import { messages } from "./texts.js";
 import type { InstantPostgresParams } from "./types.js";
 import { createClaimableDatabase } from "./utils/create-db.js";
-import { getPoolerString } from "./utils/format.js";
+import { getConnectionStrings } from "./utils/format.js";
 import { writeToEnv } from "./utils/fs.js";
 import { INSTAGRES_URLS } from "./utils/urls.js";
 
@@ -21,8 +21,8 @@ export const instantPostgres = async ({
 	seed = undefined,
 	envPrefix = "PUBLIC_",
 }: InstantPostgresParams): Promise<{
+	databaseUrlDirect: string;
 	databaseUrl: string;
-	poolerUrl: string;
 	claimUrl: string;
 	claimExpiresAt: Date;
 }> => {
@@ -35,7 +35,7 @@ export const instantPostgres = async ({
 				"Examples:\n" +
 				"  referrer: 'npm:my-package-name'\n" +
 				"  referrer: 'my-app-name'\n\n" +
-				"For more information, visit: https://neon.com/docs/get-db",
+				"For more information, visit: https://neon.com/docs/reference/instagres",
 		);
 	}
 
@@ -47,9 +47,10 @@ export const instantPostgres = async ({
 		dbId,
 		`npm:get-db|${referrer}`,
 	);
-	const poolerString = getPoolerString(connString);
+	const { pooler: poolerString, direct: directString } =
+		getConnectionStrings(connString);
 
-	log.step(messages.connectionString(connString));
+	log.step(messages.connectionString(directString));
 	log.step(messages.poolerString(poolerString));
 
 	await writeToEnv(
@@ -57,7 +58,7 @@ export const instantPostgres = async ({
 		dotEnvKey,
 		claimExpiresAt,
 		claimUrl,
-		connString,
+		directString,
 		poolerString,
 		envPrefix,
 	);
@@ -67,13 +68,13 @@ export const instantPostgres = async ({
 
 	if (seed) {
 		log.step("Pushing schema to database");
-		await seedDatabase(seed.path, connString);
+		await seedDatabase(seed.path, directString);
 		log.success("Schema pushed to database");
 	}
 
 	return {
-		databaseUrl: connString,
-		poolerUrl: poolerString,
+		databaseUrlDirect: directString,
+		databaseUrl: poolerString,
 		claimUrl: claimUrl.href,
 		claimExpiresAt,
 	} as const;

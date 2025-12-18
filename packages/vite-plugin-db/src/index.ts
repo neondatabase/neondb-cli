@@ -33,7 +33,7 @@ function postgresPlugin(options: PostgresPluginOptions): Plugin {
 				"Examples:\n" +
 				"  postgres({ referrer: 'github:username/repo-name' })\n" +
 				"  postgres({ referrer: 'my-vite-app' })\n\n" +
-				"For more information, visit: https://neon.tech/docs/vite-plugin-db",
+				"For more information, visit: https://neon.com/docs/reference/instagres",
 		);
 	}
 

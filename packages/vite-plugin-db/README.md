@@ -12,9 +12,13 @@ This Vite plugin instantly provisions a Postgres instance (via Neon) and injects
 
 ## Installation
 
-```sh
-npm add vite-plugin-db
-```
+| Package Manager | Command                          |
+| --------------- | -------------------------------- |
+| **npm**         | `npm add -D vite-plugin-db`      |
+| **pnpm**        | `pnpm add -D vite-plugin-db`     |
+| **yarn**        | `yarn add -D vite-plugin-db`     |
+| **bun**         | `bun add -D vite-plugin-db`      |
+| **deno**        | `deno add -D npm:vite-plugin-db` |
 
 ## Usage
 
@@ -73,11 +77,11 @@ postgres({
 
 The plugin writes the following environment variables to your `.env`:
 
-| Variable                           | Description                                                |
-| ---------------------------------- | ---------------------------------------------------------- |
-| `DATABASE_URL`                     | The **pooler** connection string (default connection)      |
-| `DATABASE_URL_DIRECT`              | The direct connection string                               |
-| `{envPrefix}INSTAGRES_CLAIM_URL`   | Claim URL (valid for 7 days) to take ownership of the DB  |
+| Variable                         | Description                                              |
+| -------------------------------- | -------------------------------------------------------- |
+| `DATABASE_URL`                   | The **pooler** connection string (default connection)    |
+| `DATABASE_URL_DIRECT`            | The direct connection string                             |
+| `{envPrefix}INSTAGRES_CLAIM_URL` | Claim URL (valid for 7 days) to take ownership of the DB |
 
 > **Note:** The pooler connection is now the default for `DATABASE_URL` (as of the latest version). The pooler provides connection pooling and is recommended for most use cases, especially serverless environments.
 
