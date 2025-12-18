@@ -31,7 +31,7 @@ vi.mock("./utils/fs.js", () => ({
 const { log } = await import("@clack/prompts");
 const { seedDatabase } = await import("./seed-database.js");
 const { createClaimableDatabase } = await import("./utils/create-db.js");
-const { getPoolerString } = await import("./utils/format.js");
+const { getConnectionStrings } = await import("./utils/format.js");
 const { writeToEnv } = await import("./utils/fs.js");
 
 describe("instantPostgres", () => {
@@ -45,7 +45,10 @@ describe("instantPostgres", () => {
 		vi.mocked(createClaimableDatabase).mockResolvedValue(
 			mockConnectionString,
 		);
-		vi.mocked(getPoolerString).mockReturnValue(mockPoolerString);
+		vi.mocked(getConnectionStrings).mockReturnValue({
+			pooler: mockPoolerString,
+			direct: mockConnectionString,
+		});
 		vi.mocked(writeToEnv).mockResolvedValue();
 		vi.mocked(seedDatabase).mockResolvedValue();
 	});
@@ -55,7 +58,7 @@ describe("instantPostgres", () => {
 
 		expect(result).toBeDefined();
 		expect(result).toHaveProperty("databaseUrl");
-		expect(result).toHaveProperty("poolerUrl");
+		expect(result).toHaveProperty("databaseUrlDirect");
 		expect(result).toHaveProperty("claimUrl");
 		expect(result).toHaveProperty("claimExpiresAt");
 	});
@@ -63,8 +66,8 @@ describe("instantPostgres", () => {
 	test("returns correct connection strings", async () => {
 		const result = await instantPostgres({ referrer: "test-referrer" });
 
-		expect(result.databaseUrl).toBe(mockConnectionString);
-		expect(result.poolerUrl).toBe(mockPoolerString);
+		expect(result.databaseUrl).toBe(mockPoolerString);
+		expect(result.databaseUrlDirect).toBe(mockConnectionString);
 	});
 
 	test("generates valid claim URL with UUID", async () => {
@@ -264,7 +267,7 @@ describe("instantPostgres", () => {
 	test("generates pooler string from connection string", async () => {
 		await instantPostgres({ referrer: "test-referrer" });
 
-		expect(getPoolerString).toHaveBeenCalledWith(mockConnectionString);
+		expect(getConnectionStrings).toHaveBeenCalledWith(mockConnectionString);
 	});
 
 	test("propagates errors from createClaimableDatabase", async () => {
@@ -303,9 +306,12 @@ describe("instantPostgres", () => {
 			return mockConnectionString;
 		});
 
-		vi.mocked(getPoolerString).mockImplementation(() => {
+		vi.mocked(getConnectionStrings).mockImplementation(() => {
 			callOrder.push("getPooler");
-			return mockPoolerString;
+			return {
+				pooler: mockPoolerString,
+				direct: mockConnectionString,
+			};
 		});
 
 		vi.mocked(writeToEnv).mockImplementation(async () => {
