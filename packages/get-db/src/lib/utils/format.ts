@@ -12,12 +12,12 @@ function getDirectString(connString: string) {
 	const isDirect = !connString.includes("pooler");
 	if (isDirect) {
 		return connString;
-	} else {
-		const [first, ...rest] = connString.split(".");
-		const directFirst = first.replace("-pooler", "");
-
-		return [directFirst, ...rest].join(".");
 	}
+	const [first, ...rest] = connString.split(".");
+	const directFirst = first.replace("-pooler", "");
+
+	return [directFirst, ...rest].join(".");
+}
 }
 
 export function getConnectionStrings(connString: string) {
