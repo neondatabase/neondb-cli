@@ -2,14 +2,6 @@
 
 <p align="center">CLI to help you hit the ground running without any sign-up. Instantiate a database with a single-command!</p>
 
-| Package Manager | Command               |
-| --------------- | --------------------- |
-| **npm**         | `npx get-db`          |
-| **pnpm**        | `pnpx get-db`         |
-| **yarn**        | `yarn dlx get-db`     |
-| **bun**         | `bunx get-db`         |
-| **deno**        | `deno run npm:get-db` |
-
 ---
 
 ## CLI Usage
