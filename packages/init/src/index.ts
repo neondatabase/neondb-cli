@@ -9,7 +9,7 @@ import {
 } from "@clack/prompts";
 import { bold, cyan } from "yoctocolors";
 import { detectAvailableEditors } from "./lib/editors.js";
-import { installMCPServer } from "./lib/install.js";
+import { installMCPServer, installNeonLocalConnect } from "./lib/install.js";
 import type { Editor } from "./lib/types.js";
 
 /**
@@ -78,34 +78,77 @@ export async function init(): Promise<void> {
 	}
 
 	// Install MCP server for selected editors
-	const results = await installMCPServer(
+	const mcpResults = await installMCPServer(
 		homeDir,
 		workspaceDir,
 		selectedEditors,
 	);
 
-	const successful: Editor[] = [];
-	const failed: Editor[] = [];
+	const mcpSuccessful: Editor[] = [];
+	const mcpFailed: Editor[] = [];
 
-	for (const [editor, status] of results.entries()) {
+	for (const [editor, status] of mcpResults.entries()) {
 		if (status === "success") {
-			successful.push(editor);
+			mcpSuccessful.push(editor);
 		} else {
-			failed.push(editor);
+			mcpFailed.push(editor);
 		}
 	}
-	const successList = successful.join(" / ");
-	if (successful.length > 0) {
-		log.step("Installed Neon MCP server");
-		log.step(`Success! Neon is now ready to use with ${successList}.\n`);
+
+	const mcpSuccessList = mcpSuccessful.join(" / ");
+	if (mcpSuccessful.length > 0) {
+		log.step(
+			`Success! Neon MCP Server is now ready to use with ${mcpSuccessList}.\n`,
+		);
 	}
 
-	if (failed.length > 0) {
-		log.error(`Failed to configure: ${failed.join(" / ")}`);
+	if (mcpFailed.length > 0) {
+		log.error(
+			`Failed to configure MCP Server for ${mcpFailed.join(" / ")}`,
+		);
+	}
+
+	// Install Neon Local Connect extension for VS Code and Cursor
+	const extensionResults = await installNeonLocalConnect(selectedEditors);
+
+	const extSuccessful: Editor[] = [];
+	const extFailed: Editor[] = [];
+
+	for (const [editor, status] of extensionResults.entries()) {
+		if (status === "success") {
+			extSuccessful.push(editor);
+		} else {
+			extFailed.push(editor);
+		}
+	}
+
+	if (extSuccessful.length > 0) {
+		const extSuccessList = extSuccessful.join(" / ");
+		log.step(
+			`Neon Local Connect extension installed for ${extSuccessList}.\n`,
+		);
+	}
+
+	// Show helpful installation links for failed extension installations
+	if (extFailed.length > 0) {
+		log.info(
+			"For the best local development experience, install Neon Local Connect:",
+		);
+		for (const editor of extFailed) {
+			if (editor === "VS Code") {
+				log.info(
+					"  • VS Code: https://marketplace.visualstudio.com/items?itemName=databricks.neon-local-connect",
+				);
+			} else if (editor === "Cursor") {
+				log.info(
+					"  • Cursor: https://open-vsx.org/extension/databricks/neon-local-connect",
+				);
+			}
+		}
 	}
 
 	// Exit with error if all failed
-	if (successful.length === 0) {
+	if (mcpSuccessful.length === 0 && extSuccessful.length === 0) {
 		outro(
 			"Installation cancelled or failed. Please check the output above and try again.",
 		);
@@ -113,7 +156,7 @@ export async function init(): Promise<void> {
 	}
 
 	note(
-		`\x1b[0mRestart ${successList} and type in "${bold(cyan("Get started with Neon"))}\x1b[0m" in the chat`,
+		`\x1b[0mRestart ${mcpSuccessList} and type in "${bold(cyan("Get started with Neon"))}\x1b[0m" in the chat`,
 		"What's next?",
 	);
 

@@ -1,7 +1,10 @@
 import { confirm, isCancel, log, spinner } from "@clack/prompts";
+import { execa } from "execa";
 import { createApiKeyFromNeonctl, ensureNeonctlAuth } from "./auth.js";
 import { getMCPConfig, writeMCPConfig } from "./mcp-config.js";
 import type { Editor, InstallStatus } from "./types.js";
+
+const NEON_LOCAL_CONNECT_EXTENSION_ID = "databricks.neon-local-connect";
 
 /**
  * Checks if an editor needs configuration (either not configured or user wants to reconfigure)
@@ -37,6 +40,44 @@ async function shouldConfigureEditor(
 	}
 
 	return true;
+}
+
+/**
+ * Gets the CLI command name for an editor
+ */
+function getEditorCLICommand(editor: Editor): string | null {
+	if (editor === "Cursor") {
+		return "cursor";
+	}
+	if (editor === "VS Code") {
+		return "code";
+	}
+	return null;
+}
+
+/**
+ * Installs the Neon Local Connect extension for a single editor (VS Code or Cursor)
+ * Returns success only if CLI installation succeeds, fails silently otherwise
+ */
+async function installExtensionForEditor(
+	editor: Editor,
+): Promise<InstallStatus> {
+	const cliCommand = getEditorCLICommand(editor);
+
+	if (!cliCommand) {
+		return "failed";
+	}
+
+	try {
+		await execa(cliCommand, [
+			"--install-extension",
+			NEON_LOCAL_CONNECT_EXTENSION_ID,
+			"--force",
+		]);
+		return "success";
+	} catch {
+		return "failed";
+	}
 }
 
 /**
@@ -167,6 +208,29 @@ export async function installMCPServer(
 			editor,
 			apiKey,
 		);
+		results.set(editor, status);
+	}
+
+	return results;
+}
+
+/**
+ * Installs the Neon Local Connect extension for VS Code and Cursor
+ * VS Code: https://marketplace.visualstudio.com/items?itemName=databricks.neon-local-connect
+ * Cursor: https://open-vsx.org/extension/databricks/neon-local-connect
+ */
+export async function installNeonLocalConnect(
+	selectedEditors: Editor[],
+): Promise<Map<Editor, InstallStatus>> {
+	const results = new Map<Editor, InstallStatus>();
+
+	// Filter to only editors that support the extension (VS Code and Cursor)
+	const supportedEditors = selectedEditors.filter(
+		(editor) => editor === "VS Code" || editor === "Cursor",
+	);
+
+	for (const editor of supportedEditors) {
+		const status = await installExtensionForEditor(editor);
 		results.set(editor, status);
 	}
 
