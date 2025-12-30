@@ -34,7 +34,9 @@ async function shouldConfigureEditor(
 		const shouldReconfigure = response as boolean;
 
 		if (!shouldReconfigure) {
-			log.info(`Keeping existing configuration for ${editor}.`);
+			log.info(
+				`Keeping existing MCP server configuration for ${editor}.`,
+			);
 			return false;
 		}
 	}
@@ -72,7 +74,7 @@ async function installExtensionForEditor(
 		await execa(cliCommand, [
 			"--install-extension",
 			NEON_LOCAL_CONNECT_EXTENSION_ID,
-			"--force",
+			"--pre-release",
 		]);
 		return "success";
 	} catch {
@@ -165,7 +167,6 @@ export async function installMCPServer(
 
 	// If no editors need configuration, return early
 	if (editorsToConfigure.length === 0) {
-		log.info("All selected editors are already configured.");
 		return results;
 	}
 
