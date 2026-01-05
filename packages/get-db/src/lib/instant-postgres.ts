@@ -20,6 +20,7 @@ export const instantPostgres = async ({
 	referrer,
 	seed = undefined,
 	envPrefix = "PUBLIC_",
+	logicalReplication = false,
 }: InstantPostgresParams): Promise<{
 	databaseUrlDirect: string;
 	databaseUrl: string;
@@ -46,6 +47,7 @@ export const instantPostgres = async ({
 	const connString = await createClaimableDatabase(
 		dbId,
 		`npm:get-db|${referrer}`,
+		logicalReplication,
 	);
 	const { pooler: poolerString, direct: directString } =
 		getConnectionStrings(connString);

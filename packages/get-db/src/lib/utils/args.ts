@@ -7,6 +7,7 @@ export const DEFAULTS: Defaults = {
 	seed: undefined,
 	envPrefix: "PUBLIC_",
 	referrer: "npm:get-db/cli",
+	logicalReplication: false,
 };
 
 export function getArgs() {
@@ -37,6 +38,11 @@ export function getArgs() {
 				type: "string",
 				short: "r",
 			},
+			logicalReplication: {
+				type: "boolean",
+				short: "L",
+				default: false,
+			},
 			help: {
 				type: "boolean",
 				short: "h",
@@ -66,6 +72,9 @@ Options:
 		DEFAULTS.envPrefix
   }")
   -r, --ref       Referrer identifier for tracking (default: "${DEFAULTS.referrer}")
+  -L, --logical-replication  Enable logical replication (default: ${
+		DEFAULTS.logicalReplication
+  })
   -h, --help      Show this help message
 `);
 		process.exit(0);

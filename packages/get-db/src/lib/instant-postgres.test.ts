@@ -103,6 +103,7 @@ describe("instantPostgres", () => {
 		expect(createClaimableDatabase).toHaveBeenCalledWith(
 			expect.any(String),
 			"npm:get-db|test-referrer",
+			false,
 		);
 		expect(writeToEnv).toHaveBeenCalledWith(
 			".env",
@@ -161,6 +162,7 @@ describe("instantPostgres", () => {
 		expect(createClaimableDatabase).toHaveBeenCalledWith(
 			expect.any(String),
 			`npm:get-db|${customReferrer}`,
+			false,
 		);
 	});
 
@@ -205,6 +207,7 @@ describe("instantPostgres", () => {
 		expect(createClaimableDatabase).toHaveBeenCalledWith(
 			expect.any(String),
 			"npm:get-db|custom-tool",
+			false,
 		);
 	});
 
