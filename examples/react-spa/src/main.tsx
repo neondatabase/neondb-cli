@@ -7,6 +7,6 @@ import "instagres-element";
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<App />
-		<instagres-element />
+		<instagres-element url={import.meta.env.VITE_INSTAGRES_CLAIM_URL} />
 	</StrictMode>
 );

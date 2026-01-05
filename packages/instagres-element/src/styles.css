@@ -1,12 +1,38 @@
-:host {
-	display: block;
+:host .wrapper {
+	position: fixed;
+	display: grid;
+	place-items: center;
+	padding: 4px;
+	bottom: 1rem;
+	right: 1rem;
+	width: 2rem;
+	height: 2rem;
+	overflow: hidden;
+	background-color: oklch(13% 0 0);
+	color: oklch(80% 0 0);
+	box-shadow: 0px 0px 4px oklch(68.86% 0.276 134.17);
+	border-radius: 10px;
+	z-index: 99999999999;
+	transition: all 0.3s ease-in-out;
 }
 
-:host h1 {
-	color: blue;
-	font-size: 2rem;
+:host .wrapper:hover {
+	width: 25rem;
+	height: 5rem;
 }
 
-:host p {
-	margin: 0.5rem 0;
+:host .wrapper-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+:host .wrapper-content.inactive {
+	height: 0;
+	width: 0;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.3s ease-in-out;
 }

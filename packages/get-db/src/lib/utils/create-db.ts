@@ -8,6 +8,9 @@ export async function createClaimableDatabase(dbId: string, referrer: string) {
 			headers: {
 				"Content-Type": "application/json",
 			},
+			body: JSON.stringify({
+				enable_logical_replication: true,
+			}),
 		},
 	);
 
