@@ -8,6 +8,7 @@ const DEFAULTS = {
 	dotEnvKey: "DATABASE_URL",
 	seed: undefined,
 	envPrefix: "VITE_",
+	logicalReplication: false,
 };
 
 type PostgresPluginOptions = {
@@ -19,6 +20,7 @@ type PostgresPluginOptions = {
 		path: string;
 	};
 	envPrefix?: string;
+	logicalReplication?: boolean;
 };
 
 let claimProcessStarted = false;
@@ -43,6 +45,7 @@ function postgresPlugin(options: PostgresPluginOptions): Plugin {
 		referrer,
 		seed,
 		envPrefix,
+		logicalReplication,
 	} = {
 		...DEFAULTS,
 		...options,
@@ -87,6 +90,7 @@ function postgresPlugin(options: PostgresPluginOptions): Plugin {
 				referrer: `npm:vite-plugin-db|${referrer}`,
 				seed,
 				envPrefix,
+				logicalReplication,
 			});
 			outro("Neon database created successfully.");
 		},

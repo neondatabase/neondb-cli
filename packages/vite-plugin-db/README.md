@@ -51,6 +51,7 @@ postgres({
 	env: ".env.local", // Path to your .env file (default: ".env")
 	envKey: "DATABASE_URL", // Name of the env variable (default: "DATABASE_URL")
 	envPrefix: "VITE_", // Prefix for public env vars (default: "VITE_")
+	logicalReplication: false, // Enable logical replication (default: false)
 	seed: {
 		type: "sql-script",
 		path: "./schema.sql", // Path to SQL file to execute after database creation
@@ -58,13 +59,14 @@ postgres({
 });
 ```
 
-| Option      | Type   | Description                             | Required | Default        |
-| ----------- | ------ | --------------------------------------- | -------- | -------------- |
-| `referrer`  | string | Referrer identifier for tracking        | ✅ Yes   | -              |
-| `env`       | string | Path to the `.env` file                 | No       | `.env`         |
-| `envKey`    | string | Name of the environment variable        | No       | `DATABASE_URL` |
-| `envPrefix` | string | Prefix for public environment variables | No       | `VITE_`        |
-| `seed`      | object | Configuration for seeding the database  | No       | -              |
+| Option              | Type    | Description                             | Required | Default        |
+| ------------------- | ------- | --------------------------------------- | -------- | -------------- |
+| `referrer`          | string  | Referrer identifier for tracking        | ✅ Yes   | -              |
+| `env`               | string  | Path to the `.env` file                 | No       | `.env`         |
+| `envKey`            | string  | Name of the environment variable        | No       | `DATABASE_URL` |
+| `envPrefix`         | string  | Prefix for public environment variables | No       | `VITE_`        |
+| `logicalReplication`| boolean | Enable logical replication              | No       | `false`        |
+| `seed`              | object  | Configuration for seeding the database  | No       | -              |
 
 ### seed Options
 
@@ -95,6 +97,7 @@ interface PostgresPluginOptions {
 	env?: string; // Path to the .env file
 	envKey?: string; // Name of the environment variable
 	envPrefix?: string; // Prefix for public environment variables
+	logicalReplication?: boolean; // Enable logical replication (default: false)
 	seed?: {
 		type: "sql-script";
 		path: string;
