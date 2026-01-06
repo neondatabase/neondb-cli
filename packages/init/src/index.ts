@@ -148,11 +148,27 @@ export async function init(): Promise<void> {
 		process.exit(1);
 	}
 
-	const allSuccessList = successful.join(" / ");
-	note(
-		`\x1b[0mRestart ${allSuccessList} and type in "${bold(cyan("Get started with Neon"))}\x1b[0m" in the chat`,
-		"What's next?",
-	);
+	if (extensionEditors.length > 0 && mcpEditors.length === 0) {
+		// Only extension editors (VS Code/Cursor)
+		const extSuccessList = extensionEditors.join(" / ");
+		note(
+			`\x1b[0mRestart ${extSuccessList}, open the Neon extension and type in "${bold(cyan("Get started with Neon"))}\x1b[0m" in your agent chat`,
+			"What's next?",
+		);
+	} else if (mcpEditors.length > 0 && extensionEditors.length === 0) {
+		// Only MCP editors (Claude CLI)
+		const mcpSuccessList = mcpEditors.join(" / ");
+		note(
+			`\x1b[0mRestart ${mcpSuccessList} and type in "${bold(cyan("Get started with Neon"))}\x1b[0m" in the chat`,
+			"What's next?",
+		);
+	} else {
+		// Mixed editors
+		note(
+			`\x1b[0mFor ${extensionEditors.join(" / ")}: Restart, open the Neon extension and type in "${bold(cyan("Get started with Neon"))}\x1b[0m" in your agent chat\n\x1b[0mFor ${mcpEditors.join(" / ")}: Restart and type in "${bold(cyan("Get started with Neon"))}\x1b[0m" in the chat`,
+			"What's next?",
+		);
+	}
 
 	outro("Have feedback? Email us at feedback@neon.tech");
 }
