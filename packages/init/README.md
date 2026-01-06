@@ -1,6 +1,6 @@
 # neon-init
 
-Set up Neon's MCP Server for AI-powered database operations in VS Code, Cursor, and Claude CLI.
+Set up Neon for AI-powered database operations in VS Code, Cursor, and Claude CLI.
 
 ## Installation
 
@@ -25,31 +25,34 @@ npx neon-init
 Then:
 
 1. Restart your editor (VS Code, Cursor, or Claude CLI)
-2. Type **"Get started with Neon using MCP Resource"** in your AI chat
+2. Type **"Get started with Neon"** in your AI chat
 
 ## What It Does
 
-### Configures Neon MCP Server
+### For VS Code & Cursor: Installs Neon Local Connect Extension
 
--   **Cursor**: Creates or updates `~/.cursor/mcp.json` (global config - works across all projects)
--   **VS Code**: Creates or updates global `mcp.json` if VS Code is installed, otherwise falls back to `.vscode/mcp.json` (workspace config)
--   **Claude CLI**: Creates or updates `~/.claude.json` (global config - works across all projects)
+- Automatically installs the Neon Local Connect extension
+- Configures the extension with your API key using the extension's configure command
+
+### For Claude CLI: Configures Neon MCP Server
+
+- Creates or updates `~/.claude.json` (global config - works across all projects)
 
 **Supported Editors:**
 
--   **VS Code** with GitHub Copilot
--   **Cursor**
--   **Claude CLI**
+- **VS Code** (with Neon Local Connect extension)
+- **Cursor** (with Neon Local Connect extension)
+- **Claude CLI** (with MCP Server)
 
 The tool automatically detects which editors are installed on your system and you'll be prompted to choose which one(s) to configure.
 
 **Authentication:** Uses OAuth via `neonctl` and creates an API key for you - opens your browser, no manual API keys needed.
 
-**Agent Guidelines:** The Neon MCP Server includes built-in agent guidelines as an MCP resource. Your AI assistant will automatically have access to:
+**Agent Guidelines:** The Neon integration includes built-in agent guidelines. Your AI assistant will automatically have access to:
 
--   Interactive "Get started with Neon" onboarding flow
--   Security, performance, and schema management best practices
--   Neon-specific features (branching, autoscaling, scale-to-zero)
+- Interactive "Get started with Neon" onboarding flow
+- Security, performance, and schema management best practices
+- Neon-specific features (branching, autoscaling, scale-to-zero)
 
 ## Development
 

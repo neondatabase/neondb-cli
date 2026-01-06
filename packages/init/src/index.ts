@@ -9,14 +9,28 @@ import {
 } from "@clack/prompts";
 import { bold, cyan } from "yoctocolors";
 import { detectAvailableEditors } from "./lib/editors.js";
-import { installMCPServer } from "./lib/install.js";
+import { usesExtension } from "./lib/extension.js";
+import { type InstallNeonOptions, installNeon } from "./lib/install.js";
 import type { Editor } from "./lib/types.js";
 
 /**
- * Initialize Neon projects with MCP Server
+ * Options for the init function
  */
-export async function init(): Promise<void> {
+export interface InitOptions {
+	/** Path to a local .vsix file for testing extension installation */
+	vsixPath?: string;
+}
+
+/**
+ * Initialize Neon projects with MCP Server or Local Connect extension
+ */
+export async function init(options?: InitOptions): Promise<void> {
 	intro("Adding Neon to your project");
+
+	// Notify user if using local test mode
+	if (options?.vsixPath) {
+		log.info(`Local test mode: Using extension from ${options.vsixPath}`);
+	}
 
 	// Get the home directory
 	const homeDir = process.env.HOME || process.env.USERPROFILE;
@@ -36,13 +50,13 @@ export async function init(): Promise<void> {
 	if (availableEditors.length === 0) {
 		log.warn("No supported editors detected on your system.");
 		log.info("Supported editors:");
-		log.info("  • VS Code (with GitHub Copilot)");
-		log.info("  • Cursor");
-		log.info("  • Claude CLI");
+		log.info("  • VS Code (with Neon Local Connect extension)");
+		log.info("  • Cursor (with Neon Local Connect extension)");
+		log.info("  • Claude CLI (with MCP Server)");
 
 		const continueAnyway = await confirm({
 			message:
-				"Would you like to configure MCP anyway? (You can manually select your editor)",
+				"Would you like to configure Neon anyway? (You can manually select your editor)",
 			initialValue: true,
 		});
 
@@ -59,6 +73,10 @@ export async function init(): Promise<void> {
 		options: ["Cursor", "VS Code", "Claude CLI"].map((editor) => ({
 			value: editor,
 			label: editor,
+			hint:
+				editor === "Claude CLI"
+					? "MCP Server"
+					: "Neon Local Connect extension",
 		})),
 		initialValues: availableEditors, // Select detected editors by default
 		required: true,
@@ -77,11 +95,17 @@ export async function init(): Promise<void> {
 		process.exit(0);
 	}
 
-	// Install MCP server for selected editors
-	const results = await installMCPServer(
+	// Prepare install options
+	const installOptions: InstallNeonOptions = {
+		vsixPath: options?.vsixPath,
+	};
+
+	// Install Neon for selected editors
+	const results = await installNeon(
 		homeDir,
 		workspaceDir,
 		selectedEditors,
+		installOptions,
 	);
 
 	const successful: Editor[] = [];
@@ -94,9 +118,22 @@ export async function init(): Promise<void> {
 			failed.push(editor);
 		}
 	}
+
 	const successList = successful.join(" / ");
+
 	if (successful.length > 0) {
-		log.step("Installed Neon MCP server");
+		// Show different messages based on what was installed
+		const extensionEditors = successful.filter(usesExtension);
+		const mcpEditors = successful.filter((e) => !usesExtension(e));
+
+		if (extensionEditors.length > 0) {
+			log.step(
+				`Installed Neon Local Connect extension for ${extensionEditors.join(" / ")}`,
+			);
+		}
+		if (mcpEditors.length > 0) {
+			log.step(`Installed Neon MCP Server for ${mcpEditors.join(" / ")}`);
+		}
 		log.step(`Success! Neon is now ready to use with ${successList}.\n`);
 	}
 
