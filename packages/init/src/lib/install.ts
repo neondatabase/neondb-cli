@@ -1,16 +1,18 @@
 import { confirm, isCancel, log, spinner } from "@clack/prompts";
-import { execa } from "execa";
 import { createApiKeyFromNeonctl, ensureNeonctlAuth } from "./auth.js";
+import {
+	configureExtension,
+	installExtension,
+	usesExtension,
+} from "./extension.js";
 import { getMCPConfig, writeMCPConfig } from "./mcp-config.js";
 import type { Editor, InstallStatus } from "./types.js";
 
-const NEON_LOCAL_CONNECT_EXTENSION_ID = "databricks.neon-local-connect";
-
 /**
- * Checks if an editor needs configuration (either not configured or user wants to reconfigure)
+ * Checks if an editor needs MCP configuration
  * Returns true if configuration is needed, false otherwise
  */
-async function shouldConfigureEditor(
+async function shouldConfigureMCP(
 	homeDir: string,
 	workspaceDir: string,
 	editor: Editor,
@@ -45,48 +47,7 @@ async function shouldConfigureEditor(
 }
 
 /**
- * Gets the CLI command name for an editor
- */
-function getEditorCLICommand(editor: Editor): string | null {
-	if (editor === "Cursor") {
-		return "cursor";
-	}
-	if (editor === "VS Code") {
-		return "code";
-	}
-	return null;
-}
-
-/**
- * Installs the Neon Local Connect extension for a single editor (VS Code or Cursor)
- * Returns success only if CLI installation succeeds, fails silently otherwise
- */
-async function installExtensionForEditor(
-	editor: Editor,
-): Promise<InstallStatus> {
-	const cliCommand = getEditorCLICommand(editor);
-
-	if (!cliCommand) {
-		return "failed";
-	}
-
-	try {
-		await execa(cliCommand, [
-			"--install-extension",
-			NEON_LOCAL_CONNECT_EXTENSION_ID,
-			"--pre-release",
-		]);
-		return "success";
-	} catch {
-		return "failed";
-	}
-}
-
-/**
- * Installs Neon's MCP Server for a specific editor
- * - Cursor: Global config
- * - VS Code: Global config (preferred) or workspace config (fallback)
- * - Claude CLI: Global config
+ * Installs Neon's MCP Server for specific editors
  */
 async function installMCPServerForEditor(
 	homeDir: string,
@@ -107,18 +68,11 @@ async function installMCPServerForEditor(
 		},
 	};
 
-	// VS Code uses "servers" key, Cursor and Claude CLI use "mcpServers" key
-	if (editor === "VS Code") {
-		if (!config.servers) {
-			config.servers = {};
-		}
-		config.servers.Neon = neonServerConfig;
-	} else {
-		if (!config.mcpServers) {
-			config.mcpServers = {};
-		}
-		config.mcpServers.Neon = neonServerConfig;
+	// Claude CLI uses "mcpServers" key
+	if (!config.mcpServers) {
+		config.mcpServers = {};
 	}
+	config.mcpServers.Neon = neonServerConfig;
 
 	// Write configuration
 	try {
@@ -133,40 +87,42 @@ async function installMCPServerForEditor(
 }
 
 /**
- * Installs Neon's MCP Server
- * - Cursor: Global config
- * - VS Code: Global config (preferred) or workspace config (fallback)
- * - Claude CLI: Global config
+ * Installs Neon's Local Connect extension or MCP Server for specific editors
  */
-export async function installMCPServer(
+export async function installNeon(
 	homeDir: string,
 	workspaceDir: string,
 	selectedEditors: Editor[],
 ): Promise<Map<Editor, InstallStatus>> {
 	const results = new Map<Editor, InstallStatus>();
 
-	const editorsToConfigureMap = new Map<Editor, boolean>();
-	for (const editor of selectedEditors) {
-		const needsConfig = await shouldConfigureEditor(
+	const extensionEditors = selectedEditors.filter(usesExtension);
+	const mcpEditors = selectedEditors.filter((e) => !usesExtension(e));
+
+	// Check which MCP editors need configuration
+	const mcpEditorsToConfigureMap = new Map<Editor, boolean>();
+	for (const editor of mcpEditors) {
+		const needsConfig = await shouldConfigureMCP(
 			homeDir,
 			workspaceDir,
 			editor,
 		);
-		editorsToConfigureMap.set(editor, needsConfig);
+		mcpEditorsToConfigureMap.set(editor, needsConfig);
 
-		// If editor doesn't need configuration, mark as success
 		if (!needsConfig) {
 			results.set(editor, "success");
 		}
 	}
 
-	// Get list of editors that need configuration
-	const editorsToConfigure = selectedEditors.filter(
-		(editor) => editorsToConfigureMap.get(editor) === true,
+	const mcpToConfigure = mcpEditors.filter(
+		(editor) => mcpEditorsToConfigureMap.get(editor) === true,
 	);
 
-	// If no editors need configuration, return early
-	if (editorsToConfigure.length === 0) {
+	// Extension editors always get processed (silent installation)
+	const extensionsToConfigure = extensionEditors;
+
+	// If nothing needs configuration, return early
+	if (extensionsToConfigure.length === 0 && mcpToConfigure.length === 0) {
 		return results;
 	}
 
@@ -178,7 +134,7 @@ export async function installMCPServer(
 	if (!authSuccess) {
 		authSpinner.stop("Authentication failed");
 		// Mark all editors that need configuration as failed
-		for (const editor of editorsToConfigure) {
+		for (const editor of [...extensionsToConfigure, ...mcpToConfigure]) {
 			results.set(editor, "failed");
 		}
 		return results;
@@ -195,43 +151,39 @@ export async function installMCPServer(
 			"You can manually create one at: https://console.neon.tech/app/settings/api-keys",
 		);
 		// Mark all editors that need configuration as failed
-		for (const editor of editorsToConfigure) {
+		for (const editor of [...extensionsToConfigure, ...mcpToConfigure]) {
 			results.set(editor, "failed");
 		}
 		return results;
 	}
 
-	// Install MCP server for editors that need configuration
-	for (const editor of editorsToConfigure) {
+	// Install and configure extension for Cursor/VS Code (silently)
+	for (const editor of extensionsToConfigure) {
+		const installSuccess = await installExtension(editor);
+
+		if (!installSuccess) {
+			results.set(editor, "failed");
+			continue;
+		}
+
+		// Configure the extension with the API key
+		const configSuccess = await configureExtension(editor, apiKey);
+
+		if (configSuccess) {
+			results.set(editor, "success");
+		} else {
+			// Extension installed but auth failed but user can manually configure later
+			results.set(editor, "success");
+		}
+	}
+
+	for (const editor of mcpToConfigure) {
 		const status = await installMCPServerForEditor(
 			homeDir,
 			workspaceDir,
 			editor,
 			apiKey,
 		);
-		results.set(editor, status);
-	}
-
-	return results;
-}
-
-/**
- * Installs the Neon Local Connect extension for VS Code and Cursor
- * VS Code: https://marketplace.visualstudio.com/items?itemName=databricks.neon-local-connect
- * Cursor: https://open-vsx.org/extension/databricks/neon-local-connect
- */
-export async function installNeonLocalConnect(
-	selectedEditors: Editor[],
-): Promise<Map<Editor, InstallStatus>> {
-	const results = new Map<Editor, InstallStatus>();
-
-	// Filter to only editors that support the extension (VS Code and Cursor)
-	const supportedEditors = selectedEditors.filter(
-		(editor) => editor === "VS Code" || editor === "Cursor",
-	);
-
-	for (const editor of supportedEditors) {
-		const status = await installExtensionForEditor(editor);
 		results.set(editor, status);
 	}
 
