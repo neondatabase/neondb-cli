@@ -46,7 +46,9 @@ async function main() {
 			referrer,
 			seed: seedConfig,
 			envPrefix: envPrefix,
-			logicalReplication: flags.logicalReplication,
+			settings: {
+				logicalReplication: flags.logicalReplication,
+			},
 		});
 	} else {
 		/**
@@ -169,7 +171,9 @@ async function main() {
 			referrer,
 			seed: userInput.seed,
 			envPrefix: userInput.envPrefix,
-			logicalReplication: flags.logicalReplication,
+			settings: {
+				logicalReplication: flags.logicalReplication,
+			},
 		});
 	}
 	s.stop("Database generated!");

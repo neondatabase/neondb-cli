@@ -1,10 +1,20 @@
 import { INSTAGRES_URLS } from "./urls.js";
 
-export async function createClaimableDatabase(
-	dbId: string,
-	referrer: string,
-	logicalReplication?: boolean,
-) {
+interface CreateClaimableDBParams {
+	dbId: string;
+	referrer: string;
+	settings?: {
+		logicalReplication?: boolean;
+	};
+}
+
+export async function createClaimableDatabase({
+	dbId,
+	referrer,
+	settings = {},
+}: CreateClaimableDBParams) {
+	const { logicalReplication = false } = settings;
+
 	const dbCreation = await fetch(
 		INSTAGRES_URLS.CREATE_DATABASE_POST(dbId, referrer),
 		{
@@ -13,9 +23,7 @@ export async function createClaimableDatabase(
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				settings: {
-					logical_replication: logicalReplication || false,
-				},
+				enable_logical_replication: logicalReplication || false,
 			}),
 		},
 	);

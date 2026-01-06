@@ -86,9 +86,10 @@ describe("getArgs", () => {
 		getArgs();
 
 		expect(console.log).toHaveBeenCalledWith(
-			expect.stringContaining(
-				"-r, --ref       Referrer identifier for tracking",
-			),
+			expect.stringContaining("-r, --ref"),
+		);
+		expect(console.log).toHaveBeenCalledWith(
+			expect.stringContaining("Referrer identifier for tracking"),
 		);
 		expect(console.log).toHaveBeenCalledWith(
 			expect.stringContaining('(default: "npm:get-db/cli")'),

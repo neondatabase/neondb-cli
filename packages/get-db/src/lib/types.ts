@@ -18,7 +18,9 @@ export interface InstantPostgresParams {
 	referrer: string;
 	seed?: SqlScript;
 	envPrefix?: string;
-	logicalReplication?: boolean;
+	settings?: {
+		logicalReplication?: boolean;
+	};
 }
 
 export interface Defaults {
@@ -27,5 +29,7 @@ export interface Defaults {
 	seed?: SqlScript;
 	envPrefix: string;
 	referrer: string;
-	logicalReplication: boolean;
+	settings: {
+		logicalReplication: boolean;
+	};
 }

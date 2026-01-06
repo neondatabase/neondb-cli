@@ -7,7 +7,9 @@ export const DEFAULTS: Defaults = {
 	seed: undefined,
 	envPrefix: "PUBLIC_",
 	referrer: "npm:get-db/cli",
-	logicalReplication: false,
+	settings: {
+		logicalReplication: false,
+	},
 };
 
 export function getArgs() {
@@ -56,26 +58,26 @@ export function getArgs() {
 Usage: get-db [command] [options]
 
 Commands:
-  (default)       Create a new database (default command)
-  claim           Open the claim URL from your .env file
+  (default)                    Create a new database (default command)
+  claim                        Open the claim URL from your .env file
 
 Options:
-  -y, --yes       Skip all prompts and use defaults
-  -e, --env       Path to the .env file (default: "${DEFAULTS.dotEnvPath}")
-  -k, --key       Key for the database connection string (default: "${
+  -y, --yes                    Skip all prompts and use defaults
+  -e, --env                    Path to the .env file (default: "${DEFAULTS.dotEnvPath}")
+  -k, --key                    Key for the database connection string (default: "${
 		DEFAULTS.dotEnvKey
   }")
-  -s, --seed      Path to the seed (.sql) file (default: "${
+  -s, --seed                   Path to the seed (.sql) file (default: "${
 		DEFAULTS.seed?.path || "none"
   }")
-  -p, --prefix    Prefix for public environment variables (default: "${
+  -p, --prefix                 Prefix for public environment variables (default: "${
 		DEFAULTS.envPrefix
   }")
-  -r, --ref       Referrer identifier for tracking (default: "${DEFAULTS.referrer}")
-  -L, --logical-replication  Enable logical replication (default: ${
-		DEFAULTS.logicalReplication
+  -r, --ref                    Referrer identifier for tracking (default: "${DEFAULTS.referrer}")
+  -L, --logical-replication    Enable logical replication (default: ${
+		DEFAULTS.settings.logicalReplication
   })
-  -h, --help      Show this help message
+  -h, --help                   Show this help message
 `);
 		process.exit(0);
 	} else {
