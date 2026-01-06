@@ -119,7 +119,7 @@ export async function init(): Promise<void> {
 	// Show helpful installation links for failed extension installations
 	if (failedExtensionEditors.length > 0) {
 		log.info(
-			"For the best local development experience, install Neon Local Connect:",
+			"Failed to install extension. For the best local development experience, install Neon Local Connect manually:",
 		);
 		for (const editor of failedExtensionEditors) {
 			if (editor === "VS Code") {
