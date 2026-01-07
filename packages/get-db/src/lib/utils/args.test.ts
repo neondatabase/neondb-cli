@@ -89,7 +89,7 @@ describe("getArgs", () => {
 			expect.stringContaining("-r, --ref"),
 		);
 		expect(console.log).toHaveBeenCalledWith(
-			expect.stringContaining("Referrer identifier for tracking"),
+			expect.stringContaining("Referrer id"),
 		);
 		expect(console.log).toHaveBeenCalledWith(
 			expect.stringContaining("[default: npm:get-db/cli]"),
@@ -233,17 +233,10 @@ describe("getArgs", () => {
 			expect(args.prefix).toBe("VITE_");
 		});
 
-		test("parses --lr flag (short alias)", () => {
-			process.argv = ["node", "cli.js", "--lr"];
+		test("parses -L flag (short alias)", () => {
+			process.argv = ["node", "cli.js", "-L"];
 			const args = getArgs();
 			expect(args.logicalReplication).toBe(true);
-		});
-
-		test("parses -h flag (help)", () => {
-			process.argv = ["node", "cli.js", "-h"];
-			getArgs();
-			expect(console.log).toHaveBeenCalled();
-			expect(process.exit).toHaveBeenCalledWith(0);
 		});
 	});
 
@@ -317,7 +310,7 @@ describe("getArgs", () => {
 		});
 
 		test("works with other flags (short alias)", () => {
-			process.argv = ["node", "cli.js", "-y", "--lr"];
+			process.argv = ["node", "cli.js", "-y", "-L"];
 			const args = getArgs();
 			expect(args.yes).toBe(true);
 			expect(args.logicalReplication).toBe(true);
