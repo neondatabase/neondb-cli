@@ -1,4 +1,6 @@
-import { parseArgs } from "node:util";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
+import { bold, underline } from "yoctocolors";
 import type { Defaults } from "../types.js";
 
 export const DEFAULTS: Defaults = {
@@ -12,75 +14,88 @@ export const DEFAULTS: Defaults = {
 	},
 };
 
-export function getArgs() {
-	const { values, positionals } = parseArgs({
-		options: {
-			yes: {
-				type: "boolean",
-				short: "y",
-				default: false,
-			},
-			env: {
-				type: "string",
-				short: "e",
-			},
-			key: {
-				type: "string",
-				short: "k",
-			},
-			seed: {
-				type: "string",
-				short: "s",
-			},
-			prefix: {
-				type: "string",
-				short: "p",
-			},
-			ref: {
-				type: "string",
-				short: "r",
-			},
-			logicalReplication: {
-				type: "boolean",
-				short: "L",
-				default: false,
-			},
-			help: {
-				type: "boolean",
-				short: "h",
-			},
-		},
-		allowPositionals: true,
-	});
+export interface ParsedArgs {
+	yes?: boolean;
+	env?: string;
+	key?: string;
+	seed?: string;
+	prefix?: string;
+	ref?: string;
+	logicalReplication?: boolean;
+	help?: boolean;
+	command: string;
+}
 
-	if (values.help) {
-		console.log(`
-Usage: get-db [command] [options]
+export function getArgs(): ParsedArgs | never {
+	const argv = yargs(hideBin(process.argv))
+		.scriptName("get-db")
+		.usage("Usage: $0 [command] [options]")
+		.help()
+		.version(false)
+		.strict()
+		.parserConfiguration({
+			"camel-case-expansion": true,
+			"strip-aliased": true,
+			"strip-dashed": true,
+		})
+		.command("$0", "Create a new database (default command)", {})
+		.command("claim", "Open the claim URL from your .env file", {})
+		.group("logical-replication", bold("Postgres Settings:"))
+		.option("logical-replication", {
+			alias: "L",
+			type: "boolean",
+			description: "Enable logical replication",
+			default: false,
+		})
+		.option("yes", {
+			alias: "y",
+			type: "boolean",
+			description: "Skip prompts / use defaults",
+			default: false,
+		})
+		.option("env", {
+			alias: "e",
+			type: "string",
+			description: ".env file path",
+			defaultDescription: DEFAULTS.dotEnvPath,
+		})
+		.option("key", {
+			alias: "k",
+			type: "string",
+			description: "connection string key",
+			defaultDescription: DEFAULTS.dotEnvKey,
+		})
+		.option("seed", {
+			alias: "s",
+			type: "string",
+			description: "Path to the seed (.sql) file",
+			defaultDescription: DEFAULTS.seed?.path || "none",
+		})
+		.option("prefix", {
+			alias: "p",
+			type: "string",
+			description: "Public env_var prefix",
+			defaultDescription: DEFAULTS.envPrefix,
+		})
+		.option("ref", {
+			alias: "r",
+			type: "string",
+			description: "Referrer id",
+			defaultDescription: DEFAULTS.referrer,
+		})
+		.epilogue(`For more information: ${underline("https://instagres.com")}`)
+		.parseSync();
 
-Commands:
-  (default)                    Create a new database (default command)
-  claim                        Open the claim URL from your .env file
+	const command = argv._[0]?.toString() || "create";
 
-Options:
-  -y, --yes                    Skip all prompts and use defaults
-  -e, --env                    Path to the .env file (default: "${DEFAULTS.dotEnvPath}")
-  -k, --key                    Key for the database connection string (default: "${
-		DEFAULTS.dotEnvKey
-  }")
-  -s, --seed                   Path to the seed (.sql) file (default: "${
-		DEFAULTS.seed?.path || "none"
-  }")
-  -p, --prefix                 Prefix for public environment variables (default: "${
-		DEFAULTS.envPrefix
-  }")
-  -r, --ref                    Referrer identifier for tracking (default: "${DEFAULTS.referrer}")
-  -L, --logical-replication    Enable logical replication (default: ${
-		DEFAULTS.settings.logicalReplication
-  })
-  -h, --help                   Show this help message
-`);
-		process.exit(0);
-	} else {
-		return { ...values, command: positionals[0] || "create" };
-	}
+	return {
+		yes: argv.yes,
+		env: argv.env,
+		key: argv.key,
+		seed: argv.seed,
+		prefix: argv.prefix,
+		ref: argv.ref,
+		logicalReplication: argv.logicalReplication,
+		command,
+	};
 }

@@ -28,7 +28,7 @@ Options:
 -   `-p, --prefix` Prefix for public env vars (default: PUBLIC\_)
 -   `-r, --ref` Referrer identifier for tracking (default: npm:get-db/cli)
 -   `-s, --seed` Path to SQL file to execute after database creation
--   `-L, --logical-replication` Enable logical replication (default: false)
+-   `--logical-replication, --lr` Enable logical replication (default: false)
 -   `-h, --help` Show help
 
 ---
