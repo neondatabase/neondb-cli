@@ -28,16 +28,11 @@ export const instantPostgres = async ({
 	claimExpiresAt: Date;
 }> => {
 	if (!referrer || referrer.trim() === "") {
-		throw new Error(
-			"referrer parameter is required.\n\n" +
-				"The referrer helps track usage for the Instagres Affiliates Program.\n\n" +
-				"Usage:\n" +
-				"  instantPostgres({ referrer: 'your-app-name', dotEnvFile: '.env' })\n\n" +
-				"Examples:\n" +
-				"  referrer: 'npm:my-package-name'\n" +
-				"  referrer: 'my-app-name'\n\n" +
-				"For more information, visit: https://neon.com/docs/reference/instagres",
-		);
+		const { message, ...cause } = messages.errors.referrerIsRequired;
+
+		throw new Error(message, {
+			cause,
+		});
 	}
 
 	const dbId = randomUUID();
@@ -52,9 +47,6 @@ export const instantPostgres = async ({
 	const { pooler: poolerString, direct: directString } =
 		getConnectionStrings(connString);
 
-	log.step(messages.connectionString(directString));
-	log.step(messages.poolerString(poolerString));
-
 	await writeToEnv(
 		dotEnvFile,
 		dotEnvKey,
@@ -64,9 +56,6 @@ export const instantPostgres = async ({
 		poolerString,
 		envPrefix,
 	);
-
-	log.success(messages.envSuccess(dotEnvFile, dotEnvKey));
-	log.info(messages.databaseGenerated(claimUrl.href));
 
 	if (seed) {
 		log.step("Pushing schema to database");

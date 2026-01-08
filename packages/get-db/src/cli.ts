@@ -2,6 +2,7 @@
 
 import { intro, isCancel, log, outro, spinner, text } from "@clack/prompts";
 import { cristal } from "gradient-string";
+import { bold } from "yoctocolors";
 import { claim } from "./lib/claim-command.js";
 import { instantPostgres } from "./lib/instant-postgres.js";
 import { INTRO_ART, messages } from "./lib/texts.js";
@@ -20,12 +21,21 @@ async function main() {
 		return;
 	}
 
-	console.log(cristal(INTRO_ART));
+	if (!shouldUseDefaults) {
+		console.log(cristal(INTRO_ART));
+	} else {
+		console.log("\n\n");
+	}
+
 	const s = spinner();
 
 	intro(messages.welcome);
-	log.info(messages.nonInteractive);
+	if (!shouldUseDefaults) {
+		log.info(messages.nonInteractive);
+	}
 	const userInput: Partial<Defaults> = {};
+
+	let connString: string;
 
 	if (shouldUseDefaults) {
 		const envPath = flags.env || DEFAULTS.dotEnvPath;
@@ -40,7 +50,7 @@ async function main() {
 			? { type: "sql-script" as const, path: flags.seed }
 			: DEFAULTS.seed;
 
-		await instantPostgres({
+		const { databaseUrl } = await instantPostgres({
 			dotEnvFile: envPath,
 			dotEnvKey: envKey,
 			referrer,
@@ -50,6 +60,7 @@ async function main() {
 				logicalReplication: flags.logicalReplication,
 			},
 		});
+		connString = databaseUrl;
 	} else {
 		/**
 		 * Get Env file path (e.g.: .env)
@@ -165,7 +176,7 @@ async function main() {
 
 		const referrer = flags.ref || DEFAULTS.referrer;
 
-		await instantPostgres({
+		const { databaseUrl } = await instantPostgres({
 			dotEnvFile: userInput.dotEnvPath,
 			dotEnvKey: userInput.dotEnvKey,
 			referrer,
@@ -175,10 +186,10 @@ async function main() {
 				logicalReplication: flags.logicalReplication,
 			},
 		});
+		connString = databaseUrl;
 	}
-	s.stop("Database generated!");
-
-	outro(messages.happyCoding);
+	s.stop("Done!");
+	outro(`${bold("Connection String")}:\n\t${connString}`);
 }
 
 await main();
