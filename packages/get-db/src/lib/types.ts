@@ -24,6 +24,16 @@ export interface InstantPostgresParams {
 	};
 }
 
+export interface WriteToEnvParams {
+	dotEnvFile: string;
+	dotEnvKey: string;
+	claimExpiresAt: Date;
+	claimUrl: URL;
+	directString: string;
+	poolerString: string;
+	envPrefix?: string;
+}
+
 export interface Defaults {
 	dotEnvPath: string;
 	dotEnvKey: string;

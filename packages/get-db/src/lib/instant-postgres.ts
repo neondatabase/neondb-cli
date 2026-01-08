@@ -47,7 +47,7 @@ export const instantPostgres = async ({
 	const { pooler: poolerString, direct: directString } =
 		getConnectionStrings(connString);
 
-	await writeToEnv(
+	await writeToEnv({
 		dotEnvFile,
 		dotEnvKey,
 		claimExpiresAt,
@@ -55,7 +55,7 @@ export const instantPostgres = async ({
 		directString,
 		poolerString,
 		envPrefix,
-	);
+	});
 
 	if (seed) {
 		log.step("Pushing schema to database");

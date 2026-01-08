@@ -10,6 +10,7 @@ import { dirname } from "node:path";
 import { log, outro } from "@clack/prompts";
 import { parse } from "dotenv";
 import { messages } from "../texts.js";
+import type { WriteToEnvParams } from "../types.js";
 
 function splitCommands(schema: string) {
 	return schema
@@ -80,15 +81,15 @@ export function prepEnv(dotEnvFile: string, dotEnvKey: string) {
 	}
 }
 
-export async function writeToEnv(
-	dotEnvFile: string,
-	dotEnvKey: string,
-	claimExpiresAt: Date,
-	claimUrl: URL,
-	connString: string,
-	poolerString: string,
-	envPrefix: string = "PUBLIC_",
-) {
+export async function writeToEnv({
+	dotEnvFile,
+	dotEnvKey,
+	claimExpiresAt,
+	claimUrl,
+	directString,
+	poolerString,
+	envPrefix = "PUBLIC_",
+}: WriteToEnvParams) {
 	if (!existsSync(dirname(dotEnvFile))) {
 		mkdirSync(dirname(dotEnvFile), { recursive: true });
 	}
@@ -97,7 +98,7 @@ export async function writeToEnv(
 	writeSync(
 		openedFile,
 		`${dotEnvKey}=${poolerString}
-${dotEnvKey}_DIRECT=${connString}
+${dotEnvKey}_DIRECT=${directString}
 # Claimable DB expires at: ${claimExpiresAt.toUTCString()}
 # Claim it now to your account using the link below:
 ${envPrefix}INSTAGRES_CLAIM_URL=${claimUrl.href}

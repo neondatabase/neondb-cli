@@ -105,15 +105,15 @@ describe("instantPostgres", () => {
 			referrer: "npm:get-db|test-referrer",
 			settings: { logicalReplication: false },
 		});
-		expect(writeToEnv).toHaveBeenCalledWith(
-			".env",
-			"DATABASE_URL",
-			expect.any(Date),
-			expect.any(URL),
-			mockConnectionString,
-			mockPoolerString,
-			"PUBLIC_",
-		);
+		expect(writeToEnv).toHaveBeenCalledWith({
+			dotEnvFile: ".env",
+			dotEnvKey: "DATABASE_URL",
+			claimExpiresAt: expect.any(Date),
+			claimUrl: expect.any(URL),
+			directString: mockConnectionString,
+			poolerString: mockPoolerString,
+			envPrefix: "PUBLIC_",
+		});
 	});
 
 	test("accepts custom dotEnvFile parameter", async () => {
@@ -124,15 +124,15 @@ describe("instantPostgres", () => {
 			dotEnvFile: customEnvFile,
 		});
 
-		expect(writeToEnv).toHaveBeenCalledWith(
-			customEnvFile,
-			expect.any(String),
-			expect.any(Date),
-			expect.any(URL),
-			expect.any(String),
-			expect.any(String),
-			expect.any(String),
-		);
+		expect(writeToEnv).toHaveBeenCalledWith({
+			dotEnvFile: customEnvFile,
+			dotEnvKey: expect.any(String),
+			claimExpiresAt: expect.any(Date),
+			claimUrl: expect.any(URL),
+			directString: expect.any(String),
+			poolerString: expect.any(String),
+			envPrefix: expect.any(String),
+		});
 	});
 
 	test("accepts custom dotEnvKey parameter", async () => {
@@ -143,15 +143,15 @@ describe("instantPostgres", () => {
 			dotEnvKey: customEnvKey,
 		});
 
-		expect(writeToEnv).toHaveBeenCalledWith(
-			expect.any(String),
-			customEnvKey,
-			expect.any(Date),
-			expect.any(URL),
-			expect.any(String),
-			expect.any(String),
-			expect.any(String),
-		);
+		expect(writeToEnv).toHaveBeenCalledWith({
+			dotEnvFile: expect.any(String),
+			dotEnvKey: customEnvKey,
+			claimExpiresAt: expect.any(Date),
+			claimUrl: expect.any(URL),
+			directString: expect.any(String),
+			poolerString: expect.any(String),
+			envPrefix: expect.any(String),
+		});
 	});
 
 	test("accepts custom referrer parameter", async () => {
@@ -174,15 +174,15 @@ describe("instantPostgres", () => {
 			envPrefix: customPrefix,
 		});
 
-		expect(writeToEnv).toHaveBeenCalledWith(
-			expect.any(String),
-			expect.any(String),
-			expect.any(Date),
-			expect.any(URL),
-			expect.any(String),
-			expect.any(String),
-			customPrefix,
-		);
+		expect(writeToEnv).toHaveBeenCalledWith({
+			dotEnvFile: expect.any(String),
+			dotEnvKey: expect.any(String),
+			claimExpiresAt: expect.any(Date),
+			claimUrl: expect.any(URL),
+			directString: expect.any(String),
+			poolerString: expect.any(String),
+			envPrefix: customPrefix,
+		});
 	});
 
 	test("accepts all custom parameters together", async () => {
@@ -196,15 +196,15 @@ describe("instantPostgres", () => {
 
 		await instantPostgres(params);
 
-		expect(writeToEnv).toHaveBeenCalledWith(
-			".env.production",
-			"PG_URL",
-			expect.any(Date),
-			expect.any(URL),
-			mockConnectionString,
-			mockPoolerString,
-			"APP_",
-		);
+		expect(writeToEnv).toHaveBeenCalledWith({
+			dotEnvFile: ".env.production",
+			dotEnvKey: "PG_URL",
+			claimExpiresAt: expect.any(Date),
+			claimUrl: expect.any(URL),
+			directString: mockConnectionString,
+			poolerString: mockPoolerString,
+			envPrefix: "APP_",
+		});
 		expect(createClaimableDatabase).toHaveBeenCalledWith({
 			dbId: expect.any(String),
 			referrer: "npm:get-db|custom-tool",
@@ -399,14 +399,14 @@ describe("instantPostgres", () => {
 			referrer: "npm:get-db|custom-tool",
 			settings: { logicalReplication: true },
 		});
-		expect(writeToEnv).toHaveBeenCalledWith(
-			".env.production",
-			"PG_URL",
-			expect.any(Date),
-			expect.any(URL),
-			mockConnectionString,
-			mockPoolerString,
-			"APP_",
-		);
+		expect(writeToEnv).toHaveBeenCalledWith({
+			dotEnvFile: ".env.production",
+			dotEnvKey: "PG_URL",
+			claimExpiresAt: expect.any(Date),
+			claimUrl: expect.any(URL),
+			directString: mockConnectionString,
+			poolerString: mockPoolerString,
+			envPrefix: "APP_",
+		});
 	});
 });
