@@ -28,8 +28,6 @@ export const messages = {
 	generating: "Generating your database... ",
 	envKeyExistsExit:
 		"Please try again or select a different key for your connection string.",
-	envSuccess: (dotEnvFile: string, dotEnvKey: string) =>
-		`Saved it to ${dotEnvFile} as ${dotEnvKey} \n\n\n`,
 	happyCoding: "Happy coding! 🚀",
 	questions: {
 		dotEnvFilePath: `Enter the path to your environment file (default: ${DEFAULTS.dotEnvPath})`,
