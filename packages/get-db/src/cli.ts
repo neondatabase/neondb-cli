@@ -189,7 +189,7 @@ async function main() {
 		connString = databaseUrl;
 	}
 	s.stop("Done!");
-	outro(`${bold("ConnString")}:\n\t${connString}`);
+	outro(`${bold("Connection String")}:\n\t${connString}`);
 }
 
 await main();
