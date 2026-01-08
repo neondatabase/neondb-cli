@@ -98,12 +98,13 @@ describe("instantPostgres", () => {
 	});
 
 	test("uses default parameters when only referrer provided", async () => {
-		await instantPostgres({ referrer: "test-referrer" });
+		await instantPostgres({ referrer: "test-referrer", settings: {} });
 
-		expect(createClaimableDatabase).toHaveBeenCalledWith(
-			expect.any(String),
-			"npm:get-db|test-referrer",
-		);
+		expect(createClaimableDatabase).toHaveBeenCalledWith({
+			dbId: expect.any(String),
+			referrer: "npm:get-db|test-referrer",
+			settings: { logicalReplication: false },
+		});
 		expect(writeToEnv).toHaveBeenCalledWith(
 			".env",
 			"DATABASE_URL",
@@ -156,12 +157,13 @@ describe("instantPostgres", () => {
 	test("accepts custom referrer parameter", async () => {
 		const customReferrer = "vite-plugin";
 
-		await instantPostgres({ referrer: customReferrer });
+		await instantPostgres({ referrer: customReferrer, settings: {} });
 
-		expect(createClaimableDatabase).toHaveBeenCalledWith(
-			expect.any(String),
-			`npm:get-db|${customReferrer}`,
-		);
+		expect(createClaimableDatabase).toHaveBeenCalledWith({
+			dbId: expect.any(String),
+			referrer: `npm:get-db|${customReferrer}`,
+			settings: { logicalReplication: false },
+		});
 	});
 
 	test("accepts custom envPrefix parameter", async () => {
@@ -189,6 +191,7 @@ describe("instantPostgres", () => {
 			dotEnvKey: "PG_URL",
 			referrer: "custom-tool",
 			envPrefix: "APP_",
+			settings: {},
 		};
 
 		await instantPostgres(params);
@@ -202,10 +205,11 @@ describe("instantPostgres", () => {
 			mockPoolerString,
 			"APP_",
 		);
-		expect(createClaimableDatabase).toHaveBeenCalledWith(
-			expect.any(String),
-			"npm:get-db|custom-tool",
-		);
+		expect(createClaimableDatabase).toHaveBeenCalledWith({
+			dbId: expect.any(String),
+			referrer: "npm:get-db|custom-tool",
+			settings: { logicalReplication: false },
+		});
 	});
 
 	test("logs connection string and pooler string", async () => {
@@ -359,5 +363,68 @@ describe("instantPostgres", () => {
 				referrer: "   ",
 			}),
 		).rejects.toThrow("referrer parameter is required");
+	});
+
+	test("passes logicalReplication setting as false by default", async () => {
+		await instantPostgres({ referrer: "test-referrer", settings: {} });
+
+		expect(createClaimableDatabase).toHaveBeenCalledWith({
+			dbId: expect.any(String),
+			referrer: "npm:get-db|test-referrer",
+			settings: { logicalReplication: false },
+		});
+	});
+
+	test("passes logicalReplication setting when set to true", async () => {
+		await instantPostgres({
+			referrer: "test-referrer",
+			settings: { logicalReplication: true },
+		});
+
+		expect(createClaimableDatabase).toHaveBeenCalledWith({
+			dbId: expect.any(String),
+			referrer: "npm:get-db|test-referrer",
+			settings: { logicalReplication: true },
+		});
+	});
+
+	test("passes logicalReplication setting when explicitly set to false", async () => {
+		await instantPostgres({
+			referrer: "test-referrer",
+			settings: { logicalReplication: false },
+		});
+
+		expect(createClaimableDatabase).toHaveBeenCalledWith({
+			dbId: expect.any(String),
+			referrer: "npm:get-db|test-referrer",
+			settings: { logicalReplication: false },
+		});
+	});
+
+	test("accepts logicalReplication with other custom parameters", async () => {
+		const params: InstantPostgresParams = {
+			dotEnvFile: ".env.production",
+			dotEnvKey: "PG_URL",
+			referrer: "custom-tool",
+			envPrefix: "APP_",
+			settings: { logicalReplication: true },
+		};
+
+		await instantPostgres(params);
+
+		expect(createClaimableDatabase).toHaveBeenCalledWith({
+			dbId: expect.any(String),
+			referrer: "npm:get-db|custom-tool",
+			settings: { logicalReplication: true },
+		});
+		expect(writeToEnv).toHaveBeenCalledWith(
+			".env.production",
+			"PG_URL",
+			expect.any(Date),
+			expect.any(URL),
+			mockConnectionString,
+			mockPoolerString,
+			"APP_",
+		);
 	});
 });

@@ -28,6 +28,7 @@ Options:
 -   `-p, --prefix` Prefix for public env vars (default: PUBLIC\_)
 -   `-r, --ref` Referrer identifier for tracking (default: npm:get-db/cli)
 -   `-s, --seed` Path to SQL file to execute after database creation
+-   `--logical-replication, --lr` Enable logical replication (default: false)
 -   `-h, --help` Show help
 
 ---
@@ -48,6 +49,9 @@ await instantPostgres({
 	dotEnvFile: ".env",
 	dotEnvKey: "DATABASE_URL",
 	envPrefix: "PUBLIC_",
+	settings: {
+		logicalReplication: false, // Enable logical replication
+	},
 	// This referrer parameter helps us understand where usage comes from.
 	// If you're publishing a library, we'd love that you re-expose a
 	// referrer parameter in your lib and set this to `npm:your-lib-package-name|${referrer}`
@@ -61,6 +65,13 @@ await instantPostgres({
 | dotEnvFile | ".env"         | Path to env file                   | No       | letters and `.`       |
 | dotEnvKey  | "DATABASE_URL" | Environment variable name          | No       | `SCREAMING_SNAKE_CASE |
 | envPrefix  | "PUBLIC\_"     | Prefix for public environment vars | No       | -                     |
+| settings   | -              | Database configuration settings    | No       | -                     |
+
+### settings Options
+
+| Property            | Type    | Description                    | Default |
+| ------------------- | ------- | ------------------------------ | ------- |
+| `logicalReplication`| boolean | Enable logical replication     | `false` |
 
 > **Note**: The Vite plugin uses `VITE_` as the default `envPrefix` to match Vite's convention for client-side environment variables.
 
@@ -97,6 +108,9 @@ interface InstantPostgresParams {
 	dotEnvKey?: string;
 	envPrefix?: string;
 	seed?: { type: "sql-script"; path: string };
+	settings?: {
+		logicalReplication?: boolean; // Enable logical replication (default: false)
+	};
 }
 ```
 

@@ -20,6 +20,7 @@ export const instantPostgres = async ({
 	referrer,
 	seed = undefined,
 	envPrefix = "PUBLIC_",
+	settings: { logicalReplication = false } = {},
 }: InstantPostgresParams): Promise<{
 	databaseUrlDirect: string;
 	databaseUrl: string;
@@ -43,10 +44,11 @@ export const instantPostgres = async ({
 	const claimExpiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 	const claimUrl = new URL(INSTAGRES_URLS.CLAIM_DATABASE(dbId));
 
-	const connString = await createClaimableDatabase(
+	const connString = await createClaimableDatabase({
 		dbId,
-		`npm:get-db|${referrer}`,
-	);
+		referrer: `npm:get-db|${referrer}`,
+		settings: { logicalReplication },
+	});
 	const { pooler: poolerString, direct: directString } =
 		getConnectionStrings(connString);
 

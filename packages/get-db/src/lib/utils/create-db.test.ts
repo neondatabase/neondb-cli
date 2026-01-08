@@ -24,13 +24,11 @@ describe("createClaimableDatabase", () => {
 		);
 		const expectedGetUrl = INSTAGRES_URLS.GET_DATABASE_DATA(mockDbId);
 
-		// Mock fetch to track calls
 		const fetchCalls: Array<{ url: string; options?: RequestInit }> = [];
 		global.fetch = vi.fn(
 			async (url: string, options?: RequestInit): Promise<Response> => {
 				fetchCalls.push({ url, options });
 
-				// First call is POST - return successful response
 				if (fetchCalls.length === 1) {
 					return {
 						ok: true,
@@ -38,7 +36,6 @@ describe("createClaimableDatabase", () => {
 					} as Response;
 				}
 
-				// Second call is GET - return connection string
 				return {
 					ok: true,
 					json: async () => ({
@@ -48,9 +45,11 @@ describe("createClaimableDatabase", () => {
 			},
 		) as typeof fetch;
 
-		const result = await createClaimableDatabase(mockDbId, referrer);
+		const result = await createClaimableDatabase({
+			dbId: mockDbId,
+			referrer,
+		});
 
-		// Verify POST request was made with correct URL and referrer
 		expect(fetchCalls).toHaveLength(2);
 		expect(fetchCalls[0].url).toBe(expectedPostUrl);
 		expect(fetchCalls[0].url).toContain(
@@ -61,11 +60,9 @@ describe("createClaimableDatabase", () => {
 			"Content-Type": "application/json",
 		});
 
-		// Verify GET request was made
 		expect(fetchCalls[1].url).toBe(expectedGetUrl);
 		expect(fetchCalls[1].options?.method).toBe("GET");
 
-		// Verify result
 		expect(result).toBe(mockConnectionString);
 	});
 
@@ -94,9 +91,8 @@ describe("createClaimableDatabase", () => {
 			},
 		) as typeof fetch;
 
-		await createClaimableDatabase(mockDbId, referrer);
+		await createClaimableDatabase({ dbId: mockDbId, referrer });
 
-		// Verify POST URL does not include referrer parameter
 		expect(fetchCalls[0].url).toBe(expectedPostUrl);
 		expect(fetchCalls[0].url).not.toContain("?referrer=");
 	});
@@ -126,9 +122,8 @@ describe("createClaimableDatabase", () => {
 			},
 		) as typeof fetch;
 
-		await createClaimableDatabase(mockDbId, referrer);
+		await createClaimableDatabase({ dbId: mockDbId, referrer });
 
-		// Verify POST URL does not include referrer parameter
 		expect(fetchCalls[0].url).toBe(expectedPostUrl);
 		expect(fetchCalls[0].url).not.toContain("?referrer=");
 	});
@@ -159,7 +154,7 @@ describe("createClaimableDatabase", () => {
 			},
 		) as typeof fetch;
 
-		await createClaimableDatabase(mockDbId, referrer);
+		await createClaimableDatabase({ dbId: mockDbId, referrer });
 
 		expect(fetchCalls[0].url).toBe(expectedPostUrl);
 		expect(fetchCalls[0].url).toContain(
@@ -192,7 +187,7 @@ describe("createClaimableDatabase", () => {
 			},
 		) as typeof fetch;
 
-		await createClaimableDatabase(mockDbId, referrer);
+		await createClaimableDatabase({ dbId: mockDbId, referrer });
 
 		expect(fetchCalls[0].url).toBe(expectedPostUrl);
 		expect(fetchCalls[0].url).toContain(
@@ -212,7 +207,7 @@ describe("createClaimableDatabase", () => {
 		}) as typeof fetch;
 
 		await expect(
-			createClaimableDatabase(mockDbId, referrer),
+			createClaimableDatabase({ dbId: mockDbId, referrer }),
 		).rejects.toThrow("Failed to create database");
 	});
 
@@ -241,7 +236,7 @@ describe("createClaimableDatabase", () => {
 			} as Response;
 		}) as typeof fetch;
 
-		await createClaimableDatabase(mockDbId, referrer);
+		await createClaimableDatabase({ dbId: mockDbId, referrer });
 
 		expect(fetchCalls).toHaveLength(2);
 	});
@@ -269,7 +264,7 @@ describe("createClaimableDatabase", () => {
 			},
 		) as typeof fetch;
 
-		await createClaimableDatabase(mockDbId, referrer);
+		await createClaimableDatabase({ dbId: mockDbId, referrer });
 
 		// Verify POST headers
 		expect(requestConfigs[0].method).toBe("POST");
@@ -277,7 +272,6 @@ describe("createClaimableDatabase", () => {
 			"Content-Type": "application/json",
 		});
 
-		// Verify GET headers
 		expect(requestConfigs[1].method).toBe("GET");
 		expect(requestConfigs[1].headers).toEqual({
 			"Content-Type": "application/json",
@@ -306,8 +300,143 @@ describe("createClaimableDatabase", () => {
 			} as Response;
 		}) as typeof fetch;
 
-		const result = await createClaimableDatabase(mockDbId, referrer);
+		const result = await createClaimableDatabase({
+			dbId: mockDbId,
+			referrer,
+		});
 
 		expect(result).toBe(expectedConnectionString);
+	});
+
+	test("sends default settings with logical_replication false in POST body", async () => {
+		const referrer = "npm:get-db|test-tool";
+		const fetchCalls: Array<{ url: string; options?: RequestInit }> = [];
+
+		global.fetch = vi.fn(
+			async (url: string, options?: RequestInit): Promise<Response> => {
+				fetchCalls.push({ url, options });
+
+				if (fetchCalls.length === 1) {
+					return { ok: true, json: async () => ({}) } as Response;
+				}
+
+				return {
+					ok: true,
+					json: async () => ({
+						connection_string: mockConnectionString,
+					}),
+				} as Response;
+			},
+		) as typeof fetch;
+
+		await createClaimableDatabase({ dbId: mockDbId, referrer });
+
+		expect(fetchCalls[0].options?.body).toBeDefined();
+		const body = JSON.parse(fetchCalls[0].options?.body as string);
+		expect(body).toEqual({
+			enable_logical_replication: false,
+		});
+	});
+
+	test("sends logical_replication true when enabled in settings", async () => {
+		const referrer = "npm:get-db|test-tool";
+		const fetchCalls: Array<{ url: string; options?: RequestInit }> = [];
+
+		global.fetch = vi.fn(
+			async (url: string, options?: RequestInit): Promise<Response> => {
+				fetchCalls.push({ url, options });
+
+				if (fetchCalls.length === 1) {
+					return { ok: true, json: async () => ({}) } as Response;
+				}
+
+				return {
+					ok: true,
+					json: async () => ({
+						connection_string: mockConnectionString,
+					}),
+				} as Response;
+			},
+		) as typeof fetch;
+
+		await createClaimableDatabase({
+			dbId: mockDbId,
+			referrer,
+			settings: { logicalReplication: true },
+		});
+
+		expect(fetchCalls[0].options?.body).toBeDefined();
+		const body = JSON.parse(fetchCalls[0].options?.body as string);
+		expect(body).toEqual({
+			enable_logical_replication: true,
+		});
+	});
+
+	test("sends logical_replication false when explicitly disabled in settings", async () => {
+		const referrer = "npm:get-db|test-tool";
+		const fetchCalls: Array<{ url: string; options?: RequestInit }> = [];
+
+		global.fetch = vi.fn(
+			async (url: string, options?: RequestInit): Promise<Response> => {
+				fetchCalls.push({ url, options });
+
+				if (fetchCalls.length === 1) {
+					return { ok: true, json: async () => ({}) } as Response;
+				}
+
+				return {
+					ok: true,
+					json: async () => ({
+						connection_string: mockConnectionString,
+					}),
+				} as Response;
+			},
+		) as typeof fetch;
+
+		await createClaimableDatabase({
+			dbId: mockDbId,
+			referrer,
+			settings: { logicalReplication: false },
+		});
+
+		expect(fetchCalls[0].options?.body).toBeDefined();
+		const body = JSON.parse(fetchCalls[0].options?.body as string);
+		expect(body).toEqual({
+			enable_logical_replication: false,
+		});
+	});
+
+	test("sends empty settings object when settings parameter is empty", async () => {
+		const referrer = "npm:get-db|test-tool";
+		const fetchCalls: Array<{ url: string; options?: RequestInit }> = [];
+
+		global.fetch = vi.fn(
+			async (url: string, options?: RequestInit): Promise<Response> => {
+				fetchCalls.push({ url, options });
+
+				if (fetchCalls.length === 1) {
+					return { ok: true, json: async () => ({}) } as Response;
+				}
+
+				return {
+					ok: true,
+					json: async () => ({
+						connection_string: mockConnectionString,
+					}),
+				} as Response;
+			},
+		) as typeof fetch;
+
+		await createClaimableDatabase({
+			dbId: mockDbId,
+			referrer,
+			settings: {},
+		});
+
+		expect(fetchCalls[0].options?.body).toBeDefined();
+		const body = JSON.parse(fetchCalls[0].options?.body as string);
+		expect(body).toEqual({
+			enable_logical_replication: false,
+		});
 	});
 });
