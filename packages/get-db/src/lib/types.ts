@@ -10,7 +10,8 @@ export type SqlScript = {
  * @param {string} referrer - referrer name for tracking
  * @param {SqlScript} seed - Path to the `.sql` file to be pushed to the database
  * @param {string} envPrefix - Prefix for public environment variables (default: "PUBLIC_")
- * @param {boolean} logicalReplication - Enable logical replication for the database (default: false)
+ * @param {Object} settings - Additional database settings
+ * @param {boolean} settings.logicalReplication - Enable logical replication for the database (default: false)
  */
 export interface InstantPostgresParams {
 	dotEnvFile?: string;
