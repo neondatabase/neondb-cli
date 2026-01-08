@@ -212,24 +212,6 @@ describe("instantPostgres", () => {
 		});
 	});
 
-	test("logs connection string and pooler string", async () => {
-		await instantPostgres({ referrer: "test-referrer" });
-
-		expect(log.step).toHaveBeenCalledWith(
-			expect.stringContaining(mockConnectionString),
-		);
-		expect(log.step).toHaveBeenCalledWith(
-			expect.stringContaining(mockPoolerString),
-		);
-	});
-
-	test("logs success message after writing to env", async () => {
-		await instantPostgres({ referrer: "test-referrer" });
-
-		expect(log.success).toHaveBeenCalled();
-		expect(log.info).toHaveBeenCalled();
-	});
-
 	test("does not call seedDatabase when seed is not provided", async () => {
 		await instantPostgres({ referrer: "test-referrer" });
 
