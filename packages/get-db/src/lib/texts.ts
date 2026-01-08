@@ -28,7 +28,6 @@ export const messages = {
 	generating: "Generating your database... ",
 	envKeyExistsExit:
 		"Please try again or select a different key for your connection string.",
-	happyCoding: "Happy coding! 🚀",
 	questions: {
 		dotEnvFilePath: `Enter the path to your environment file (default: ${DEFAULTS.dotEnvPath})`,
 		dotEnvKey: `Enter the key for the database connection string (default: ${DEFAULTS.dotEnvKey})`,
@@ -53,14 +52,6 @@ export const messages = {
 		envKeyExists: (dotEnvKey: string, dotEnvFile: string) =>
 			`${dotEnvKey} already exists in ${dotEnvFile}`,
 		failedToParseEnvFile: "Failed to parse .env file",
-		failedToWriteEnvFile: "Failed to write .env file",
-		failedToGenerateDatabase: "Failed to generate database",
-		failedToOpenBrowser: "Failed to open browser",
-		failedToCreateClaimableDatabase: "Failed to create claimable database",
-		failedToCreatePoolerString: "Failed to create pooler string",
-		failedToSaveConnectionString: "Failed to save connection string",
-		failedToSavePoolerString: "Failed to save pooler string",
-		failedToSaveEnvFile: "Failed to save .env file",
 		referrerIsRequired: {
 			message: "referrer parameter is required",
 			description:
