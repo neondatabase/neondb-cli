@@ -28,7 +28,7 @@ Options:
 -   `-p, --prefix` Prefix for public env vars (default: PUBLIC\_)
 -   `-r, --ref` Referrer identifier for tracking (default: npm:get-db/cli)
 -   `-s, --seed` Path to SQL file to execute after database creation
--   `--logical-replication, --lr` Enable logical replication (default: false)
+-   `-L, --logical-replication` Enable logical replication (default: false)
 -   `-h, --help` Show help
 
 ---
@@ -45,7 +45,7 @@ Create a claimable Neon Postgres database and save credentials to your .env:
 
 ```ts
 await instantPostgres({
-	referrer: "npm:your-cli-package-name", // REQUIRED
+	referrer: "your-cli-package-name", // REQUIRED
 	dotEnvFile: ".env",
 	dotEnvKey: "DATABASE_URL",
 	envPrefix: "PUBLIC_",
