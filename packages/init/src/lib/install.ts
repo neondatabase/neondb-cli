@@ -4,6 +4,7 @@ import {
 	configureExtension,
 	installExtension,
 	usesExtension,
+	waitForExtensionInstalled,
 } from "./extension.js";
 import { getMCPConfig, writeMCPConfig } from "./mcp-config.js";
 import type { Editor, InstallStatus } from "./types.js";
@@ -162,6 +163,13 @@ export async function installNeon(
 		const installSuccess = await installExtension(editor);
 
 		if (!installSuccess) {
+			results.set(editor, "failed");
+			continue;
+		}
+
+		const isReady = await waitForExtensionInstalled(editor);
+		if (!isReady) {
+			// Extension install command succeeded but extension didn't appear in list
 			results.set(editor, "failed");
 			continue;
 		}
