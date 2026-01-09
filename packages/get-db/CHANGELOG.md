@@ -1,5 +1,53 @@
 # get-db
 
+## 0.12.0
+
+### Minor Changes
+
+- f1a4a03: BREAKING: Use pooler connection string by default
+- e215940: Suppress logs when running non-interactive mode
+- 19e3044: Add support for logical replication configuration via `logicalReplication` parameter
+- 0b3f9c4: **BREAKING CHANGE**: `referrer` parameter is now required for SDK/library and Vite plugin usage. CLI usage is unchanged and maintains default value.
+
+  ## Breaking Changes
+
+  - **SDK/Library (get-db)**: The `referrer` parameter in `instantPostgres()` is now required
+  - **Vite Plugin (vite-plugin-db)**: The `referrer` option in plugin configuration is now required
+  - **CLI**: No changes - the `--ref` flag remains optional with default value `npm:get-db/cli`
+
+  ## Migration Guide
+
+  ### For SDK/Library Users
+
+  ```typescript
+  // Before
+  await instantPostgres({ dotEnvFile: ".env" });
+
+  // Now
+  await instantPostgres({
+    referrer: "npm:your-package-name", // REQUIRED
+    dotEnvFile: ".env",
+  });
+  ```
+
+  ### For Vite Plugin Users
+
+  ```typescript
+  // Before
+  postgres();
+
+  // Now
+  postgres({ referrer: "github:username/repo-name" }); // REQUIRED
+  ```
+
+  ### For CLI Users
+
+  ✅ No changes needed - the CLI still has a default referrer value.
+
+  ## Why This Change
+
+  The `referrer` parameter is essential for tracking in the Instagres Affiliates Program. By requiring it for SDK and plugin users (who integrate get-db into their own tools), we ensure accurate attribution while maintaining convenience for direct CLI users.
+
 ## 0.11.0
 
 ### Minor Changes
