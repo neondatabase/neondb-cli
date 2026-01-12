@@ -154,6 +154,52 @@ function getEditorUriScheme(editor: Editor): string | null {
 }
 
 /**
+ * Checks if the extension is installed by querying the editor's extension list
+ */
+async function isExtensionInList(editor: Editor): Promise<boolean> {
+	const command = await findEditorCommand(editor);
+	if (!command) {
+		return false;
+	}
+
+	try {
+		const result = await execa(command, ["--list-extensions"], {
+			timeout: 5000,
+		});
+		return result.stdout.includes(NEON_EXTENSION_ID);
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Waits for the extension to appear in the installed extensions list
+ * This ensures the extension is fully installed and activated before we try to configure it
+ */
+export async function waitForExtensionInstalled(
+	editor: Editor,
+	maxAttempts = 10,
+	delayMs = 1000,
+): Promise<boolean> {
+	for (let attempt = 0; attempt < maxAttempts; attempt++) {
+		const isInstalled = await isExtensionInList(editor);
+
+		if (isInstalled) {
+			// Give the extension a moment to fully activate and register URI handlers
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+			return true;
+		}
+
+		// Wait before checking again (unless this is the last attempt)
+		if (attempt < maxAttempts - 1) {
+			await new Promise((resolve) => setTimeout(resolve, delayMs));
+		}
+	}
+
+	return false;
+}
+
+/**
  * Installs the Neon Local Connect extension for VS Code or Cursor
  * Returns success only if installation succeeds, fails silently otherwise
  */
