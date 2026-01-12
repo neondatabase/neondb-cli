@@ -1,5 +1,13 @@
 # @neondatabase/vite-plugin-postgres
 
+## 0.6.1
+
+### Patch Changes
+
+- 52537ed: Fix Node.js v24 compatibility by updating engine requirement from `"22"` to `">=22"`
+- Updated dependencies [52537ed]
+  - vite-plugin-db@0.6.1
+
 ## 0.6.0
 
 ### Minor Changes
