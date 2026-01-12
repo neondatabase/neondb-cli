@@ -1,5 +1,11 @@
 # get-db
 
+## 0.12.1
+
+### Patch Changes
+
+- 52537ed: Fix Node.js v24 compatibility by updating engine requirement from `"22"` to `">=22"`
+
 ## 0.12.0
 
 ### Minor Changes
