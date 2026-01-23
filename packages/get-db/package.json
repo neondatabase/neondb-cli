@@ -74,6 +74,7 @@
 		"gradient-string": "^3.0.0",
 		"open": "^10.2.0",
 		"p-wait-for": "^5.0.2",
+		"postgres-semicolons": "^0.1.2",
 		"yargs": "^18.0.0",
 		"yoctocolors": "^2.1.2"
 	}
