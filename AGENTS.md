@@ -97,14 +97,28 @@ pnpm --filter get-db dry:run
 
 -   **Purpose**: Setup tool for configuring Neon with the user's project
 -   **Entry points**: CLI (`dist/cli.js`) and SDK export (`init()` function)
--   **Core functionality**: Configures MCP server for VS Code and Cursor
+-   **Core functionality**: Installs Neon Local Connect extension for VS Code/Cursor, configures MCP server for Claude CLI, and installs Neon agent skills
 -   **Behavior**:
     -   Detects available editors installed on the system
     -   Prompts user to select which editor(s) to configure
     -   Authenticates via OAuth using `neonctl`
     -   Creates API key automatically via Neon API
-    -   Writes MCP configuration
--   **Dependencies**: Uses `@clack/prompts` for interactive CLI, `execa` for running `neonctl`
+    -   For **VS Code** and **Cursor**: Installs Neon Local Connect extension (`databricks.neon-local-connect`) via CLI commands, configures API key via URI handler
+    -   For **Claude CLI**: Writes MCP configuration to `~/.claude.json`
+    -   Installs Neon agent skills via Vercel's `skills` CLI (runs `npx skills add neondatabase/agent-skills`)
+-   **Extension Installation**:
+    -   Uses `code --install-extension` or `cursor --install-extension` commands
+    -   Finds CLI paths by checking known installation locations and using `mdfind` on macOS
+    -   Waits for extension to be fully installed before configuring
+    -   Configures API key via URI handler: `vscode://databricks.neon-local-connect/import-api-key?token=xxx`
+-   **MCP Server Configuration**:
+    -   Only used for Claude CLI (not VS Code/Cursor)
+    -   Writes to `~/.claude.json` with remote MCP server URL and API key
+-   **Agent Skills Integration**:
+    -   Maps editors to agent names: Cursor → `cursor`, VS Code → `github-copilot`, Claude CLI → `claude-code`
+    -   Runs skills installation with `-y` (auto-confirm) flag
+    -   Handles failures gracefully per-editor, continues with remaining editors
+-   **Dependencies**: Uses `@clack/prompts` for interactive CLI, `execa` for running external commands (`neonctl`, extension CLI commands, `npx`, URI handlers)
 
 ### Key Implementation Details
 

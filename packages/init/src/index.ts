@@ -11,6 +11,7 @@ import { bold, cyan } from "yoctocolors";
 import { detectAvailableEditors } from "./lib/editors.js";
 import { usesExtension } from "./lib/extension.js";
 import { installNeon } from "./lib/install.js";
+import { installAgentSkills } from "./lib/skills.js";
 import type { Editor } from "./lib/types.js";
 
 /**
@@ -94,6 +95,11 @@ export async function init(): Promise<void> {
 		} else {
 			failed.push(editor);
 		}
+	}
+
+	// Install agent skills for successful installations
+	if (successful.length > 0) {
+		await installAgentSkills(successful);
 	}
 
 	// Show different messages based on what was installed
