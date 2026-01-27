@@ -210,11 +210,7 @@ export async function installExtension(editor: Editor): Promise<boolean> {
 	}
 
 	try {
-		await execa(command, [
-			"--install-extension",
-			NEON_EXTENSION_ID,
-			"--pre-release",
-		]);
+		await execa(command, ["--install-extension", NEON_EXTENSION_ID]);
 		return true;
 	} catch {
 		return false;

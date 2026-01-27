@@ -1,6 +1,6 @@
 # neon-init
 
-Set up Neon's MCP Server for AI-powered database operations in VS Code, Cursor, and Claude CLI.
+Set up Neon for AI-powered database operations in VS Code, Cursor, and Claude CLI.
 
 ## Installation
 
@@ -25,21 +25,29 @@ npx neon-init
 Then:
 
 1. Restart your editor (VS Code, Cursor, or Claude CLI)
-2. Type **"Get started with Neon using MCP Resource"** in your AI chat
+2. Type **"Get started with Neon"** in your AI chat
 
 ## What It Does
 
-### Configures Neon MCP Server
+### For VS Code and Cursor: Installs Neon Local Connect Extension (which includes the Neon MCP Server)
 
--   **Cursor**: Creates or updates `~/.cursor/mcp.json` (global config - works across all projects)
--   **VS Code**: Creates or updates global `mcp.json` if VS Code is installed, otherwise falls back to `.vscode/mcp.json` (workspace config)
--   **Claude CLI**: Creates or updates `~/.claude.json` (global config - works across all projects)
+-   Automatically installs the `databricks.neon-local-connect` extension
+-   Uses the editor's CLI (`code --install-extension` or `cursor --install-extension`)
+-   Configures the API key automatically via URI handler
+-   Provides local database development capabilities directly in your editor
+-   Allows management of your MCP server within the extension
+
+### For Claude CLI: Configures Neon MCP Server
+
+-   Creates or updates `~/.claude.json` (global config - works across all projects)
+-   Configures remote MCP server with API key authentication
+-   Provides AI-powered database operations via MCP protocol
 
 **Supported Editors:**
 
--   **VS Code** with GitHub Copilot
--   **Cursor**
--   **Claude CLI**
+-   **VS Code** (uses Neon Local Connect extension)
+-   **Cursor** (uses Neon Local Connect extension)
+-   **Claude CLI** (uses MCP Server)
 
 The tool automatically detects which editors are installed on your system and you'll be prompted to choose which one(s) to configure.
 
@@ -51,12 +59,20 @@ The tool automatically detects which editors are installed on your system and yo
 -   Security, performance, and schema management best practices
 -   Neon-specific features (branching, autoscaling, scale-to-zero)
 
+### Installs Neon Agent Skills
+After configuring your editor, `neon-init` automatically installs Neon-specific agent skills using Vercel's [skills ecosystem](https://skills.sh). This enhances your agent with additional Neon capabilities and commands.
+
+-   Runs `npx skills add neondatabase/agent-skills` for each selected editor
+-   Auto-confirms installation with `-y` flag
+-   Maps editors to agent names: Cursor → `cursor`, VS Code → `github-copilot`, Claude CLI → `claude-code`
+
 ## Development
 
-| Command      | Description       |
-| ------------ | ----------------- |
-| `pnpm build` | Build the package |
-| `pnpm test`  | Run the tests     |
+| Command                         | Description                    |
+| ------------------------------- | ------------------------------ |
+| `pnpm build`                    | Build the package              |
+| `pnpm tsx src/cli.ts`           | Run CLI locally (no build)     |
+| `node dist/cli.js`              | Run built CLI                  |
 
 ### From workspace root
 
