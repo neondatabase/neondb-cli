@@ -1,5 +1,11 @@
 # neon-init
 
+## 0.12.0
+
+### Minor Changes
+
+- 561e679: Add automatic installation of Neon agent skills via Vercel's skills CLI. The init command now runs `npx skills add neondatabase/agent-skills` for each configured editor.
+
 ## 0.11.1
 
 ### Patch Changes
