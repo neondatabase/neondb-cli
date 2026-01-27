@@ -175,6 +175,9 @@ importers:
       p-wait-for:
         specifier: ^5.0.2
         version: 5.0.2
+      postgres-semicolons:
+        specifier: ^0.1.2
+        version: 0.1.2
       yargs:
         specifier: ^18.0.0
         version: 18.0.0
@@ -3308,6 +3311,9 @@ packages:
 
   postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
+
+  postgres-semicolons@0.1.2:
+    resolution: {integrity: sha512-8WQBfSojaERe6y1falp7o05NZav48MHd3VUCtKdEkRyzgrQL/3tbdEmnhHfXbl/23ajym2CSSI6vA2NCwCXG+w==}
 
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
@@ -7558,6 +7564,8 @@ snapshots:
   postgres-interval@3.0.0: {}
 
   postgres-range@1.1.4: {}
+
+  postgres-semicolons@0.1.2: {}
 
   prettier@2.8.8: {}
 

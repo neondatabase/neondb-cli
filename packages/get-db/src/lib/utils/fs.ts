@@ -9,13 +9,12 @@ import {
 import { dirname } from "node:path";
 import { log, outro } from "@clack/prompts";
 import { parse } from "dotenv";
+import * as semicolons from "postgres-semicolons";
 import { messages } from "../texts.js";
 
-function splitCommands(schema: string) {
-	return schema
-		.split(";")
-		.map((cmd) => cmd.trim())
-		.filter(Boolean);
+export function splitCommands(schema: string) {
+	const splits = semicolons.parseSplits(schema, true);
+	return semicolons.nonEmptyStatements(schema, splits.positions);
 }
 
 function validateSql(sql: string) {
